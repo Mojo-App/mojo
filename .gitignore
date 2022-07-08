@@ -20,6 +20,7 @@ lib-cov
 
 # Coverage directory used by tools like istanbul
 coverage
+coverage.json
 *.lcov
 
 # nyc test coverage
@@ -38,6 +39,7 @@ bower_components
 build/Release
 
 # Dependency directories
+.idea
 node_modules/
 jspm_packages/
 
@@ -102,3 +104,9 @@ dist
 
 # TernJS port file
 .tern-port
+
+typechain
+
+#Hardhat files
+cache
+artifacts
