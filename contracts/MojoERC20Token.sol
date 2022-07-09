@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 /// @custom:security-contact craigmoss36@gmail.com
-contract Mojo is ERC20, ERC20Burnable, Pausable, Ownable {
+contract MojoERC20Token is ERC20, ERC20Burnable, Pausable, Ownable {
     constructor() ERC20("Mojo", "MOJO") {
         _mint(msg.sender, 100000000 * 10 ** decimals());
     }

@@ -15,8 +15,9 @@ import "hardhat/console.sol";
 /// @custom:security-contact craigmoss36@gmail.com
 contract MojoCore is Initializable, ERC721Upgradeable, ERC721URIStorageUpgradeable, PausableUpgradeable, OwnableUpgradeable, ERC721BurnableUpgradeable {
     using CountersUpgradeable for CountersUpgradeable.Counter;
-
     CountersUpgradeable.Counter private _tokenIdCounter;
+
+    // event Withdrawal(address sender, address balance);
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -75,12 +76,12 @@ contract MojoCore is Initializable, ERC721Upgradeable, ERC721URIStorageUpgradeab
         return super.tokenURI(tokenId);
     }
 
-    function withdraw()
-        public
-    {
-      console.log("Block timestamp is %o", block.timestamp);
-      require(msg.sender == owner, "You aren't the owner");
-      emit Withdrawal(address(this).balance, block.timestamp);
-      owner.transfer(address(this).balance);
-  }
+    // function withdraw()
+    //     public
+    // {
+    //   console.log("Block timestamp is %o", block.timestamp);
+    //   require(msg.sender == owner, "You aren't the owner");
+    //   emit Withdrawal(address(this).balance, block.timestamp);
+    //   owner.transfer(msg.sender, address(this).balance);
+    // }
 }

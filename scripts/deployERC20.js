@@ -11,20 +11,13 @@ async function main() {
   const [deployer] = await hre.ethers.getSigners();
   const accountBalance = await deployer.getBalance();
 
-  console.log("Deploying contracts address: ", deployer.address);
+  console.log("Deployer address: ", deployer.address);
   console.log("Account balance: ", accountBalance.toString());
 
-  const mojoCoreContractFactory = await hre.ethers.getContractFactory("MojoCore");
-  const mojoContract = await mojoCoreContractFactory.deploy();
+  const mojoTokenContractFactory = await hre.ethers.getContractFactory("MojoERC20Token");
+  const mojoContract = await mojoTokenContractFactory.deploy();
   await mojoContract.deployed();
-  console.log("MojoCore smart contract deployed to: ", mojoContract.address);
-
-  // Call the function.
-  let nftURI = "URI_HERE";
-  let txn = await mojoContract.safeMint(deployer.address, nftURI);
-  // Wait for it to be mined.
-  await txn.wait();
-  console.log("Minted NFT");
+  console.log("Mojo Token smart contract deployed to: ", mojoContract.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
