@@ -1,0 +1,46 @@
+/* TWK Everett Font */
+@font-face {
+  font-family: TWKEverett;
+  src: url(../fonts/TWKEverett/TWKEverett-Regular-web.ttf);
+}
+// declare a class which applies it
+.TWKEverett {
+  font-family: "TWKEverett";
+}
+
+/* Inter Font */
+@font-face {
+  font-family: InterLight;
+  src: url(../fonts/Inter/Inter-Light.ttf);
+}
+@font-face {
+  font-family: Inter;
+  src: url(../fonts/Inter/Inter-Regular.ttf);
+}
+@font-face {
+  font-family: InterBold;
+  src: url(../fonts/Inter/Inter-Bold.ttf);
+}
+.InterLight {
+  font-family: "InterLight";
+}
+.Inter {
+  font-family: "Inter";
+}
+.InterBold {
+  font-family: "InterBold";
+}
+
+/* SF Display Font */
+@font-face {
+  font-family: 'SFDisplay';
+  font-weight: 400;
+  src: url(../fonts/SFDisplay/SF-UI-Text-SemiBold.otf);
+}
+// declare a class which applies it
+.SFProDisplay {
+  font-family: "SFDisplay";
+}
+
+
+

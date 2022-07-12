@@ -1,0 +1,57 @@
+/* Mojo Colours */
+$mojo-red: #f23f3f;
+$mojo-pink: #e9429b;
+$mojo-yellow: #FFDB1E;
+$mojo-green: #32c33a;
+$mojo-blue: #2c67ff;
+$mojo-light-blue: #2bb5f0;
+$mojo-purple: #8d50f5;
+
+/* Greys, Blacks & Whites */
+$black: #000000;
+$grey-100: #101010;
+$grey-90: #262626;
+$grey-80: #525252;
+$grey-70: #6f6f6f;
+$grey-60: #8d8d8d;
+$grey-50: #a8a8a8;
+$grey-40: #c6c6c6;
+$grey-30: #e0e0e0;
+$grey-20: #f4f4f4;
+$white: #ffffff;
+
+/* Gradients */
+$gradient-one: linear-gradient(283.66deg, #e9429b 37.69%, #ffdb1e 100.73%);
+$gradient-two: linear-gradient(283.16deg, #e9429b 21.19%, #2bb5f0 100.56%);
+$gradient-three: linear-gradient(285.43deg, #2bb5f0 40.19%, #32c33a 101.31%);
+
+/* Responsive Breakpoints */
+$breakpoint-xs: 479px !default;
+$breakpoint-sm: 839px !default;
+$breakpoint-md: 959px !default;
+$breakpoint-lg: 1279px !default;
+$breakpoint-xl: 1439px !default;
+
+/* OR */
+$mobileSmall: 18em;
+$mobileMedium: 24em;
+$mobileLarge: 30em;
+$small: 36em;
+$medium: 48em;
+$large: 60em;
+$extraLarge: 72em;
+$desktop1280: 80em;
+$x1xl: 100em;
+$x2xl: 120em;
+$x3xl: 160em;
+
+/* Display Settings */
+$max-width: 1280px;
+$page-height: 60vh;
+$full-width: 100%;
+
+/* Header Settings */
+$header-height: 90px;
+$mobile-header-height: 80px;
+
+
