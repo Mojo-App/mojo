@@ -23,8 +23,8 @@ async function main() {
   // let nftURI = "URI_HERE";
   // let txn = await mojoContract.safeMint(deployer.address, nftURI);
   // Wait for it to be mined.
-  await txn.wait();
-  console.log("Minted NFT");
+  // await txn.wait();
+  // console.log("Minted NFT");
 }
 
 // We recommend this pattern to be able to use async/await everywhere

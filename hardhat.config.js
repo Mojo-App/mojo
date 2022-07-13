@@ -12,16 +12,18 @@ module.exports = {
       url: 'http://127.0.0.1:8545',
     },
     hardhat: {
-      blockGasLimit: 1350000000,
-      gas: 1300000000,
+      blockGasLimit: 13500000000,
+      gas: 13000000000,
     },
     // Alchemy cuurently using Polygon Mumbai Testnet
     alchemy: {
       url: process.env.ALCHEMY_API_URL,
       key: process.env.ALCHEMY_API_KEY,
       accounts: [process.env.PRIVATE_KEY],
-      blockGasLimit: 1350000000,
-      gas: 1300000000,
+      blockGasLimit: 13500000000000,
+      gas: 13000000000000,
+      gasMultiplier: 10,
+      allowUnlimitedContractSize: true
     },
   },
   etherscan: {
