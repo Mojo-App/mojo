@@ -101,9 +101,12 @@
               <div class="input-row">
                 <input type="text" placeholder="Royalty Percentage" v-model="royaltyPercentage" />
               </div>
+              <div class="input-row">
+                <input type="text" placeholder="Price" v-model="price" />
+              </div>
               <!-- Button Row -->
               <div v-if="currentAccount && formTab === 'one'" class="button-container">
-                <button class="attr-button" @click="addNFTAttributesTab">Add Attributes</button>
+                <button v-if="!tokenId" class="mint-button" @click="mintNFT()">Mint NFT</button>
               </div>
               <!-- END Button Row -->
             </div>
@@ -140,10 +143,7 @@
               <!-- Button Row -->
               <div v-if="currentAccount && formTab === 'two'" class="button-container">
                 <button class="back-button" @click="goBack">🔙</button>
-                <button v-if="!tokenId" class="mint-button" @click="mintNFT()">Mint NFT</button>
-                <button v-if="tokenId" class="update-button" @click="updateNFT(tokenId)">
-                  Update NFT
-                </button>
+                <button class="update-button" @click="updateNFT(tokenId)">Update NFT</button>
               </div>
               <!-- END Button Row -->
             </div>
@@ -218,19 +218,22 @@ export default {
     const isDragged = ref(false);
     const finished = ref(0);
     const isUploading = ref(false);
+
     // NFT Form Metadata
     const tokenId = ref();
     const cid = ref('');
-    const backgroundColor = ref('ffffff');
     const name = ref('');
     const description = ref('');
     const externalUrl = ref('');
     const imageUrl = ref('');
+    const backgroundColor = ref('ffffff');
+
+    // NFT Form Metadata Attributes
     const audioVideoType = ref('');
     const size = ref('');
     const maxInvocations = ref(null);
     const royaltyPercentage = ref(null);
-    // NFT Form Metadata Attributes
+    const price = ref(null);
     const title = ref('');
     const category = ref('');
     const license = ref('');
@@ -341,10 +344,100 @@ export default {
             description.value,
             imageUrl.value,
             externalUrl.value,
-            backgroundColor.value,
+            backgroundColor.value
+          );
+          console.log('Minting Core NFT...please wait!');
+
+          // The OpenZeppelin base ERC721 contract emits a Transfer event
+          // when a token is issued. tx.wait() will wait until a block containing
+          // our transaction has been mined and confirmed. The transaction receipt
+          // contains events emitted while processing the transaction.
+          const receipt = await nftTxn.wait();
+          console.log('receipt', receipt);
+          tokenId.value = receipt.tokenId;
+
+          if (receipt.status === 1) {
+            /**
+             * @dev NOTE: Switch up these links once we go to Production
+             * Currently set to use Polygon Mumbai Testnet
+             */
+            console.log(
+              `NFT Minted, see transaction: https://mumbai.polygonscan.com/txs/${nftTxn.hash}`
+            );
+            notyf.dismiss(loadingIndicator);
+            notyf.open({
+              type: 'success',
+              message: `NFT has been minted successfully, see transaction: https://mumbai.polygonscan.com/txs/${nftTxn.hash}`,
+            });
+            /* Set to NFT Metadata Attributes Tab */
+            this.addNFTAttributesTab();
+          }
+        } else {
+          notyf.dismiss(loadingIndicator);
+          notyf.error("Ethereum object doesn't exist!");
+          console.log("Ethereum object doesn't exist!");
+        }
+      } catch (error) {
+        notyf.dismiss(loadingIndicator);
+        console.log('error', error);
+      }
+    };
+
+    const updateNFT = async (tokenId) => {
+      console.log('Lets update our NFT!');
+      if (!tokenId.value) {
+        notyf.error(`We need a Token Id to continue!`);
+        return;
+      }
+      if (!name.value) {
+        notyf.error(`Please enter a name to continue!`);
+        return;
+      }
+      if (name.value.length < 3) {
+        notyf.error(`NFT name must be longer then 3 characters!`);
+        return;
+      }
+      if (!description.value) {
+        notyf.error(`Please enter a description to continue!`);
+        return;
+      }
+      if (description.value.length < 10) {
+        notyf.error(`NFT description must be longer then 10 characters!`);
+        return;
+      }
+      if (!externalUrl.value) {
+        notyf.error(`Please enter a externalUrl to continue!`);
+        return;
+      }
+      if (externalUrl.value.length < 10) {
+        notyf.error(`NFT externalUrl must be longer then 10 characters!`);
+        return;
+      }
+      if (!imageUrl.value) {
+        notyf.error(`Please enter a imageUrl to continue!`);
+        return;
+      }
+      if (imageUrl.value.length < 10) {
+        notyf.error(`NFT image Url must be longer then 10 characters!`);
+        return;
+      }
+
+      try {
+        const { ethereum } = window;
+        if (ethereum) {
+          const provider = new ethers.providers.Web3Provider(ethereum);
+          const signer = provider.getSigner();
+          /**
+           *  @dev Note: Reset this once Contracts deployed or re-dployed
+           */
+          const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi.abi, signer);
+          console.log('Talk to the wallet and pay gas fees', signer);
+
+          let nftTxn = await contract.safeMint(
+            signer,
             maxInvocations.value,
             royaltyPercentage.value,
-            0, // salesTotal set to zero
+            price.value, // salesTotal set to zero
             title.value,
             category.value,
             license.value,
@@ -373,11 +466,9 @@ export default {
             console.log(
               `NFT Minted, see transaction: https://mumbai.polygonscan.com/txs/${nftTxn.hash}`
             );
-            notyf.dismiss(loadingIndicator);
-            notyf.open({
-              type: 'success',
-              message: `NFT has been minted successfully, see transaction: https://mumbai.polygonscan.com/txs/${nftTxn.hash}`,
-            });
+            notyf.success(
+              `NFT has been created successfully, see transaction: https://mumbai.polygonscan.com/txshttps://rinkeby.etherscan.io/tx/${nftTxn.hash}`
+            );
           }
           /* Reset our NFT Metadata Form Values */
           name.value = '';
@@ -387,6 +478,7 @@ export default {
           backgroundColor.value = 'ffffff';
           maxInvocations.value = null;
           royaltyPercentage.value = null;
+          price.value = null;
           /* Reset our NFT Metadata Attributes Form Values */
           title.value = '';
           category.value = '';
@@ -401,114 +493,12 @@ export default {
           size.value = '';
           createdAt.value = '';
         } else {
-          notyf.dismiss(loadingIndicator);
           notyf.error("Ethereum object doesn't exist!");
           console.log("Ethereum object doesn't exist!");
         }
       } catch (error) {
-        notyf.dismiss(loadingIndicator);
         console.log('error', error);
       }
-    };
-
-    const updateNFT = async (tokenId) => {
-      console.log('Lets update our NFT!');
-      if (!tokenId.value) {
-        notyf.error(`We need a Token Id to continue!`);
-        return;
-      }
-      // if (!name.value) {
-      //   notyf.error(`Please enter a name to continue!`);
-      //   return;
-      // }
-      // if (name.value.length < 3) {
-      //   notyf.error(`NFT name must be longer then 3 characters!`);
-      //   return;
-      // }
-      // if (!description.value) {
-      //   notyf.error(`Please enter a description to continue!`);
-      //   return;
-      // }
-      // if (description.value.length < 10) {
-      //   notyf.error(`NFT description must be longer then 10 characters!`);
-      //   return;
-      // }
-      // if (!externalUrl.value) {
-      //   notyf.error(`Please enter a externalUrl to continue!`);
-      //   return;
-      // }
-      // if (externalUrl.value.length < 10) {
-      //   notyf.error(`NFT externalUrl must be longer then 10 characters!`);
-      //   return;
-      // }
-      // if (!imageUrl.value) {
-      //   notyf.error(`Please enter a imageUrl to continue!`);
-      //   return;
-      // }
-      // if (imageUrl.value.length < 10) {
-      //   notyf.error(`NFT image Url must be longer then 10 characters!`);
-      //   return;
-      // }
-
-      // try {
-      //   const { ethereum } = window;
-      //   if (ethereum) {
-      //     const provider = new ethers.providers.Web3Provider(ethereum);
-      //     const signer = provider.getSigner();
-      //     /**
-      //      *  @dev Note: Reset this once Contracts deployed or re-dployed
-      //      */
-      //     const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi.abi, signer);
-      //     console.log('Talk to the wallet and pay gas fees', signer);
-
-      //     let nftTxn = await contract.safeMint(signer);
-      //     console.log('Mining NFT...please wait!');
-
-      //     // The OpenZeppelin base ERC721 contract emits a Transfer event
-      //     // when a token is issued. tx.wait() will wait until a block containing
-      //     // our transaction has been mined and confirmed. The transaction receipt
-      //     // contains events emitted while processing the transaction.
-      //     const receipt = await nftTxn.wait();
-      //     if (receipt.status === 1) {
-      //       /**
-      //        * @dev NOTE: Switch up these links once we go to Production
-      //        * Currently set to use Polygon Mumbai Testnet
-      //        */
-      //       console.log(
-      //         `NFT Minted, see transaction: https://mumbai.polygonscan.com/txs/${nftTxn.hash}`
-      //       );
-      //       notyf.success(
-      //         `NFT has been created successfully, see transaction: https://mumbai.polygonscan.com/txshttps://rinkeby.etherscan.io/tx/${nftTxn.hash}`
-      //       );
-      //     }
-      //     /* Reset our NFT Metadata Form Values */
-      //     name.value = '';
-      //     description.value = '';
-      //     externalUrl.value = '';
-      //     imageUrl.value = '';
-      //     backgroundColor.value = 'ffffff';
-      //     maxInvocations.value = null;
-      //     royaltyPercentage.value = null;
-      //     /* Reset our NFT Metadata Attributes Form Values */
-      //     title.value = '';
-      //     category.value = '';
-      //     license.value = '';
-      //     website.value = '';
-      //     longDescription.value = '';
-      //     preview.value = '';
-      //     audioVideoType.value = '';
-      //     audioVideoURL.value = '';
-      //     resoultion.value = '';
-      //     duration.value = '';
-      //     size.value = '';
-      //    createdAt.value ='';
-      //   } else {
-      //     notyf.error("Ethereum object doesn't exist!");
-      //     console.log("Ethereum object doesn't exist!");
-      //   }
-      // } catch (error) {
-      //   console.log('error', error);
-      // }
     };
 
     /**
@@ -563,6 +553,7 @@ export default {
       // backgroundColor.value = 'ffffff';
       // maxInvocations.value = 1;
       // royaltyPercentage.value = 10;
+      // price.value = 10;
       /* Reset our NFT Metadata Attributes Form Values */
       // title.value = '';
       // category.value = '';
@@ -640,6 +631,7 @@ export default {
       backgroundColor,
       maxInvocations,
       royaltyPercentage,
+      price,
       title,
       category,
       license,
@@ -656,11 +648,6 @@ export default {
       addNFTAttributesTab,
       mintNFT,
       updateNFT,
-      // mintToken,
-      // createNFTFromAssetData,
-      // getNFTMetadata,
-      // pinTokenData,
-      // pin,
       generateLink,
       fileSize,
       onDragEnter,

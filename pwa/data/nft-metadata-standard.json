@@ -16,8 +16,8 @@
       "value": 10
     },
     {
-      "display_type": "Sales",
-      "trait_type": "sales",
+      "display_type": "Price",
+      "trait_type": "price",
       "value": 102
     },
     {
@@ -54,6 +54,11 @@
       "display_type": "AudioVideoType",
       "trait_type": "audio_video_type",
       "value": "audio"
+    },
+    {
+      "display_type": "Size",
+      "trait_type": "size",
+      "value": "512 Kb"
     },
     {
       "display_type": "AudioVideo",

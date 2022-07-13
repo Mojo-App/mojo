@@ -12,7 +12,7 @@ import '@openzeppelin/contracts/utils/Strings.sol';
 import '@tableland/evm/contracts/ITablelandTables.sol';
 
 // We import some helper functions for Solidity
-import {StringUtils} from './libraries/StringUtils.sol';
+import { StringUtils } from './libraries/StringUtils.sol';
 
 // Import this file to use console.log
 import 'hardhat/console.sol';
@@ -59,7 +59,7 @@ contract MojoCore is
             string.concat(
                 'CREATE TABLE mojo_media_',
                 Strings.toString(block.chainid),
-                ' (id int, name text, description text, image text, external_url text, background_color text, attributes text);'
+                ' (id int, name text, description text, image text, external_url text, background_color text, attributes_id text);'
             )
         );
         /**
@@ -70,7 +70,7 @@ contract MojoCore is
             string.concat(
                 'CREATE TABLE mojo_media_meta',
                 Strings.toString(block.chainid),
-                ' (id int, max_invocations int, title text, category text, license text, website text, long_description text, preview_url text, audio_video_type text, audio_video_url text, resolution text, duration text, created_at text, sales_total int, likes int);'
+                ' (id int, max_invocations int, royalty int, sales_total, int title text, category text, license text, website text, long_description text, preview_url text, audio_video_type text, audio_video_url text, resolution text, duration text, size text, created_at text);'
             )
         );
 
@@ -115,21 +115,8 @@ contract MojoCore is
         string memory description,
         string memory imageUrl,
         string memory externalUrl,
-        string memory backgroundColor,
-        uint256 maxInvocations,
-        uint256 royaltyPercentage,
-        string memory title,
-        string memory category,
-        string memory license,
-        string memory website,
-        string memory longDescription,
-        string memory preview,
-        string memory audioVideoType,
-        string memory audioVideoURL,
-        string memory resoultion,
-        string memory duration,
-        string memory size,
-        string memory created
+        string memory backgroundColor
+
     ) public onlyOwner returns (uint256) {
         uint256 tokenId = _tokenIdCounter.current();
 
@@ -140,53 +127,20 @@ contract MojoCore is
             string.concat(
                 'INSERT INTO ',
                 _metadataTable,
-                ' (id, name, description, image, external_url, background_color) VALUES (',
+                ' (id, name, description, image, external_url, background_color, attributes_id) VALUES (',
                 Strings.toString(tokenId),
                 ', ',
-                Strings.toString(name),
+                name,
                 ', ',
-                Strings.toString(description),
+                description,
                 ', ',
-                Strings.toString(imageUrl),
+                imageUrl,
                 ', ',
-                Strings.toString(backgroundColor),
-                ')'
-            )
-        );
-        _tableland.runSQL(
-            address(this),
-            _metadataAttrTableId,
-            string.concat(
-                'INSERT INTO ',
+                externalUrl,
+                ', ',
+                backgroundColor,
+                ', ',
                 _metadataAttrTable,
-                ' (id, max_invocations, title, category, license, website, long_description, preview_url, audio_video_type, audio_video_url, duration, created_at, sales_total, likes) VALUES (',
-                Strings.toString(tokenId),
-                ', ',
-                Strings.toString(maxInvocations),
-                ', ',
-                Strings.toString(title),
-                ', ',
-                Strings.toString(category),
-                ', ',
-                Strings.toString(license),
-                ', ',
-                Strings.toString(website),
-                ', ',
-                Strings.toString(longDescription),
-                ', ',
-                Strings.toString(preview),
-                ', ',
-                Strings.toString(audioVideoType),
-                ', ',
-                Strings.toString(audioVideoURL),
-                ', ',
-                Strings.toString(resoultion),
-                ', ',
-                Strings.toString(duration),
-                ', ',
-                Strings.toString(size),
-                ', ',
-                Strings.toString(created),
                 ')'
             )
         );
@@ -194,130 +148,18 @@ contract MojoCore is
         console.log('\n--------------------------------------------------------');
         console.log('NFT address holder', to);
         console.log('NFT tokenId', tokenId);
+        console.log('name', name);
+        console.log('description', description);
+        console.log('imageUrl', imageUrl);
+        console.log('externalUrl', externalUrl);
+        console.log('backgroundColor', backgroundColor);
+        console.log('_metadataAttrTable', _metadataAttrTable);
+
         console.log('--------------------------------------------------------\n');
 
         _safeMint(to, tokenId, '');
         _tokenIdCounter.increment();
         return tokenId;
-    }
-
-    /**
-     * @dev updateMetadata
-     * Used to update the NFT token metadata in Tableland
-     * _metadataTable table in Tableland
-     */
-    function updateMetadata(
-        uint256 tokenId,
-        string calldata name,
-        string calldata description,
-        string calldata image,
-        string calldata externalUrl,
-        string calldata backgroundColor,
-        string calldata attributes
-    ) public {
-        // Check NFT Token ownership
-        require(this.ownerOf(tokenId) == msg.sender, 'Invalid owner');
-        // Simple on-chain NFT metadata enforcement
-        uint256 nameLength = StringUtils.strlen(name);
-        uint256 descriptionLength = StringUtils.strlen(description);
-        uint256 imageLength = StringUtils.strlen(image);
-        uint256 externalUrlLength = StringUtils.strlen(externalUrl);
-        require(nameLength > 3, 'Error: Name needs to be more than 3 characters');
-        require(descriptionLength > 3, 'Error: Description needs to be more than 3 characters');
-        require(imageLength > 3, 'Error: No Image selected');
-        require(externalUrlLength > 3, 'Error: No External URL entered');
-
-        /* Any table updates will go here */
-        _tableland.runSQL(
-            address(this),
-            _metadataTableId,
-            string.concat(
-                'UPDATE ',
-                _metadataTable,
-                ' SET name = ',
-                Strings.toString(name),
-                ' AND description = ',
-                Strings.toString(description),
-                ' AND image = ',
-                Strings.toString(image),
-                ' AND external_url = ',
-                Strings.toString(externalUrl),
-                ' AND background_color = ',
-                Strings.toString(backgroundColor),
-                ' WHERE id = ',
-                Strings.toString(tokenId),
-                ';'
-            )
-        );
-    }
-
-    /**
-     * @dev updateMetaAttributes
-     * Used to update the NFT metadata attributes only
-     * _metadataAttrTable table in Tableland
-     */
-    function updateMetaAttributes(
-        uint256 tokenId,
-        uint256 max_invocations,
-        string calldata title,
-        string calldata category,
-        string calldata license,
-        string calldata website,
-        string calldata long_description,
-        string calldata preview_url,
-        string calldata audio_video_type,
-        string calldata audio_video_url
-    ) public {
-        // Check NFT Token ownership
-        require(this.ownerOf(tokenId) == msg.sender, 'Invalid owner');
-        // Simple on-chain NFT metadata atrributes enforcement
-        uint256 titleLength = StringUtils.strlen(title);
-        uint256 categoryLength = StringUtils.strlen(category);
-        uint256 licenseLength = StringUtils.strlen(license);
-        uint256 websiteLength = StringUtils.strlen(website);
-        uint256 descriptionLength = StringUtils.strlen(long_description);
-        uint256 previewUrlLength = StringUtils.strlen(preview_url);
-        uint256 audioVideoTypeLength = StringUtils.strlen(audio_video_type);
-        uint256 audioVideoUrlLength = StringUtils.strlen(audio_video_url);
-        require(titleLength > 3, 'Error: Title needs to be more than 3 characters');
-        require(categoryLength > 3, 'Error: Category needs to be more than 3 characters');
-        require(licenseLength > 3, 'Error: License needs to be more than 3 characters');
-        require(websiteLength > 3, 'Error: Website needs to be more than 3 characters');
-        require(descriptionLength > 3, 'Error: Description needs to be more than 3 characters');
-        require(previewUrlLength > 3, 'Error: No Preview URL entered');
-        require(audioVideoTypeLength > 3, 'Error: No Audio/Video type entered');
-        require(audioVideoUrlLength > 3, 'Error: No Audio Video URL entered');
-
-        /* Any table updates will go here */
-        _tableland.runSQL(
-            address(this),
-            _metadataTableId,
-            string.concat(
-                'UPDATE ',
-                _metadataTable,
-                ' SET max_invocations = ',
-                max_invocations,
-                ' AND title = ',
-                Strings.toString(title),
-                ' AND category = ',
-                Strings.toString(category),
-                ' AND license = ',
-                Strings.toString(license),
-                ' AND website = ',
-                Strings.toString(website),
-                ' AND long_description = ',
-                Strings.toString(long_description),
-                ' AND preview_url = ',
-                Strings.toString(preview_url),
-                ' AND audio_video_type = ',
-                Strings.toString(audio_video_type),
-                ' AND audio_video_url = ',
-                Strings.toString(audio_video_url),
-                ' WHERE id = ',
-                Strings.toString(tokenId),
-                ';'
-            )
-        );
     }
 
     function _baseURI() internal view override returns (string memory) {
@@ -340,58 +182,30 @@ contract MojoCore is
 
         string memory base = _baseURI();
 
-        // string memory json_group = '';
-        // string[4] memory cols = [
-        //     'id',
-        //     'name',
-        //     'description',
-        //     'image',
-        //     'external_url',
-        //     'background_color',
-        //     'id',
-        //     'max_invocations',
-        //     'title',
-        //     'category',
-        //     'license',
-        //     'website',
-        //     'long_description',
-        //     'preview_url',
-        //     'audio_video_type',
-        //     'audio_video_url',
-        //     'duration',
-        //     'created_at',
-        //     'sales_total',
-        //     'likes'
-        // ];
-        // for (uint256 i; i < cols.length; i++) {
-        //     if (i > 0) {
-        //         json_group = string.concat(json_group, ',');
-        //     }
-        //     json_group = string.concat(json_group, "'", cols[i], "',", cols[i]);
-        // }
+        string memory json_group = '';
+        string[7] memory cols = [
+            'id',
+            'name',
+            'description',
+            'image',
+            'external_url',
+            'background_color',
+            'attributes_id'
+        ];
+        for (uint256 i; i < cols.length; i++) {
+            if (i > 0) {
+                json_group = string.concat(json_group, ',');
+            }
+            json_group = string.concat(json_group, "'", cols[i], "',", cols[i]);
+        }
 
-        // return
-        //     string.concat(
-        //         base,
-        //         'SELECT%20',
-        //         json_group,
-        //         '%20FROM%20',
-        //         _metadataTable,
-        //         '%20FROM%20',
-        //         _metadataTable,
-        //         '%20WHERE%20id%3D',
-        //         Strings.toString(tokenId),
-        //         '&mode=list'
-        //     );
-
-        /* We need all the results from the LEFT JOIN SQL Statement */
         return
             string.concat(
                 base,
-                'SELECT%20*%20FROM%20',
+                'SELECT%20',
+                json_group,
+                '%20FROM%20',
                 _metadataTable,
-                '%20LEFT%20JOIN%20',
-                _metadataAttrTable,
                 '%20WHERE%20id%3D',
                 Strings.toString(tokenId),
                 '&mode=list'
@@ -458,28 +272,6 @@ contract MojoCore is
 
         return string.concat(base, 'SELECT%20*%20FROM%20', _metadataAttrTable);
     }
-
-    /**
-     * Play function to pay Royalties
-     */
-    function playPay() public view returns (string memory) {
-        string memory base = _baseURI();
-
-        // return string.concat(
-        //   base,
-        //   "SELECT%20*%20FROM%20",
-        //   _metadataTable
-        // );
-    }
-
-    //  function tokenURI(uint256 tokenId)
-    //     public
-    //     view
-    //     override(ERC721Upgradeable, ERC721URIStorageUpgradeable)
-    //     returns (string memory)
-    // {
-    //     return super.tokenURI(tokenId);
-    // }
 
     /**
      * OpenZeplin Core Contract functions

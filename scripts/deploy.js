@@ -15,13 +15,13 @@ async function main() {
   console.log("Account balance: ", accountBalance.toString());
 
   const mojoCoreContractFactory = await hre.ethers.getContractFactory("MojoCore");
-  const mojoContract = await mojoCoreContractFactory.deploy();
+  const mojoContract = await mojoCoreContractFactory.deploy(deployer.address);
   await mojoContract.deployed();
   console.log("MojoCore smart contract deployed to: ", mojoContract.address);
 
   // Call the function.
-  let nftURI = "URI_HERE";
-  let txn = await mojoContract.safeMint(deployer.address, nftURI);
+  // let nftURI = "URI_HERE";
+  // let txn = await mojoContract.safeMint(deployer.address, nftURI);
   // Wait for it to be mined.
   await txn.wait();
   console.log("Minted NFT");
