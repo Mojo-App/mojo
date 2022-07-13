@@ -342,19 +342,20 @@ export default {
             imageUrl.value,
             externalUrl.value,
             backgroundColor.value,
-            audioVideoType.value,
-            size.value,
             maxInvocations.value,
             royaltyPercentage.value,
+            0, // salesTotal set to zero
             title.value,
             category.value,
             license.value,
             website.value,
             longDescription.value,
             preview.value,
+            audioVideoType.value,
             audioVideoURL.value,
             resoultion.value,
             duration.value,
+            size.value,
             createdAt.value
           );
           console.log('Mining NFT...please wait!');
