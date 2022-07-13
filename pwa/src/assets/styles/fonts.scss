@@ -3,9 +3,9 @@
   font-family: TWKEverett;
   src: url(../fonts/TWKEverett/TWKEverett-Regular-web.ttf);
 }
-// declare a class which applies it
+/* Declare a class which applies it */
 .TWKEverett {
-  font-family: "TWKEverett";
+  font-family: 'TWKEverett';
 }
 
 /* Inter Font */
@@ -21,14 +21,15 @@
   font-family: InterBold;
   src: url(../fonts/Inter/Inter-Bold.ttf);
 }
+/* Declare a class which applies it */
 .InterLight {
-  font-family: "InterLight";
+  font-family: 'InterLight';
 }
 .Inter {
-  font-family: "Inter";
+  font-family: 'Inter';
 }
 .InterBold {
-  font-family: "InterBold";
+  font-family: 'InterBold';
 }
 
 /* SF Display Font */
@@ -37,10 +38,7 @@
   font-weight: 400;
   src: url(../fonts/SFDisplay/SF-UI-Text-SemiBold.otf);
 }
-// declare a class which applies it
+/* Declare a class which applies it */
 .SFProDisplay {
-  font-family: "SFDisplay";
+  font-family: 'SFDisplay';
 }
-
-
-

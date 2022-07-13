@@ -3,10 +3,8 @@
 @import './fonts.scss';
 
 * {
-  // font-family: 'IBM Plex Mono', monospace;
-  font-family: 'TWKEverett', inter, -apple-system, system-ui, 'Segoe UI',
-    Helvetica, 'Apple Color Emoji', Arial, sans-serif, 'Segoe UI Emoji',
-    'Segoe UI Symbol';
+  font-family: 'TWKEverett', inter, -apple-system, system-ui, 'Segoe UI', Helvetica,
+    'Apple Color Emoji', Arial, sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
   letter-spacing: 0.05786em;
 }
 
@@ -17,16 +15,8 @@ body {
   --dark-color: rgb(254, 236, 181);
   --secondary-color: rgb(250, 145, 25);
   --contrast-color: black;
-  --liniear-gradient-color-1: linear-gradient(
-    to bottom right,
-    #db2777,
-    #db2777
-  );
-  --liniear-gradient-color-2: linear-gradient(
-    to bottom right,
-    #facc15,
-    #f97316
-  );
+  --liniear-gradient-color-1: linear-gradient(to bottom right, #db2777, #db2777);
+  --liniear-gradient-color-2: linear-gradient(to bottom right, #facc15, #f97316);
   --icon-color: #f97316;
 
   --gradient-50: rgb(255, 242, 203);
@@ -51,16 +41,8 @@ body {
     --darken-color: rgb(49, 36, 200);
     --secondary-color: rgb(202, 202, 250);
     --contrast-color: white;
-    --liniear-gradient-color-1: linear-gradient(
-      to bottom right,
-      #08d0a5,
-      #2ad4f5
-    );
-    --liniear-gradient-color-2: linear-gradient(
-      to bottom right,
-      #a855f7,
-      #6366f1
-    );
+    --liniear-gradient-color-1: linear-gradient(to bottom right, #08d0a5, #2ad4f5);
+    --liniear-gradient-color-2: linear-gradient(to bottom right, #a855f7, #6366f1);
     --icon-color: #08d0a5;
 
     --gradient-100: rgb(234, 240, 255);
@@ -111,8 +93,7 @@ body,
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 .link {
@@ -306,8 +287,7 @@ code {
             width: 100%;
             border-radius: 1rem;
             margin-bottom: 1rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-              0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 
             &#about {
               width: 100%;

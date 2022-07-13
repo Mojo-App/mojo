@@ -73,9 +73,6 @@
                 <input type="text" placeholder="Name" v-model="name" />
               </div>
               <div class="input-row">
-                <input type="text" placeholder="Description" v-model="description" />
-              </div>
-              <div class="input-row">
                 <input type="text" placeholder="Image Url" v-model="imageUrl" />
               </div>
               <div class="input-row">
@@ -93,13 +90,16 @@
                 <input type="text" placeholder="Created" v-model="createdAt" readonly />
               </div>
               <div class="input-row">
-                <input type="text" placeholder="Add external link" v-model="externalUrl" />
+                <input type="text" placeholder="Enter a description" v-model="description" />
               </div>
               <div class="input-row">
-                <input type="text" placeholder="Max Invocations" v-model="maxInvocations" />
+                <input type="text" placeholder="Add an external link" v-model="externalUrl" />
               </div>
               <div class="input-row">
-                <input type="text" placeholder="Royalty %" v-model="royaltyPercentage" />
+                <input type="text" placeholder="Max invocations" v-model="maxInvocations" />
+              </div>
+              <div class="input-row">
+                <input type="text" placeholder="Royalty Percentage" v-model="royaltyPercentage" />
               </div>
               <!-- Button Row -->
               <div v-if="currentAccount && formTab === 'one'" class="button-container">
@@ -109,9 +109,9 @@
             </div>
 
             <div v-if="formTab === 'two'" id="form-tab-two" class="form-container">
-              <h2>NFT Attributes</h2>
+              <h2>Metadata Attributes</h2>
               <div class="input-row">
-                <input type="text" placeholder="Title" v-model="title" />
+                <input type="text" placeholder="Track Title" v-model="title" />
               </div>
               <div class="input-row">
                 <input type="text" placeholder="Category" v-model="category" />
@@ -120,15 +120,14 @@
                 <input type="text" placeholder="License" v-model="license" />
               </div>
               <div class="input-row">
-                <input type="text" placeholder="Website" v-model="website" />
+                <input type="text" placeholder="Website Link" v-model="website" />
               </div>
               <!-- <div class="input-row">
                 <input type="text" placeholder="Long Description" v-model="longDescription" />
               </div> -->
               <div class="input-row">
-                <input type="text" placeholder="Preview" v-model="preview" />
+                <input type="text" placeholder="Preview Link" v-model="preview" />
               </div>
-
               <div class="input-row">
                 <input type="text" placeholder="Audio/Video Link" v-model="audioVideoURL" />
               </div>
@@ -138,7 +137,6 @@
               <div class="input-row">
                 <input type="text" placeholder="Duration" v-model="duration" />
               </div>
-
               <!-- Button Row -->
               <div v-if="currentAccount && formTab === 'two'" class="button-container">
                 <button class="back-button" @click="goBack">🔙</button>
@@ -178,10 +176,9 @@ export default {
   name: 'MintView',
   components: [ConnectWalletButton, ArrowBack],
   setup() {
-    const CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
-    // Create an instance of Notyf
+    /* Create an instance of Notyf */
     var notyf = new Notyf({
-      duration: 2000,
+      duration: 3000,
       position: {
         x: 'center',
         y: 'bottom',
@@ -190,7 +187,7 @@ export default {
         {
           type: 'loading',
           background: 'orange',
-          duration: 0,
+          duration: 3000,
           dismissible: true,
           icon: {
             className: 'icon icon-loading',
@@ -199,6 +196,7 @@ export default {
         },
       ],
     });
+    const CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
     // Init Store
     const store = useStore();
     // Metamask Account
@@ -270,7 +268,7 @@ export default {
      */
     const mintNFT = async () => {
       /**
-       * Some very basic form validation
+       * Some very basic form validation, these are loaded after IPFS upload
        */
       if (!name.value) {
         notyf.error(`Please enter a name to continue!`);
@@ -279,16 +277,6 @@ export default {
       }
       if (name.value.length < 3) {
         notyf.error(`NFT name must be longer then 3 characters!`);
-        formTab.value = 'one';
-        return;
-      }
-      if (!description.value) {
-        notyf.error(`Please enter a description to continue!`);
-        formTab.value = 'one';
-        return;
-      }
-      if (description.value.length < 10) {
-        notyf.error(`NFT description must be longer then 10 characters!`);
         formTab.value = 'one';
         return;
       }
@@ -302,6 +290,24 @@ export default {
         formTab.value = 'one';
         return;
       }
+      /**
+       * Some very basic form validation on a required description field
+       */
+      if (!description.value) {
+        notyf.error(`Please enter a description to continue!`);
+        formTab.value = 'one';
+        return;
+      }
+      if (description.value.length < 10) {
+        notyf.error(`NFT description must be longer then 10 characters!`);
+        formTab.value = 'one';
+        return;
+      }
+
+      const loadingIndicator = notyf.open({
+        type: 'loading',
+        message: 'Please wait, we generate shorten link for you.',
+      });
 
       /**
        * Mint our NFT with fresh metadata
@@ -354,6 +360,7 @@ export default {
             console.log(
               `NFT Minted, see transaction: https://mumbai.polygonscan.com/txs/${nftTxn.hash}`
             );
+            notyf.dismiss(loadingIndicator);
             notyf.success(
               `NFT has been created successfully, see transaction: https://mumbai.polygonscan.com/txshttps://rinkeby.etherscan.io/tx/${nftTxn.hash}`
             );
@@ -380,10 +387,12 @@ export default {
           size.value = '';
           createdAt.value = '';
         } else {
+          notyf.dismiss(loadingIndicator);
           notyf.error("Ethereum object doesn't exist!");
           console.log("Ethereum object doesn't exist!");
         }
       } catch (error) {
+        notyf.dismiss(loadingIndicator);
         console.log('error', error);
       }
     };
@@ -534,23 +543,23 @@ export default {
       /* Set our NFT Metadata Form Values */
       cid.value = result.data.cid;
       name.value = result.data.file.name.substring(0, result.data.file.name.lastIndexOf('.'));
-      description.value = '';
-      externalUrl.value = '';
+      // description.value = '';
+      // externalUrl.value = '';
       imageUrl.value = generateLink(result.data);
-      backgroundColor.value = 'ffffff';
-      maxInvocations.value = 1;
-      royaltyPercentage.value = 10;
+      // backgroundColor.value = 'ffffff';
+      // maxInvocations.value = 1;
+      // royaltyPercentage.value = 10;
       /* Reset our NFT Metadata Attributes Form Values */
-      title.value = '';
-      category.value = '';
-      license.value = '';
-      website.value = '';
-      longDescription.value = '';
-      preview.value = '';
+      // title.value = '';
+      // category.value = '';
+      // license.value = '';
+      // website.value = '';
+      // longDescription.value = '';
+      // preview.value = '';
       audioVideoType.value = result.data.file.type;
-      audioVideoURL.value = '';
-      resoultion.value = '';
-      duration.value = '';
+      // audioVideoURL.value = '';
+      // resoultion.value = '';
+      // duration.value = '';
       size.value = fileSize(result.data.file.size);
       createdAt.value = result.data.file.created_at;
       return result;
@@ -752,6 +761,7 @@ section#content {
               > * {
                 pointer-events: none;
               }
+
               .dropzone-box {
                 background-color: rgba(0, 0, 0, 0.2);
               }
@@ -769,11 +779,13 @@ section#content {
               padding: 0.8rem;
               border-radius: 0.5rem;
               text-align: center;
+
               svg {
                 height: 48px;
                 width: 48px;
                 margin-bottom: 1rem;
               }
+
               span {
                 font-size: 0.8rem;
               }
@@ -890,10 +902,10 @@ section#content {
         }
 
         input {
+          color: #1a1a1a;
+          background-color: #fdfdfd;
           border: 2px solid var(--gradient-100);
           border-radius: 10px;
-          background-color: #fdfdfd;
-          color: #1a1a1a;
           letter-spacing: 1px;
           font-size: 14px;
           width: 300px;
@@ -903,14 +915,15 @@ section#content {
         }
 
         input::placeholder {
-          color: gray;
-          letter-spacing: 2px;
+          color: #a8a8a8;
+          letter-spacing: 1px;
         }
 
         input:read-only {
+          color: #1a1a1a;
           border: 2px dashed #e0e0e0;
-          color: #a8a8a8;
           letter-spacing: 2px;
+          cursor: not-allowed;
         }
 
         input:focus {

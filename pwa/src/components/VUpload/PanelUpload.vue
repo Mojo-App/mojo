@@ -11,10 +11,12 @@
       >
         <input type="file" multiple ref="fileRef" @change="onFileChangedHandler" />
         <div class="dropzone-box" @click="openSelectFile">
+          <!-- Uploader Icon -->
           <i-mdi-timer-sand v-if="isUploading" class="icon-color" />
           <i-mdi-upload v-else class="icon-color" />
+          <!-- END Uploader Icon -->
           <span>Drop files here or click to select files to upload to IPFS</span>
-          <div class="dropzone-is-loading" :class="{ active: fileCount > 0 }">
+          <div class="dropzone-is-loading" :class="{ active: isUploading }">
             <div class="dropzone-loading--bar"></div>
           </div>
           <span v-show="fileCount > 0"
@@ -29,37 +31,35 @@
     </div>
   </section>
 </template>
-
 <script>
 import { ref, computed, inject } from 'vue';
-
 import { useStore } from '../../store';
 import { uploadBlob } from '../../services/ipfs.js';
 import { fileSize } from '../../services/helpers';
-
+/* LFG */
 export default {
   name: 'PanelUpload',
   setup() {
     const notyf = inject('notyf');
+    // Init Store
+    const store = useStore();
+    // File Uploader
     const fileRef = ref(null);
     const isDragged = ref(false);
     const finished = ref(0);
     const isUploading = ref(false);
 
-    const store = useStore();
-
+    /**
+     * Drag n Drop File Manager
+     */
     const onDropHandler = ($event) => {
       if (isUploading.value) return false;
-
       isDragged.value = false;
-
       fileRef.value.files = $event.dataTransfer.files;
-
       onFileChangedHandler();
     };
     const openSelectFile = () => {
       if (isUploading.value) return false;
-
       fileRef.value.click();
     };
     const onDragEnter = () => {
@@ -68,15 +68,12 @@ export default {
     const onDragLeave = () => {
       isDragged.value = false;
     };
-
     /**
      * @param {File} file
      */
     const uploadFileHandler = async (file) => {
       const result = await uploadBlob(file);
-
       finished.value++;
-
       const { error } = result;
       if (error && error instanceof Error) notyf.error(error.message);
 
@@ -84,31 +81,28 @@ export default {
     };
     const onFileChangedHandler = async () => {
       isUploading.value = true;
-
       store.addFiles(...fileRef.value.files);
-
       const files = store.files.map((file) => uploadFileHandler(file));
-
       try {
         let results = await Promise.all(files);
         const successfully = results.filter(({ error }) => !error);
-
+        console.log('successfully', successfully);
+        if (successfully.length > 0) {
+          notyf.success(`${successfully.length} files successfully uploaded to IPFS`);
+        }
         store.addResults(...successfully.map(({ error, data: file }) => file));
         store.resetFiles();
-
         fileRef.value.value = null;
-
-        if (successfully.length > 0) {
-          notyf.success(`${successfully.length} files successfully processed.`);
-        }
       } catch (error) {
-        notyf.error(`Opss!, something error while processing your files.`);
+        // notyf.error(`Oops! an error while processing your files.`);
+        console.log(error);
+        finished.value = 0;
+        isUploading.value = false;
       } finally {
         finished.value = 0;
         isUploading.value = false;
       }
     };
-
     const fileCount = computed(() => {
       return store.files.length;
     });
@@ -122,6 +116,7 @@ export default {
     });
 
     return {
+      isUploading,
       finished,
       fileRef,
       fileCount,
@@ -164,6 +159,7 @@ section#panel-upload {
       > * {
         pointer-events: none;
       }
+
       .dropzone-box {
         background-color: rgba(0, 0, 0, 0.2);
       }
@@ -181,11 +177,13 @@ section#panel-upload {
       padding: 0.8rem;
       border-radius: 0.5rem;
       text-align: center;
+
       svg {
         height: 48px;
         width: 48px;
         margin-bottom: 1rem;
       }
+
       span {
         font-size: 0.8rem;
       }

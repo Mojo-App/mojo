@@ -60,13 +60,11 @@ export default {
   .pwa-toast--update {
     background-color: var(--gradient-800);
     color: var(--contrast-color);
-
     display: flex;
     align-items: center;
     border-radius: 1rem;
     padding: 0.8rem;
     margin-bottom: 0.8rem;
-
     font-size: 0.8rem;
 
     svg {

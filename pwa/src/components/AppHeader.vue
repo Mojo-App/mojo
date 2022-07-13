@@ -1,18 +1,14 @@
 <template>
   <header id="header">
     <div class="header-title">
-      <h1><span class="emoji">🎧</span> mojo</h1>
+      <h1><span class="emoji">🎧</span> Mojo</h1>
     </div>
     <div class="header-menu">
       <nav class="header-navbar">
         <router-link :to="{ name: 'home' }" active-class="active" exact>Home</router-link>
         <router-link :to="{ name: 'stream' }" active-class="active" exact>Stream</router-link>
-        <router-link v-if="currentAccount" :to="{ name: 'mint' }" active-class="active" exact
-          >Mint</router-link
-        >
-        <router-link v-if="currentAccount" :to="{ name: 'upload' }" active-class="active" exact
-          >Upload</router-link
-        >
+        <router-link v-if="currentAccount" :to="{ name: 'mint' }" active-class="active" exact>Mint</router-link>
+        <router-link v-if="currentAccount" :to="{ name: 'upload' }" active-class="active" exact>Upload</router-link>
         <div v-if="!currentAccount" class="right">
           <ConnectWalletButton v-model="currentAccount" v-if="!currentAccount" btnSize="small" />
         </div>
@@ -97,13 +93,13 @@ export default {
   .header-title {
     h1 {
       font-family: 'Ubuntu Mono', Roboto, Ubuntu, 'Open Sans', 'Helvetica Neue', sans-serif;
-      font-size: 2.1rem;
+      font-size: 2.3rem;
       font-weight: 700;
       margin: 0 0 8px 0;
       color: #333;
 
       span.emoji {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
       }
     }
   }

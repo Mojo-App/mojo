@@ -30,10 +30,6 @@
               >
                 <i-ri-link-unlink-m class="icon-color" />
               </a>
-              <a v-else title="Generate Shorten Link" @click="shortenLink(item)">
-                <i-ri-link-m class="icon-color" />
-              </a>
-
               <a title="Open Link" target="_blank" :href="generateLink(item)" rel="noopener">
                 <i-ri-external-link-fill class="icon-color" />
               </a>
@@ -64,7 +60,7 @@
 import { ref, computed, inject } from 'vue';
 
 import { useStore } from '../../store';
-import { fileSize, copyToClipboard, generateLink, generateShortLink } from '../../services/helpers';
+import { fileSize, copyToClipboard, generateLink } from '../../services/helpers';
 
 import SearchResult from '../../components/VUpload/SearchResult.vue';
 
@@ -76,34 +72,11 @@ export default {
   setup() {
     const notyf = inject('notyf');
     const store = useStore();
-
     const search = ref('');
 
-    const shortenLink = async (item) => {
-      const url = generateLink(item);
-
-      const loadingIndicator = notyf.open({
-        type: 'loading',
-        message: 'Please wait, we generate shorten link for you.',
-      });
-
-      const [error, data] = await generateShortLink(url);
-
-      notyf.dismiss(loadingIndicator);
-
-      if (error) {
-        notyf.error(error.message);
-      } else {
-        const shortenLink = `https://s.id/${data.short}`;
-        store.updateShortenLink(item.cid, shortenLink);
-
-        notyf.success(`Shorten Link has successfully generated.`);
-      }
-    };
     const copyFileLink = (item) => {
       const url = generateLink(item);
       copyToClipboard(url);
-
       notyf.success('Copied to clipboard!');
     };
     const onSearchChanged = ($event) => {
@@ -126,7 +99,6 @@ export default {
       search,
       files,
       fileSize,
-      shortenLink,
       copyFileLink,
       generateLink,
       onSearchChanged,
@@ -134,7 +106,6 @@ export default {
   },
 };
 </script>
-
 <style lang="scss">
 section#panel-result {
   background-color: #ffffff;
