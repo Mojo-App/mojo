@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.12;
 
 import '@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol';
@@ -326,7 +326,7 @@ contract MojoCore is
 
     /**
      * @dev tokenURI is an example of how to turn a row in your table back into
-     * erc721 compliant metadata JSON. Here, we do a simple SELECT statement
+     * erc721 compliant metadata JSON. Here, we do a SELECT and JOIN statement
      * with function that converts the result into json.
      */
     function tokenURI(uint256 tokenId)
@@ -384,6 +384,7 @@ contract MojoCore is
         //         '&mode=list'
         //     );
 
+        /* We need all the results from the LEFT JOIN SQL Statement */
         return
             string.concat(
                 base,
@@ -398,7 +399,7 @@ contract MojoCore is
     }
 
     /*
-     * @dev Taken from Tableland repos here https://github.com/tablelandnetwork/example-apps/blob/canvas/canvas-game/contracts/CanvasGame.sol
+     * @dev See Tableland repos here https://github.com/tablelandnetwork/example-apps/blob/canvas/canvas-game/contracts/CanvasGame.sol
      * setExternalURL provides an example of how to update a field for every
      * row in an table.
      */
@@ -418,6 +419,9 @@ contract MojoCore is
     //     );
     // }
 
+    /*
+     * @dev See Tableland repos here https://github.com/tablelandnetwork/example-apps/blob/canvas/canvas-game/contracts/CanvasGame.sol
+     */
     function _addressToString(address x) internal pure returns (string memory) {
         bytes memory s = new bytes(40);
         for (uint256 i = 0; i < 20; i++) {
@@ -429,7 +433,9 @@ contract MojoCore is
         }
         return string(s);
     }
-
+    /*
+     * @dev See Tableland repos here https://github.com/tablelandnetwork/example-apps/blob/canvas/canvas-game/contracts/CanvasGame.sol
+     */
     function char(bytes1 b) internal pure returns (bytes1 c) {
         if (uint8(b) < 10) return bytes1(uint8(b) + 0x30);
         else return bytes1(uint8(b) + 0x57);

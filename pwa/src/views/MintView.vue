@@ -194,6 +194,16 @@ export default {
             tagName: 'i',
           },
         },
+        {
+          type: 'success',
+          background: 'green',
+          duration: 10000,
+          dismissible: true,
+          icon: {
+            className: 'icon icon-success',
+            tagName: 'i',
+          },
+        },
       ],
     });
     const CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
@@ -269,6 +279,7 @@ export default {
     const mintNFT = async () => {
       /**
        * Some very basic form validation, these are loaded after IPFS upload
+       * but users can edit so we still need some validation in UI
        */
       if (!name.value) {
         notyf.error(`Please enter a name to continue!`);
@@ -304,6 +315,7 @@ export default {
         return;
       }
 
+      /* Init loading indicator */
       const loadingIndicator = notyf.open({
         type: 'loading',
         message: 'Please wait, we generate shorten link for you.',
@@ -361,9 +373,10 @@ export default {
               `NFT Minted, see transaction: https://mumbai.polygonscan.com/txs/${nftTxn.hash}`
             );
             notyf.dismiss(loadingIndicator);
-            notyf.success(
-              `NFT has been created successfully, see transaction: https://mumbai.polygonscan.com/txshttps://rinkeby.etherscan.io/tx/${nftTxn.hash}`
-            );
+            notyf.open({
+              type: 'success',
+              message: `NFT has been minted successfully, see transaction: https://mumbai.polygonscan.com/txs/${nftTxn.hash}`,
+            });
           }
           /* Reset our NFT Metadata Form Values */
           name.value = '';
@@ -574,6 +587,9 @@ export default {
         console.log('successfully', successfully);
         if (successfully.length > 0) {
           notyf.success(`${successfully.length} files successfully uploaded to IPFS`);
+        }
+        if (successfully.length === 0) {
+          notyf.error(`Oops! An error occurred while processing your files.`);
         }
         store.addResults(...successfully.map(({ error, data: file }) => file));
         store.resetFiles();

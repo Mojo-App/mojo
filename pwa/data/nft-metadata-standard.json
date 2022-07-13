@@ -69,6 +69,11 @@
       "display_type": "Duration",
       "trait_type": "duration",
       "value": "1m 59secs"
+    },
+    {
+      "display_type": "Created At",
+      "trait_type": "created_at",
+      "value": "198679879873"
     }
   ]
 }
