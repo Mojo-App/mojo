@@ -30,38 +30,12 @@ export default defineConfig({
         description: 'Content Sharing powered by IPFS Protocol',
         theme_color: '#212121',
         registerType: 'autoUpdate',
-        includeAssets: ['/favicon.svg'],
-        icons: [
-          {
-            src: '/icons/icon-192x192.png',
-            sizes: '192x192',
-            type: 'image/png',
-            purpose: 'any maskable',
-          },
-          {
-            src: '/icons/icon-256x256.png',
-            sizes: '256x256',
-            type: 'image/png',
-            purpose: 'any maskable',
-          },
-          {
-            src: '/icons/icon-384x384.png',
-            sizes: '384x384',
-            type: 'image/png',
-            purpose: 'any maskable',
-          },
-          {
-            src: '/icons/icon-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable',
-          },
-        ],
+        includeAssets: ['/favicon.ico'],
       },
     }),
     ViteFonts({
       google: {
-        families: ['IBM+Plex+Mono'],
+        families: ['Ubuntu+Mono'],
       },
     }),
   ],

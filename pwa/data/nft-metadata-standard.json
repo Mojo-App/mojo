@@ -1,8 +1,8 @@
 {
+  "name": "Dave Starbelly",
   "description": "Friendly OpenSea Creature that enjoys long swims in the ocean.",
   "external_url": "https://openseacreatures.io/3",
   "image": "https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png",
-  "name": "Dave Starbelly",
   "background_color": "ffffff",
   "attributes": [
     {
@@ -11,9 +11,14 @@
       "value": 100
     },
     {
-      "display_type": "Created",
-      "trait_type": "created",
-      "value": 1546360800
+      "display_type": "Royalty",
+      "trait_type": "royalty",
+      "value": 10
+    },
+    {
+      "display_type": "Sales",
+      "trait_type": "sales",
+      "value": 102
     },
     {
       "display_type": "Title",
@@ -42,7 +47,7 @@
     },
     {
       "display_type": "Preview",
-      "trait_type": "preview",
+      "trait_type": "preview_url",
       "value": "url_here"
     },
     {
@@ -52,7 +57,7 @@
     },
     {
       "display_type": "AudioVideo",
-      "trait_type": "audio_video",
+      "trait_type": "audio_video_url",
       "value": "url_here"
     },
     {
@@ -64,46 +69,6 @@
       "display_type": "Duration",
       "trait_type": "duration",
       "value": "1m 59secs"
-    },
-    {
-      "display_type": "Comments",
-      "trait_type": "comments",
-      "value": []
-    },
-    {
-      "display_type": "Reviews",
-      "trait_type": "reviews",
-      "value": []
-    },
-    {
-      "display_type": "SalesTotal",
-      "trait_type": "sales_total",
-      "value": 102
-    },
-    {
-      "display_type": "Sales",
-      "trait_type": "sales",
-      "value": 102
-    },
-    {
-      "display_type": "Likes",
-      "trait_type": "likes",
-      "value": 0
-    },
-    {
-      "display_type": "Active",
-      "trait_type": "active",
-      "value": true
-    },
-    {
-      "display_type": "Locked",
-      "trait_type": "locked",
-      "value": false
-    },
-    {
-      "display_type": "Paused",
-      "trait_type": "paused",
-      "value": false
     }
   ]
 }

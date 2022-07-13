@@ -1,11 +1,11 @@
 # Mojo
 
-Mojo is an audio/media streaming platform that empowers artists and creators through web3 and various blockchain technologies including Etheruem, IPFS, Tableland and is deployed to the Polygon testnet.
+Mojo is an audio/media streaming platform that empowers artists and content creators through web3 and various blockchain technologies including Etheruem, IPFS, Tableland and is deployed to the Polygon testnet using Spheron and deployed via Filecoin.
 
 The Mojo web3 application allows you to upload your valuable digital assets to the IPFS Network. Files can never be deleted, hacked, edited, stolen and are never saved to any server making them 100% decentralised. Mojo allows creators to broaden their social reach offering custom NFTs that allow their followers and subscribers and access special content and features.
 
-Mojo allows creators to build custom Metadata and attach this to their homemade NFTs. 
-Assign different attributes and values to your NFT. Custom NFT Metadata is made possible using Tableland.
+Mojo allows creators to build custom Metadata and attach this to their homemade NFTs.
+Assign different attributes and values to your cusotmised NFT. NFT Metadata is managed using Tableland which allows you to add, edit and update metadata attributes.
 
 IPFS is a wonderful technology. It allows for content ownership, portability, and verifiability. It powers NFT marketplaces, individual websites, file-sharing platforms, and more. However, IPFS, the protocol, does not have a responsibility to match the experience of traditional cloud file services. Instead, that responsibility falls onto the shoulders of IPFS’s adoptors.
 
