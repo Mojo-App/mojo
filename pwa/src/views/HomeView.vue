@@ -110,7 +110,7 @@ import TrackPlayer from '../components/TrackPlayer.vue';
 import Tableland from '../assets/svgs/TableLand.vue';
 import SpheronLogo from '../assets/svgs/SpheronLogo.vue';
 import PolygonLogo from '../assets/svgs/PolygonLogo.vue';
-import Metamask from '../assets/svgs/Metamask.vue';
+import Metamask from '../assets/svgs/MetaMask.vue';
 // Create an instance of Notyf
 var notyf = new Notyf({
   duration: 2000,
