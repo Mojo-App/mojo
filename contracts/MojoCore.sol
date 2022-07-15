@@ -152,8 +152,8 @@ contract MojoCore is ERC721URIStorage, Ownable {
                 nft.externalUrl,
                 ', background_color = ',
                 nft.backgroundColor,
-                ', background_color = ',
-                nft.backgroundColor,
+                ', attributes = ',
+                nft.attributes,
                 ' WHERE id = ',
                 Strings.toString(nft.tokenId),
                 ''

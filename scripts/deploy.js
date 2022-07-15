@@ -14,7 +14,10 @@ async function main() {
   console.log('Account balance: ', accountBalance.toString());
 
   const mojoCoreContractFactory = await hre.ethers.getContractFactory('MojoCore');
-  const mojoContract = await mojoCoreContractFactory.deploy(deployer.address);
+  /* Must set the deploy contract address see https://github.com/tablelandnetwork/evm-tableland#currently-supported-chains */
+  const mojoContract = await mojoCoreContractFactory.deploy(
+    '0x4b48841d4b32c4650e4abc117a03fe8b51f38f68'
+  );
   await mojoContract.deployed();
   console.log('MojoCore smart contract deployed to: ', mojoContract.address);
 
