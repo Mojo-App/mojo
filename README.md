@@ -13,7 +13,7 @@ Streaming is not a new technology. However, IPFS is new enough that streaming is
 
 With streaming video in place, those who visit your gateway will no longer have to wait for a video file to download fully before it can be played. Just visit the URL and the video will start streaming, just like you would expect with Netflix or Youtube.
 
-## Basic Sample Hardhat Project
+## Hardhat Project
 
 This project uses Hardhat to test, compile and deploy contracts
 
@@ -28,6 +28,17 @@ npx hardhat test
 npx hardhat node
 npx hardhat run scripts/deploy.js
 GAS_REPORT=true npx hardhat test
+```
+
+## Deployments Note
+
+This project will only deploy to Mumbai Testnet due to the address registry passed to the contract constructor function
+
+MojoCore smart contract deployed to:  0x61d3038A40307B913415800432E1101bFfb33192
+Mojo Token smart contract deployed to:  0x424B6A8beF4c0807c1db53f21ea8bB8217B3AC7e
+
+```shell
+npx hardhat run scripts/deploy.js --network alchemy
 ```
 
 ## Basic Vue 3 Project

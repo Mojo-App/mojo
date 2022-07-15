@@ -22,6 +22,10 @@ contract MojoCore is ERC721URIStorage, Ownable {
     uint256 private _metadataAttrTableId;
     string private _tablePrefix = 'mojo';
 
+    /* Event */
+    event NewNftMinted(address indexed from, uint256 timestamp, uint256 tokenId);
+    event NftUpdated(address indexed from, uint256 timestamp, NFT nft);
+
     struct NFT {
         uint256 tokenId;
         string name;
@@ -32,7 +36,7 @@ contract MojoCore is ERC721URIStorage, Ownable {
         string attributes;
     }
 
-    mapping(uint256 => NFT) nfts;
+    NFT[] public nfts;
 
     constructor(address registry) ERC721('MojoNFT', 'mNFT') {
         /*
@@ -91,7 +95,7 @@ contract MojoCore is ERC721URIStorage, Ownable {
      * Any time a token is minted, a new row of metadata will be
      * dynamically insterted into the metadata table.
      */
-    function safeMint(address to, NFT memory nft) public returns (uint256) {
+    function safeMint(address to, NFT memory nft) public {
         uint256 tokenId = _tokenIds.current();
         _tableland.runSQL(
             address(this),
@@ -118,7 +122,9 @@ contract MojoCore is ERC721URIStorage, Ownable {
         );
         _safeMint(to, tokenId, '');
         _tokenIds.increment();
-        return tokenId;
+
+        /* Emit our newly created NFT to our front-end */
+        emit NewNftMinted(msg.sender, block.timestamp, tokenId);
     }
 
     /*
@@ -128,7 +134,7 @@ contract MojoCore is ERC721URIStorage, Ownable {
      * their token's metadata.
      */
     function updateNFT(NFT memory nft) public {
-        // check token ownership
+        // Check token ownership
         require(this.ownerOf(nft.tokenId) == msg.sender, 'Invalid owner');
         // simple on-chain gameplay enforcement
         // require(nft.name.length < 3, 'Name required');
@@ -152,13 +158,20 @@ contract MojoCore is ERC721URIStorage, Ownable {
                 nft.externalUrl,
                 ', background_color = ',
                 nft.backgroundColor,
-                ', attributes = ',
-                nft.attributes,
                 ' WHERE id = ',
                 Strings.toString(nft.tokenId),
-                ''
+                ';'
             )
         );
+        /* Emit our updated NFT to our front-end */
+        emit NftUpdated(msg.sender, block.timestamp, nft);
+    }
+
+    /**
+     * Get all NFTs
+     */
+    function getAllNfts() public view returns (NFT[] memory) {
+        return nfts;
     }
 
     function _baseURI() internal view override returns (string memory) {
@@ -174,9 +187,16 @@ contract MojoCore is ERC721URIStorage, Ownable {
         require(_exists(tokenId), 'ERC721URIStorage: URI query for nonexistent token');
 
         string memory base = _baseURI();
-
         string memory json_group = '';
-        string[4] memory cols = ['id', 'external_link', 'x', 'y'];
+        string[7] memory cols = [
+            'id',
+            'name',
+            'description',
+            'image',
+            'external_link',
+            'background_color',
+            'attributes'
+        ];
         for (uint256 i; i < cols.length; i++) {
             if (i > 0) {
                 json_group = string.concat(json_group, ',');

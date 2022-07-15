@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { ethers } from 'ethers';
-import contractAbi from '../../../artifacts/contracts/MyEpicNft.sol/MyEpicNft.json';
+import contractAbi from '../../../artifacts/contracts/MojoCore.sol/MojoCore.json';
 console.log('contractAbi: ', contractAbi);
 
 const name = ref('');
@@ -10,7 +10,6 @@ const externalUrl = ref('');
 const imageUrl = ref('');
 const backgroundColor = ref('ffffff');
 const attributes = ref([]);
-const CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 
 async function mintNFT() {
   if (!name.value) {
@@ -32,7 +31,7 @@ async function mintNFT() {
       const signer = provider.getSigner();
 
       /* Dev Note: Reset this once Contracts deployed */
-      const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi.abi, signer);
+      const contract = new ethers.Contract(process.env.MOJO_CORE_CONTRACT, contractAbi.abi, signer);
       console.log('Talk to the wallet and pay gas');
 
       let nftTxn = await contract.makeAnEpicNFT();

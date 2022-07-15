@@ -38,13 +38,10 @@
               to any server so <strong>100% decentralized</strong>.<br /><br />
               Manage your NFT metadata with Tableland, add and edit additional NFT metadata
               attributes giving your NFT's' unique features, tailored to your audience.
-              <br /><br />
-              No decentralised data is harmed in the editing of your NFT metadata, so it holds true
-              to it's core values and features.
             </p>
           </div>
           <div class="right">
-            <ConnectWalletButton v-if="!currentAccount" btnSize="large" />
+            <ConnectWalletButton v-model="currentAccount" v-if="!currentAccount" btnSize="large" />
             <button @click="$router.push('stream')" v-if="currentAccount" className="stream-button">
               Let's Stream 🎶
             </button>
@@ -58,6 +55,25 @@
             >
               Get Minty 🧪
             </button>
+          </div>
+        </div>
+      </section>
+      <section id="sponsors">
+        <div class="row">
+          <div class="sponsors-logo">
+            <PolygonLogo />
+          </div>
+          <div class="sponsors-logo">
+            <SpheronLogo />
+          </div>
+          <div class="sponsors-logo">
+            <Tableland />
+          </div>
+          <div class="sponsors-logo">
+            <img alt="IPFS" src="@/assets/images/IPFS.png" height="38" />
+          </div>
+          <div class="sponsors-logo">
+            <Metamask />
           </div>
         </div>
       </section>
@@ -91,6 +107,10 @@ import { Notyf } from 'notyf';
 /* Components */
 import ConnectWalletButton from '../components/ConnectWalletButton.vue';
 import TrackPlayer from '../components/TrackPlayer.vue';
+import Tableland from '../assets/svgs/TableLand.vue';
+import SpheronLogo from '../assets/svgs/SpheronLogo.vue';
+import PolygonLogo from '../assets/svgs/PolygonLogo.vue';
+import Metamask from '../assets/svgs/Metamask.vue';
 // Create an instance of Notyf
 var notyf = new Notyf({
   duration: 2000,
@@ -155,6 +175,11 @@ fetchData();
 
 onMounted(() => {
   checkIfWalletIsConnected();
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: 'smooth',
+  });
 });
 </script>
 
@@ -586,6 +611,76 @@ section#content {
           text-decoration-thickness: 1px;
           text-underline-offset: 2px;
           color: #2bb5f0;
+        }
+      }
+    }
+
+    section#sponsors {
+      color: #000000;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-content: center;
+      justify-content: center;
+      padding: 20px;
+
+      @include breakpoint($medium) {
+        padding: 20px;
+      }
+
+      .row {
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+
+        @include breakpoint($medium) {
+          flex-direction: row;
+          align-content: center;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .sponsors-logo {
+          margin: 10px 20px;
+        }
+      }
+
+      h1 {
+        color: #2bb5f0;
+        font-size: 2.85rem;
+        text-align: center;
+        margin-bottom: 0;
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 4px;
+      }
+
+      h2 {
+        font-size: 2.2rem;
+        text-align: center;
+        margin-bottom: 5px;
+        .yellow {
+          font-size: 2.1rem;
+          color: #ffca28;
+        }
+      }
+
+      a {
+        color: #1a1a1a;
+        font-weight: bold;
+        border-bottom: 1px solid #1a1a1a;
+        text-decoration: none;
+
+        &.author {
+          padding: 6px 12px;
+          border-radius: 8px;
+          background-color: var(--gradient-100);
+          color: var(--icon-color);
+          font-size: 0.85rem;
+
+          border-bottom: none;
         }
       }
     }

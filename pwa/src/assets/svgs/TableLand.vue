@@ -1,8 +1,7 @@
 <template>
   <div class="svg-container">
     <svg
-      width="577px"
-      height="41px"
+      width="320px"
       viewBox="0 0 577 41"
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
@@ -30,6 +29,6 @@
   overflow: hidden
 
 svg
-  width: 85%
-  height: 85%
+  width: 100%
+  height: 100%
 </style>
