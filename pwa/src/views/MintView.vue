@@ -10,8 +10,14 @@
           <div v-if="currentAccount" class="left">
             <section id="panel-upload">
               <div class="content panel-upload--content">
-                <div class="panel-upload--dropzone" :class="{ active: isDragged }" @dragenter="onDragEnter"
-                  @dragleave="onDragLeave" @drop.prevent="onDropHandler" @dragover.prevent>
+                <div
+                  class="panel-upload--dropzone"
+                  :class="{ active: isDragged }"
+                  @dragenter="onDragEnter"
+                  @dragleave="onDragLeave"
+                  @drop.prevent="onDropHandler"
+                  @dragover.prevent
+                >
                   <input type="file" multiple ref="fileRef" @change="onFileChangedHandler" />
                   <div class="dropzone-box" @click="openSelectFile">
                     <!-- Uploader Icon -->
@@ -22,7 +28,9 @@
                     <div class="dropzone-is-loading" :class="{ active: isUploading }">
                       <div class="dropzone-loading--bar"></div>
                     </div>
-                    <span v-show="fileCount > 0">{{ fileCount - finished }} of {{ fileCount }} files uploaded</span>
+                    <span v-show="fileCount > 0"
+                      >{{ fileCount - finished }} of {{ fileCount }} files uploaded</span
+                    >
                   </div>
                   <div class="dropzone-details">
                     <div class="dropzone-detail">{{ result.count }} files</div>
@@ -68,7 +76,12 @@
                 <input type="text" placeholder="Image Url" v-model="imageUrl" />
               </div>
               <div class="input-row">
-                <input type="text" placeholder="Audio/Video Type" v-model="audioVideoType" readonly />
+                <input
+                  type="text"
+                  placeholder="Audio/Video Type"
+                  v-model="audioVideoType"
+                  readonly
+                />
               </div>
               <div class="input-row">
                 <input type="text" placeholder="File Size" v-model="size" readonly />
@@ -154,9 +167,9 @@ import { fileSize, generateLink } from '../services/helpers';
 
 import { ethers } from 'ethers';
 import contractAbi from '../../../artifacts/contracts/MojoCore.sol/MojoCore.json';
-import ConnectWalletButton from '../components/ConnectWalletButton.vue';
 console.log('contractAbi: ', contractAbi);
 
+import ConnectWalletButton from '../components/ConnectWalletButton.vue';
 import ArrowBack from '../assets/svgs/ArrowBack.vue';
 
 export default {
@@ -193,7 +206,7 @@ export default {
         },
       ],
     });
-    const CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
+
     // Init Store
     const store = useStore();
     // Metamask Account
@@ -322,7 +335,11 @@ export default {
           /**
            *  @dev Note: Reset this once Contracts deployed or re-dployed
            */
-          const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi.abi, signer);
+          const contract = new ethers.Contract(
+            process.env.MOJO_CORE_CONTRACT,
+            contractAbi.abi,
+            signer
+          );
           console.log('Talk to the wallet and pay gas fees', signer);
 
           let nftTxn = await contract.safeMint(
@@ -430,7 +447,11 @@ export default {
           /**
            *  @dev Note: Reset this once Contracts deployed or re-dployed
            */
-          const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi.abi, signer);
+          const contract = new ethers.Contract(
+            process.env.MOJO_CORE_CONTRACT,
+            contractAbi.abi,
+            signer
+          );
           console.log('Talk to the wallet and pay gas fees', signer);
 
           let nftTxn = await contract.updateNFT(
@@ -545,7 +566,7 @@ export default {
     //       /**
     //        *  @dev Note: Reset this once Contracts deployed or re-dployed
     //        */
-    //       const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi.abi, signer);
+    //       const contract = new ethers.Contract(process.env.MOJO_CORE_CONTRACT, contractAbi.abi, signer);
     //       console.log('Talk to the wallet and pay gas fees', signer);
 
     //       let nftTxn = await contract.updateNFT(
@@ -877,7 +898,7 @@ section#content {
             justify-content: center;
 
             &.active {
-              >* {
+              > * {
                 pointer-events: none;
               }
 
