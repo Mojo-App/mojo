@@ -10,14 +10,8 @@
           <div v-if="currentAccount" class="left">
             <section id="panel-upload">
               <div class="content panel-upload--content">
-                <div
-                  class="panel-upload--dropzone"
-                  :class="{ active: isDragged }"
-                  @dragenter="onDragEnter"
-                  @dragleave="onDragLeave"
-                  @drop.prevent="onDropHandler"
-                  @dragover.prevent
-                >
+                <div class="panel-upload--dropzone" :class="{ active: isDragged }" @dragenter="onDragEnter"
+                  @dragleave="onDragLeave" @drop.prevent="onDropHandler" @dragover.prevent>
                   <input type="file" multiple ref="fileRef" @change="onFileChangedHandler" />
                   <div class="dropzone-box" @click="openSelectFile">
                     <!-- Uploader Icon -->
@@ -28,9 +22,7 @@
                     <div class="dropzone-is-loading" :class="{ active: isUploading }">
                       <div class="dropzone-loading--bar"></div>
                     </div>
-                    <span v-show="fileCount > 0"
-                      >{{ fileCount - finished }} of {{ fileCount }} files uploaded</span
-                    >
+                    <span v-show="fileCount > 0">{{ fileCount - finished }} of {{ fileCount }} files uploaded</span>
                   </div>
                   <div class="dropzone-details">
                     <div class="dropzone-detail">{{ result.count }} files</div>
@@ -76,12 +68,7 @@
                 <input type="text" placeholder="Image Url" v-model="imageUrl" />
               </div>
               <div class="input-row">
-                <input
-                  type="text"
-                  placeholder="Audio/Video Type"
-                  v-model="audioVideoType"
-                  readonly
-                />
+                <input type="text" placeholder="Audio/Video Type" v-model="audioVideoType" readonly />
               </div>
               <div class="input-row">
                 <input type="text" placeholder="File Size" v-model="size" readonly />
@@ -372,6 +359,8 @@ export default {
             /* Set to NFT Metadata Attributes Tab */
             this.addNFTAttributesTab();
           }
+          notyf.error('Error minting NFT metadata!');
+          return;
         } else {
           notyf.dismiss(loadingIndicator);
           notyf.error("Ethereum object doesn't exist!");
@@ -383,34 +372,25 @@ export default {
       }
     };
 
+    /**
+     * Update our NFT metadata
+     */
     const updateNFT = async (tokenId) => {
       console.log('Lets update our NFT!');
       if (!tokenId.value) {
         notyf.error(`We need a Token Id to continue!`);
         return;
       }
+      /**
+       * Some very basic form validation, these are loaded after IPFS upload
+       * but users can edit so we still need some validation in UI
+       */
       if (!name.value) {
         notyf.error(`Please enter a name to continue!`);
         return;
       }
       if (name.value.length < 3) {
         notyf.error(`NFT name must be longer then 3 characters!`);
-        return;
-      }
-      if (!description.value) {
-        notyf.error(`Please enter a description to continue!`);
-        return;
-      }
-      if (description.value.length < 10) {
-        notyf.error(`NFT description must be longer then 10 characters!`);
-        return;
-      }
-      if (!externalUrl.value) {
-        notyf.error(`Please enter a externalUrl to continue!`);
-        return;
-      }
-      if (externalUrl.value.length < 10) {
-        notyf.error(`NFT externalUrl must be longer then 10 characters!`);
         return;
       }
       if (!imageUrl.value) {
@@ -421,7 +401,27 @@ export default {
         notyf.error(`NFT image Url must be longer then 10 characters!`);
         return;
       }
+      /**
+       * Some very basic form validation on a required description field
+       */
+      if (!description.value) {
+        notyf.error(`Please enter a description to continue!`);
+        return;
+      }
+      if (description.value.length < 10) {
+        notyf.error(`NFT description must be longer then 10 characters!`);
+        return;
+      }
 
+      /* Init loading indicator */
+      const loadingIndicator = notyf.open({
+        type: 'loading',
+        message: 'Please wait, we generate shorten link for you.',
+      });
+
+      /**
+       * Update our NFT with fresh metadata
+       */
       try {
         const { ethereum } = window;
         if (ethereum) {
@@ -433,25 +433,15 @@ export default {
           const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi.abi, signer);
           console.log('Talk to the wallet and pay gas fees', signer);
 
-          let nftTxn = await contract.safeMint(
-            signer,
-            maxInvocations.value,
-            royaltyPercentage.value,
-            price.value, // salesTotal set to zero
-            title.value,
-            category.value,
-            license.value,
-            website.value,
-            longDescription.value,
-            preview.value,
-            audioVideoType.value,
-            audioVideoURL.value,
-            resoultion.value,
-            duration.value,
-            size.value,
-            createdAt.value
+          let nftTxn = await contract.updateNFT(
+            tokenId,
+            name.value,
+            description.value,
+            imageUrl.value,
+            externalUrl.value,
+            backgroundColor.value
           );
-          console.log('Mining NFT...please wait!');
+          console.log('Updating NFT ...please wait!');
 
           // The OpenZeppelin base ERC721 contract emits a Transfer event
           // when a token is issued. tx.wait() will wait until a block containing
@@ -466,40 +456,165 @@ export default {
             console.log(
               `NFT Minted, see transaction: https://mumbai.polygonscan.com/txs/${nftTxn.hash}`
             );
+            notyf.dismiss(loadingIndicator);
             notyf.success(
-              `NFT has been created successfully, see transaction: https://mumbai.polygonscan.com/txshttps://rinkeby.etherscan.io/tx/${nftTxn.hash}`
+              `NFT has been updated successfully, see transaction: https://mumbai.polygonscan.com/txshttps://rinkeby.etherscan.io/tx/${nftTxn.hash}`
             );
+            /* Set to NFT Main Attributes Tab */
+            this.goBack();
+            /* Reset our NFT Metadata Form Values */
+            name.value = '';
+            description.value = '';
+            externalUrl.value = '';
+            imageUrl.value = '';
+            backgroundColor.value = 'ffffff';
+            maxInvocations.value = null;
+            royaltyPercentage.value = null;
+            price.value = null;
+            /* Reset our NFT Metadata Attributes Form Values */
+            title.value = '';
+            category.value = '';
+            license.value = '';
+            website.value = '';
+            longDescription.value = '';
+            preview.value = '';
+            audioVideoType.value = '';
+            audioVideoURL.value = '';
+            resoultion.value = '';
+            duration.value = '';
+            size.value = '';
+            createdAt.value = '';
           }
-          /* Reset our NFT Metadata Form Values */
-          name.value = '';
-          description.value = '';
-          externalUrl.value = '';
-          imageUrl.value = '';
-          backgroundColor.value = 'ffffff';
-          maxInvocations.value = null;
-          royaltyPercentage.value = null;
-          price.value = null;
-          /* Reset our NFT Metadata Attributes Form Values */
-          title.value = '';
-          category.value = '';
-          license.value = '';
-          website.value = '';
-          longDescription.value = '';
-          preview.value = '';
-          audioVideoType.value = '';
-          audioVideoURL.value = '';
-          resoultion.value = '';
-          duration.value = '';
-          size.value = '';
-          createdAt.value = '';
+          notyf.error('Error updating NFT metadata!');
+          return;
         } else {
+          notyf.dismiss(loadingIndicator);
           notyf.error("Ethereum object doesn't exist!");
           console.log("Ethereum object doesn't exist!");
         }
       } catch (error) {
+        notyf.dismiss(loadingIndicator);
         console.log('error', error);
       }
     };
+
+    // const updateNFT = async (tokenId) => {
+    //   console.log('Lets update our NFT!');
+    //   if (!tokenId.value) {
+    //     notyf.error(`We need a Token Id to continue!`);
+    //     return;
+    //   }
+    //   if (!name.value) {
+    //     notyf.error(`Please enter a name to continue!`);
+    //     return;
+    //   }
+    //   if (name.value.length < 3) {
+    //     notyf.error(`NFT name must be longer then 3 characters!`);
+    //     return;
+    //   }
+    //   if (!description.value) {
+    //     notyf.error(`Please enter a description to continue!`);
+    //     return;
+    //   }
+    //   if (description.value.length < 10) {
+    //     notyf.error(`NFT description must be longer then 10 characters!`);
+    //     return;
+    //   }
+    //   if (!externalUrl.value) {
+    //     notyf.error(`Please enter a externalUrl to continue!`);
+    //     return;
+    //   }
+    //   if (externalUrl.value.length < 10) {
+    //     notyf.error(`NFT externalUrl must be longer then 10 characters!`);
+    //     return;
+    //   }
+    //   if (!imageUrl.value) {
+    //     notyf.error(`Please enter a imageUrl to continue!`);
+    //     return;
+    //   }
+    //   if (imageUrl.value.length < 10) {
+    //     notyf.error(`NFT image Url must be longer then 10 characters!`);
+    //     return;
+    //   }
+
+    //   try {
+    //     const { ethereum } = window;
+    //     if (ethereum) {
+    //       const provider = new ethers.providers.Web3Provider(ethereum);
+    //       const signer = provider.getSigner();
+    //       /**
+    //        *  @dev Note: Reset this once Contracts deployed or re-dployed
+    //        */
+    //       const contract = new ethers.Contract(CONTRACT_ADDRESS, contractAbi.abi, signer);
+    //       console.log('Talk to the wallet and pay gas fees', signer);
+
+    //       let nftTxn = await contract.updateNFT(
+    //         signer,
+    //         maxInvocations.value,
+    //         royaltyPercentage.value,
+    //         price.value, // salesTotal set to zero
+    //         title.value,
+    //         category.value,
+    //         license.value,
+    //         website.value,
+    //         longDescription.value,
+    //         preview.value,
+    //         audioVideoType.value,
+    //         audioVideoURL.value,
+    //         resoultion.value,
+    //         duration.value,
+    //         size.value,
+    //         createdAt.value
+    //       );
+    //       console.log('Mining NFT...please wait!');
+
+    //       // The OpenZeppelin base ERC721 contract emits a Transfer event
+    //       // when a token is issued. tx.wait() will wait until a block containing
+    //       // our transaction has been mined and confirmed. The transaction receipt
+    //       // contains events emitted while processing the transaction.
+    //       const receipt = await nftTxn.wait();
+    //       if (receipt.status === 1) {
+    //         /**
+    //          * @dev NOTE: Switch up these links once we go to Production
+    //          * Currently set to use Polygon Mumbai Testnet
+    //          */
+    //         console.log(
+    //           `NFT Minted, see transaction: https://mumbai.polygonscan.com/txs/${nftTxn.hash}`
+    //         );
+    //         notyf.success(
+    //           `NFT has been created successfully, see transaction: https://mumbai.polygonscan.com/txshttps://rinkeby.etherscan.io/tx/${nftTxn.hash}`
+    //         );
+    //       }
+    //       /* Reset our NFT Metadata Form Values */
+    //       name.value = '';
+    //       description.value = '';
+    //       externalUrl.value = '';
+    //       imageUrl.value = '';
+    //       backgroundColor.value = 'ffffff';
+    //       maxInvocations.value = null;
+    //       royaltyPercentage.value = null;
+    //       price.value = null;
+    //       /* Reset our NFT Metadata Attributes Form Values */
+    //       title.value = '';
+    //       category.value = '';
+    //       license.value = '';
+    //       website.value = '';
+    //       longDescription.value = '';
+    //       preview.value = '';
+    //       audioVideoType.value = '';
+    //       audioVideoURL.value = '';
+    //       resoultion.value = '';
+    //       duration.value = '';
+    //       size.value = '';
+    //       createdAt.value = '';
+    //     } else {
+    //       notyf.error("Ethereum object doesn't exist!");
+    //       console.log("Ethereum object doesn't exist!");
+    //     }
+    //   } catch (error) {
+    //     console.log('error', error);
+    //   }
+    // };
 
     /**
      * Switch Form Tab
@@ -762,7 +877,7 @@ section#content {
             justify-content: center;
 
             &.active {
-              > * {
+              >* {
                 pointer-events: none;
               }
 

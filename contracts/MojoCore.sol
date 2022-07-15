@@ -1,67 +1,68 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.12;
 
-import '@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol';
-import '@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol';
-import '@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol';
-import '@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol';
-import '@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol';
-import '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
-import '@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol';
+import '@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol';
+import '@openzeppelin/contracts/access/Ownable.sol';
+import '@openzeppelin/contracts/utils/Counters.sol';
 import '@openzeppelin/contracts/utils/Strings.sol';
 import '@tableland/evm/contracts/ITablelandTables.sol';
-
-// We import some helper functions for Solidity
-import { StringUtils } from './libraries/StringUtils.sol';
 
 // Import this file to use console.log
 import 'hardhat/console.sol';
 
-/// @custom:security-contact craigmoss36@gmail.com
-contract MojoCore is
-    Initializable,
-    ERC721Upgradeable,
-    ERC721URIStorageUpgradeable,
-    PausableUpgradeable,
-    OwnableUpgradeable,
-    ERC721BurnableUpgradeable
-{
-    using CountersUpgradeable for CountersUpgradeable.Counter;
-    CountersUpgradeable.Counter private _tokenIdCounter;
-
-    /* Set Tableland baseURI for our SQL Queries */
-    string private _baseURIString = 'https://testnet.tableland.network/query?s=';
-
+contract MojoCore is ERC721URIStorage, Ownable {
+    using Counters for Counters.Counter;
+    Counters.Counter private _tokenIds;
     ITablelandTables private _tableland;
+
+    string private _baseURIString = 'https://testnet.tableland.network/query?s=';
     string private _metadataTable;
     uint256 private _metadataTableId;
     string private _metadataAttrTable;
     uint256 private _metadataAttrTableId;
     string private _tablePrefix = 'mojo';
 
-    string private _externalURL = 'not.implemented.com';
+    struct NFT {
+        uint256 tokenId;
+        string name;
+        string description;
+        string imageUrl;
+        string externalUrl;
+        string backgroundColor;
+        string attributes;
+    }
 
-    /// @custom:oz-upgrades-unsafe-allow constructor
-    /* Called only when the smart contract is created */
-    constructor(address registry) {
-        _disableInitializers();
+    mapping(uint256 => NFT) nfts;
+
+    constructor(address registry) ERC721('MojoNFT', 'mNFT') {
         /*
          * registry if the address of the Tableland registry. You can always find those
          * here https://github.com/tablelandnetwork/evm-tableland#currently-supported-chains
          */
         _tableland = ITablelandTables(registry);
 
-        /**
-         * Stores the unique ID for the newly created NFT media table.
-         */
         _metadataTableId = _tableland.createTable(
             address(this),
             string.concat(
-                'CREATE TABLE mojo_media_',
+                'CREATE TABLE ',
+                _tablePrefix,
+                '_',
                 Strings.toString(block.chainid),
-                ' (id int, name text, description text, image text, external_url text, background_color text, attributes_id text);'
+                ' (id int, name text, description text, image text, external_url text, background_color text, attributes text);'
             )
         );
+        /**
+         * Stores the full tablename for the new media table.
+         * {prefix}_{chainid}_{tableid}
+         */
+        _metadataTable = string.concat(
+            _tablePrefix,
+            '_',
+            Strings.toString(block.chainid),
+            '_',
+            Strings.toString(_metadataTableId)
+        );
+
         /**
          * Stores the unique ID for the newly created NFT metadata attributes table.
          */
@@ -72,17 +73,6 @@ contract MojoCore is
                 Strings.toString(block.chainid),
                 ' (id int, max_invocations int, royalty int, sales_total, int title text, category text, license text, website text, long_description text, preview_url text, audio_video_type text, audio_video_url text, resolution text, duration text, size text, created_at text);'
             )
-        );
-
-        /**
-         * Stores the full tablename for the new media table.
-         * {prefix}_{chainid}_{tableid}
-         */
-        _metadataTable = string.concat(
-            'mojo_media_',
-            Strings.toString(block.chainid),
-            '_',
-            Strings.toString(_metadataTableId)
         );
         /**
          * Stores the full tablename for the new metadata attributes table.
@@ -96,102 +86,97 @@ contract MojoCore is
         );
     }
 
-    function initialize() public initializer {
-        __ERC721_init('MojoNFT', 'mNFT');
-        __ERC721URIStorage_init();
-        __Pausable_init();
-        __Ownable_init();
-        __ERC721Burnable_init();
-    }
-
-    /**
-     * @dev safeMint allows anyone to mint a token in this project.
+    /*
+     * safeMint allows anyone to mint a token in this project.
      * Any time a token is minted, a new row of metadata will be
-     * dynamically inserted into the Tableland NFT metadata table.
+     * dynamically insterted into the metadata table.
      */
-    function safeMint(
-        address to,
-        string memory name,
-        string memory description,
-        string memory imageUrl,
-        string memory externalUrl,
-        string memory backgroundColor
-
-    ) public onlyOwner returns (uint256) {
-        uint256 tokenId = _tokenIdCounter.current();
-
-        /* Insert into our main NFT metadata table */
+    function safeMint(address to, NFT memory nft) public returns (uint256) {
+        uint256 tokenId = _tokenIds.current();
         _tableland.runSQL(
             address(this),
             _metadataTableId,
             string.concat(
                 'INSERT INTO ',
                 _metadataTable,
-                ' (id, name, description, image, external_url, background_color, attributes_id) VALUES (',
+                ' (id, name, description, image, external_url, background_color, attributes) VALUES (',
                 Strings.toString(tokenId),
                 ', ',
-                name,
+                nft.name,
                 ', ',
-                description,
+                nft.description,
                 ', ',
-                imageUrl,
+                nft.imageUrl,
                 ', ',
-                externalUrl,
+                nft.externalUrl,
                 ', ',
-                backgroundColor,
+                nft.backgroundColor,
                 ', ',
                 _metadataAttrTable,
-                ')'
+                ', )'
             )
         );
-
-        console.log('\n--------------------------------------------------------');
-        console.log('NFT address holder', to);
-        console.log('NFT tokenId', tokenId);
-        console.log('name', name);
-        console.log('description', description);
-        console.log('imageUrl', imageUrl);
-        console.log('externalUrl', externalUrl);
-        console.log('backgroundColor', backgroundColor);
-        console.log('_metadataAttrTable', _metadataAttrTable);
-
-        console.log('--------------------------------------------------------\n');
-
         _safeMint(to, tokenId, '');
-        _tokenIdCounter.increment();
+        _tokenIds.increment();
         return tokenId;
+    }
+
+    /*
+     * makeMove is an example of how to encode gameplay into both the
+     * smart contract and the metadata. Whenever a token owner calls
+     * make move, they can supply a new x,y coordinate and update
+     * their token's metadata.
+     */
+    function updateNFT(NFT memory nft) public {
+        // check token ownership
+        require(this.ownerOf(nft.tokenId) == msg.sender, 'Invalid owner');
+        // simple on-chain gameplay enforcement
+        // require(nft.name.length < 3, 'Name required');
+        // require(nft.description.length < 10, 'Description required');
+        // require(nft.imageUrl.length = 0, 'Image Url required');
+
+        // Update the row in tableland
+        _tableland.runSQL(
+            address(this),
+            _metadataTableId,
+            string.concat(
+                'UPDATE ',
+                _metadataTable,
+                ' SET name = ',
+                nft.name,
+                ', description = ',
+                nft.description,
+                ', image = ',
+                nft.imageUrl,
+                ', external_url = ',
+                nft.externalUrl,
+                ', background_color = ',
+                nft.backgroundColor,
+                ', background_color = ',
+                nft.backgroundColor,
+                ' WHERE id = ',
+                Strings.toString(nft.tokenId),
+                ''
+            )
+        );
     }
 
     function _baseURI() internal view override returns (string memory) {
         return _baseURIString;
     }
 
-    /**
-     * @dev tokenURI is an example of how to turn a row in your table back into
-     * erc721 compliant metadata JSON. Here, we do a SELECT and JOIN statement
+    /*
+     * tokenURI is an example of how to turn a row in your table back into
+     * erc721 compliant metadata JSON. here, we do a simple SELECT statement
      * with function that converts the result into json.
      */
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        virtual
-        override(ERC721Upgradeable, ERC721URIStorageUpgradeable)
-        returns (string memory)
-    {
+    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
         require(_exists(tokenId), 'ERC721URIStorage: URI query for nonexistent token');
 
         string memory base = _baseURI();
 
         string memory json_group = '';
-        string[7] memory cols = [
-            'id',
-            'name',
-            'description',
-            'image',
-            'external_url',
-            'background_color',
-            'attributes_id'
-        ];
+        string[4] memory cols = ['id', 'external_link', 'x', 'y'];
         for (uint256 i; i < cols.length; i++) {
             if (i > 0) {
                 json_group = string.concat(json_group, ',');
@@ -213,29 +198,17 @@ contract MojoCore is
     }
 
     /*
-     * @dev See Tableland repos here https://github.com/tablelandnetwork/example-apps/blob/canvas/canvas-game/contracts/CanvasGame.sol
-     * setExternalURL provides an example of how to update a field for every
+     * setAttributes provides an example of how to update a field for every
      * row in an table.
      */
-    // function setExternalURL(string calldata externalURL) external onlyOwner {
-    //     _externalURL = externalURL;
-    //     _tableland.runSQL(
-    //         address(this),
-    //         _metadataTableId,
-    //         string.concat(
-    //             'update ',
-    //             _metadataTable,
-    //             ' set external_url = ',
-    //             externalURL,
-    //             "||'?tokenId='||id", // Turns every row's URL into a URL including get param for tokenId
-    //             ';'
-    //         )
-    //     );
-    // }
+    function setAttributes(string calldata attributes) external onlyOwner {
+        _tableland.runSQL(
+            address(this),
+            _metadataTableId,
+            string.concat('update ', _metadataTable, ' set attributes = ', attributes, ';')
+        );
+    }
 
-    /*
-     * @dev See Tableland repos here https://github.com/tablelandnetwork/example-apps/blob/canvas/canvas-game/contracts/CanvasGame.sol
-     */
     function _addressToString(address x) internal pure returns (string memory) {
         bytes memory s = new bytes(40);
         for (uint256 i = 0; i < 20; i++) {
@@ -247,56 +220,9 @@ contract MojoCore is
         }
         return string(s);
     }
-    /*
-     * @dev See Tableland repos here https://github.com/tablelandnetwork/example-apps/blob/canvas/canvas-game/contracts/CanvasGame.sol
-     */
+
     function char(bytes1 b) internal pure returns (bytes1 c) {
         if (uint8(b) < 10) return bytes1(uint8(b) + 0x30);
         else return bytes1(uint8(b) + 0x57);
-    }
-
-    /**
-     * View the Contract’s Metadata Table
-     */
-    function metadataURI() public view returns (string memory) {
-        string memory base = _baseURI();
-
-        return string.concat(base, 'SELECT%20*%20FROM%20', _metadataTable);
-    }
-
-    /**
-     * View the Contract’s Metadata Attributes Table
-     */
-    function metadataAttrURI() public view returns (string memory) {
-        string memory base = _baseURI();
-
-        return string.concat(base, 'SELECT%20*%20FROM%20', _metadataAttrTable);
-    }
-
-    /**
-     * OpenZeplin Core Contract functions
-     */
-    function pause() public onlyOwner {
-        _pause();
-    }
-
-    function unpause() public onlyOwner {
-        _unpause();
-    }
-
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 tokenId
-    ) internal override whenNotPaused {
-        super._beforeTokenTransfer(from, to, tokenId);
-    }
-
-    // The following functions are overrides required by Solidity.
-    function _burn(uint256 tokenId)
-        internal
-        override(ERC721Upgradeable, ERC721URIStorageUpgradeable)
-    {
-        super._burn(tokenId);
     }
 }
