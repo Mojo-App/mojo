@@ -31,10 +31,12 @@
     </div>
   </section>
 </template>
-
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { Notyf } from 'notyf';
+// import { storeToRefs } from 'pinia';
+/* Import our Pinia Store */
+import { useStore } from '../store';
 /* Components */
 import PlayButtonWhite from '../components/icons/PlayButtonWhite.vue';
 import TrackPlayer from '../components/TrackPlayer.vue';
@@ -59,32 +61,28 @@ var notyf = new Notyf({
     },
   ],
 });
-
-const currentAccount = ref();
-
+// Init Store
+const store = useStore();
+// Metamask Account
+// const { account } = storeToRefs(store);
+/**
+ * Check if our Wallet is Connected to Metamask
+ */
 async function checkIfWalletIsConnected() {
   try {
     /*
      * First make sure we have access to window.ethereum
      */
     const { ethereum } = window;
-
     if (!ethereum) {
       notyf.error(`Please connect Metamask to continue!`);
       console.log('Error: No ethereum window object');
       return;
-    } else {
-      console.log('We have an ethereum object', ethereum);
     }
-
+    /* Get our Current Account */
     const accounts = await ethereum.request({ method: 'eth_accounts' });
-
-    if (accounts.length !== 0) {
-      const account = accounts[0];
-      currentAccount.value = account;
-    } else {
-      console.log('No authorized accounts');
-    }
+    /* Update our Current Account in the Store */
+    if (accounts.length !== 0) store.updateAccount(accounts[0]);
   } catch (error) {
     console.log(error);
   }
@@ -121,10 +119,8 @@ watch(categorySelectedId, fetchData);
 
 onMounted(() => {
   checkIfWalletIsConnected();
-  console.log('currentAccount: ', currentAccount);
 });
 </script>
-
 <style lang="scss" scoped>
 @import '../assets/styles/variables.scss';
 @import '../assets/styles/mixins.scss';

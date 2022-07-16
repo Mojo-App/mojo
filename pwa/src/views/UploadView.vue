@@ -46,6 +46,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+@import '../assets/styles/variables.scss';
+@import '../assets/styles/mixins.scss';
+
 section#content {
   position: relative;
   height: 100%;
@@ -55,9 +58,10 @@ section#content {
     align-content: center;
     align-items: center;
     justify-content: center;
-    height: 100%;
+    height: 98%;
     color: #1a1a1a;
     background: #ffca28;
+    padding: 10px 10px 0 10px;
 
     .main-content {
       position: absolute;
@@ -67,9 +71,26 @@ section#content {
       overflow: hidden;
 
       section {
-        width: 600px;
-        height: 620px;
         color: #fff;
+        width: 100%;
+        height: 300px;
+
+        @include breakpoint($breakpoint-sm) {
+          width: 100%;
+          height: 400px;
+        }
+        @include breakpoint($breakpoint-md) {
+          width: 500px;
+          height: 600px;
+        }
+        @include breakpoint($breakpoint-xl) {
+          width: 600px;
+          height: 600px;
+        }
+        @include breakpoint($x3xl) {
+          width: 600px;
+          height: 600px;
+        }
       }
     }
   }

@@ -10,15 +10,15 @@
         <div class="right">
           <h1>Hear it, See it, Live it.</h1>
           <p>
-            Stream audio, video &amp; media directly from your favorite content creators on the
-            blockchain. Subscribe and follow your favorite digital artists and purchase your very
-            own custom NFT. Get your Mojo on today to get access to additional content, rewards and
-            so much more.
+            Stream audio, video &amp; media directly from your favorite artists and musicians on the
+            blockchain. Subscribe, watch and follow digital content creators for rewards, or
+            purchase a custom NFT unlocking additional content and so much more.
+            <strong>Get your Mojo on today!</strong>
           </p>
         </div>
       </section>
       <section id="stream-home">
-        <h2>Latest Tracks</h2>
+        <h2>Latest Beats</h2>
         <div class="row">
           <TrackPlayer v-for="track in categoryTracks" :track="track" :key="track.id"></TrackPlayer>
         </div>
@@ -28,31 +28,32 @@
         <div class="row">
           <div class="left">
             <p>
-              Upload your audio/media files directly to the Interplanetary File System (<a
+              Upload all your audio &amp; media files directly to the Interplanetary File System (<a
                 href="https://infura.io/product/ipfs"
+                alt="Interplanetary File System"
                 target="_blank"
                 rel="noopener"
                 >IPFS</a
               >) Network. <br /><br />
               Pin your data so it will never get deleted, edited or hacked and will never get saved
-              to any server so <strong>100% decentralized</strong>.<br /><br />
-              Manage your NFT metadata with Tableland, add and edit additional NFT metadata
-              attributes giving your NFT's' unique features, tailored to your audience.
+              to any server - <strong>100% decentralized</strong>.<br /><br />
+              Create, add and edit NFT metadata attributes giving your different NFT formats unique
+              features, tailored to your audience. Pimp out old NFT's with new mutable metadata,
+              stored on
+              <a href="http://tableland.xyz/" alt="Tableland" target="_blank" rel="noopener"
+                >Tableland</a
+              >.
             </p>
           </div>
           <div class="right">
-            <ConnectWalletButton v-model="currentAccount" v-if="!currentAccount" btnSize="large" />
-            <button @click="$router.push('stream')" v-if="currentAccount" className="stream-button">
+            <ConnectWalletButton v-model="account" v-if="!account" btnSize="large" />
+            <button @click="$router.push('stream')" v-if="account" className="stream-button">
               Let's Stream 🎶
             </button>
-            <button @click="$router.push('upload')" v-if="currentAccount" className="upload-button">
+            <button @click="$router.push('upload')" v-if="account" className="upload-button">
               IPFS Upload 🎤
             </button>
-            <button
-              @click="$router.push('mint')"
-              v-if="currentAccount"
-              className="mint-media-button"
-            >
+            <button @click="$router.push('mint')" v-if="account" className="mint-media-button">
               Get Minty 🧪
             </button>
           </div>
@@ -73,7 +74,10 @@
             <img alt="IPFS" src="@/assets/images/IPFS.png" height="38" />
           </div>
           <div class="sponsors-logo">
-            <Metamask />
+            <Filecoin />
+          </div>
+          <div class="sponsors-logo">
+            <MetaMask />
           </div>
         </div>
       </section>
@@ -86,7 +90,9 @@
               <span class="yellow">directly with your streams</span>
             </h2>
             <p>
-              Every time you click <span class="blue">Play</span>, our smart contracts<br />
+              Every time you click <span class="blue">Play</span>, our smart contracts<br
+                class="hide-mobile"
+              />
               pay artists and content creators directly
             </p>
           </div>
@@ -100,17 +106,20 @@
     </div>
   </section>
 </template>
-
 <script setup>
-import { onMounted, ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { Notyf } from 'notyf';
+import { storeToRefs } from 'pinia';
+/* Import our Pinia Store */
+import { useStore } from '../store';
 /* Components */
 import ConnectWalletButton from '../components/ConnectWalletButton.vue';
 import TrackPlayer from '../components/TrackPlayer.vue';
 import Tableland from '../assets/svgs/TableLand.vue';
 import SpheronLogo from '../assets/svgs/SpheronLogo.vue';
 import PolygonLogo from '../assets/svgs/PolygonLogo.vue';
-import Metamask from '../assets/svgs/MetaMask.vue';
+import Filecoin from '../assets/svgs/Filecoin.vue';
+import MetaMask from '../assets/svgs/MetaMask.vue';
 // Create an instance of Notyf
 var notyf = new Notyf({
   duration: 2000,
@@ -131,8 +140,10 @@ var notyf = new Notyf({
     },
   ],
 });
-
-const currentAccount = ref('');
+// Init Store
+const store = useStore();
+// Metamask Account
+const { account } = storeToRefs(store);
 const categoryTracks = ref(null);
 /**
  * Check if Wallet connected
@@ -144,23 +155,18 @@ async function checkIfWalletIsConnected() {
      */
     const { ethereum } = window;
     if (!ethereum) {
-      notyf.error(`Please install Metamask to continue!`);
+      notyf.error(`Please connect MetaMask to continue!`);
       console.log('Error: No Ethereum window object');
       return;
     }
     /* Get our Current Account */
     const accounts = await ethereum.request({ method: 'eth_accounts' });
-    if (accounts.length !== 0) {
-      currentAccount.value = accounts[0];
-      console.log('Current Account: ', currentAccount.value);
-    } else {
-      console.log('No authorized Metamask accounts connected!');
-    }
+    /* Update our Current Account in the Store */
+    if (accounts.length !== 0) store.updateAccount(accounts[0]);
   } catch (error) {
     console.log(error);
   }
 }
-
 /**
  * Fetch NFT Audio/Media data
  * @dev This will change to pull our NFTs and their metadata from Tableland
@@ -172,7 +178,6 @@ async function fetchData() {
   categoryTracks.value = await res.json();
 }
 fetchData();
-
 onMounted(() => {
   checkIfWalletIsConnected();
   window.scrollTo({
@@ -182,7 +187,6 @@ onMounted(() => {
   });
 });
 </script>
-
 <style lang="scss" scoped>
 @import '../assets/styles/variables.scss';
 @import '../assets/styles/mixins.scss';
@@ -300,56 +304,36 @@ section#content {
       align-content: center;
       align-items: center;
       justify-content: center;
-      padding: 20px 0 0 20px;
-
-      @include breakpoint($medium) {
-        padding: 40px 0 0 120px;
-      }
-      @include breakpoint($large) {
-        padding: 40px 0 0 0;
-      }
-      @include breakpoint($x3xl) {
-        padding: 40px 0 0 0;
-      }
+      margin: 0 auto;
+      padding: 40px 0;
 
       .row {
         width: 100%;
         display: inline-block;
-        margin: 20px auto;
-        @include breakpoint($medium) {
-          max-width: 960px;
-          margin: 40px auto;
+        margin: 0 auto;
+        @include breakpoint($breakpoint-sm) {
+          max-width: 680px;
+          margin: 0 auto;
+          padding: 20px 0 0 20px;
+        }
+        @include breakpoint($breakpoint-md) {
+          max-width: 680px;
+          margin: 0 auto;
+          padding: 20px 0 0 20px;
+        }
+        @include breakpoint($breakpoint-xl) {
+          max-width: 990px;
+          margin: 0 auto;
+          padding: 40px 0 0 0;
         }
       }
 
       h2 {
         font-size: 2.45rem;
-        margin: 0;
+        margin: 0 0 20px 0;
         text-decoration: underline;
         text-decoration-thickness: 2px;
         text-underline-offset: 4px;
-      }
-
-      a {
-        color: #1a1a1a;
-        font-weight: bold;
-        border-bottom: 1px solid var(--contrast-color);
-        text-decoration: none;
-
-        &.author {
-          padding: 6px 12px;
-          border-radius: 8px;
-          background-color: var(--gradient-100);
-          color: var(--icon-color);
-          font-size: 0.85rem;
-
-          border-bottom: none;
-        }
-      }
-
-      p {
-        line-height: 1.7;
-        margin-bottom: 20px;
       }
 
       ul.category-list {
@@ -400,9 +384,15 @@ section#content {
       flex-direction: column;
       align-content: center;
       justify-content: center;
-      padding: 30px 20px 50px 20px;
+      padding: 10px 10px 0 10px;
 
-      @include breakpoint($medium) {
+      @include breakpoint($breakpoint-sm) {
+        padding: 60px 20px 80px 20px;
+      }
+      @include breakpoint($breakpoint-md) {
+        padding: 60px 20px 100px 20px;
+      }
+      @include breakpoint($breakpoint-xl) {
         padding: 60px 40px 100px 40px;
       }
 
@@ -447,7 +437,7 @@ section#content {
           align-content: center;
           justify-content: center;
           align-items: flex-start;
-
+          padding: 30px 0;
           @include breakpoint($medium) {
             width: 40%;
           }
@@ -683,6 +673,13 @@ section#content {
           border-bottom: none;
         }
       }
+    }
+
+    .hide-mobile {
+      display: none;
+    }
+    .show-mobile {
+      display: inline;
     }
   }
 }

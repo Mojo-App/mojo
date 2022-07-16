@@ -7,7 +7,7 @@
         <div class="row">
           <!-- Left Side -->
           <!-- MetaMask Connected -->
-          <div v-if="currentAccount" class="left">
+          <div v-if="account" class="left">
             <section id="panel-upload">
               <div class="content panel-upload--content">
                 <div
@@ -42,7 +42,7 @@
           </div>
           <!-- END MetaMask Connected -->
           <!-- MetaMask NOT Connected -->
-          <div v-if="!currentAccount" class="left">
+          <div v-if="!account" class="left">
             <p class="connect-message">
               Connect your MetaMask and mint your Audio/Media NFT's for your followers and
               subscribers allowing them to unlock bonus content and earn additional rewards.
@@ -52,12 +52,12 @@
           <!-- END Left Side -->
           <!-- Right Side -->
           <!-- MetaMask NOT Connected -->
-          <div v-if="!currentAccount" class="right">
-            <ConnectWalletButton v-model="currentAccount" v-if="!currentAccount" btnSize="large" />
+          <div v-if="!account" class="right">
+            <ConnectWalletButton v-model="account" v-if="!account" btnSize="large" />
           </div>
           <!-- END MetaMask NOT Connected -->
           <!-- MetaMask Connected -->
-          <div v-if="currentAccount" class="right">
+          <div v-if="account" class="right">
             <div v-if="formTab === 'one'" id="form-tab-one" class="form-container">
               <h2>NFT Metadata</h2>
               <div class="input-row hidden">
@@ -73,7 +73,7 @@
                 <input type="text" placeholder="Name" v-model="name" />
               </div>
               <div class="input-row">
-                <input type="text" placeholder="Image Url" v-model="imageUrl" />
+                <input type="text" placeholder="Image Url" v-model="imageUrl" readonly />
               </div>
               <div class="input-row">
                 <input
@@ -105,7 +105,7 @@
                 <input type="text" placeholder="Price" v-model="price" />
               </div>
               <!-- Button Row -->
-              <div v-if="currentAccount && formTab === 'one'" class="button-container">
+              <div v-if="account && formTab === 'one'" class="button-container">
                 <button v-if="!tokenId" class="mint-button" @click="mintNFT()">Mint NFT</button>
               </div>
               <!-- END Button Row -->
@@ -144,7 +144,7 @@
                 <input type="text" placeholder="Duration" v-model="created_at" />
               </div>
               <!-- Button Row -->
-              <div v-if="currentAccount && formTab === 'two'" class="button-container">
+              <div v-if="account && formTab === 'two'" class="button-container">
                 <button class="back-button" @click="goBack">🔙</button>
                 <button class="update-button" @click="updateNFT(tokenId)">Update NFT</button>
               </div>
@@ -159,22 +159,26 @@
     </div>
   </section>
 </template>
-
 <script>
 import { ref, computed, onMounted } from 'vue';
-import { Notyf } from 'notyf';
-import { useStore } from '../store';
-
-import { uploadBlob } from '../services/ipfs.js';
-import { fileSize, generateLink } from '../services/helpers';
-
 import { ethers } from 'ethers';
+import { Notyf } from 'notyf';
+import { storeToRefs } from 'pinia';
+/* Import our Pinia Store */
+import { useStore } from '../store';
+/* Import our IPFS Services */
+import { uploadBlob } from '../services/ipfs.js';
+import { fileSize, generateNFTImageLink } from '../services/helpers';
+/* Import Smart Contract ABI */
 import contractAbi from '../../../artifacts/contracts/MojoCore.sol/MojoCore.json';
 console.log('contractAbi: ', contractAbi);
-
+/* Man ually set our Contract Address */
+const contractAddress = '0x61d3038A40307B913415800432E1101bFfb33192';
+console.log('contractAddress: ', contractAddress);
+/* Import Components */
 import ConnectWalletButton from '../components/ConnectWalletButton.vue';
 import ArrowBack from '../assets/svgs/ArrowBack.vue';
-
+/* LFG */
 export default {
   name: 'MintView',
   components: [ConnectWalletButton, ArrowBack],
@@ -209,11 +213,10 @@ export default {
         },
       ],
     });
-
     // Init Store
     const store = useStore();
     // Metamask Account
-    const currentAccount = ref();
+    const { account } = storeToRefs(store);
     // Form Tab Selected
     const formTab = ref('one');
     // File Uploader
@@ -221,7 +224,6 @@ export default {
     const isDragged = ref(false);
     const finished = ref(0);
     const isUploading = ref(false);
-
     // NFT Form Metadata
     const tokenId = ref();
     const cid = ref('');
@@ -257,30 +259,21 @@ export default {
          * First make sure we have access to window.ethereum
          */
         const { ethereum } = window;
-
         if (!ethereum) {
           notyf.error(`Please connect Metamask to continue!`);
           console.log('Error: No ethereum window object');
           return;
-        } else {
-          console.log('We have an ethereum object', ethereum);
         }
 
         const accounts = await ethereum.request({ method: 'eth_accounts' });
-
-        if (accounts.length !== 0) {
-          const account = accounts[0];
-          currentAccount.value = account;
-        } else {
-          console.log('No authorized accounts');
-        }
+        /* Update our Current Account in the Store */
+        if (accounts.length !== 0) store.updateAccount(accounts[0]);
       } catch (error) {
         console.log(error);
       }
     };
-
     /**
-     * Mint our NFT
+     * Mint Mojo Core NFT
      */
     const mintNFT = async () => {
       /**
@@ -332,11 +325,7 @@ export default {
           /**
            *  @dev Note: Reset this once Contracts deployed or re-dployed
            */
-          const contract = new ethers.Contract(
-            process.env.MOJO_CORE_CONTRACT,
-            contractAbi.abi,
-            signer
-          );
+          const contract = new ethers.Contract(contractAddress, contractAbi.abi, signer);
 
           /**
            *  Receive Emitted Event from Contract
@@ -545,7 +534,6 @@ export default {
         console.log('error', error);
       }
     };
-
     /**
      * Switch Form Tab
      */
@@ -558,7 +546,6 @@ export default {
     const goBack = () => {
       formTab.value = 'one';
     };
-
     /**
      * Drag n Drop File Manager
      */
@@ -578,46 +565,39 @@ export default {
     const onDragLeave = () => {
       isDragged.value = false;
     };
+
     /**
      * @param {File} file
+     * @returns {Object}
      */
     const uploadFileHandler = async (file) => {
-      const result = await uploadBlob(file);
+      const uploadResult = await uploadBlob(file);
       finished.value++;
-      const { error } = result;
+      const { error } = uploadResult;
       if (error && error instanceof Error) {
         notyf.error(error.message);
-        return result;
+        return uploadResult;
       }
-      /* Set our NFT Metadata Form Values */
-      cid.value = result.data.cid;
-      name.value = result.data.file.name.substring(0, result.data.file.name.lastIndexOf('.'));
-      // description.value = '';
-      // externalUrl.value = '';
-      imageUrl.value = generateLink(result.data);
-      // backgroundColor.value = 'ffffff';
-      // maxInvocations.value = 1;
-      // royaltyPercentage.value = 10;
-      // price.value = 10;
-      /* Reset our NFT Metadata Attributes Form Values */
-      // title.value = '';
-      // category.value = '';
-      // license.value = '';
-      // website.value = '';
-      // longDescription.value = '';
-      // preview.value = '';
-      audioVideoType.value = result.data.file.type;
-      // audioVideoURL.value = '';
-      // resoultion.value = '';
-      // duration.value = '';
-      size.value = fileSize(result.data.file.size);
-      createdAt.value = result.data.file.created_at;
-      return result;
+      /* Set our NFT Metadata Form Values using IPFS best practises */
+      cid.value = uploadResult.data.cid;
+      /* Strip image type off our name eg, .png, .jpeg */
+      name.value = uploadResult.data.file.name.substring(
+        0,
+        uploadResult.data.file.name.lastIndexOf('.')
+      );
+      /* Generate and IPFS URI for NFT's */
+      imageUrl.value = generateNFTImageLink(uploadResult.data);
+      /* Set details from file upload */
+      audioVideoType.value = uploadResult.data.file.type;
+      size.value = fileSize(uploadResult.data.file.size);
+      createdAt.value = uploadResult.data.file.created_at;
+      return uploadResult;
     };
+
     const onFileChangedHandler = async () => {
       isUploading.value = true;
-      store.addFiles(...fileRef.value.files);
-      const files = store.files.map((file) => uploadFileHandler(file));
+      store.addNftFiles(...fileRef.value.files);
+      const files = store.filesNft.map((file) => uploadFileHandler(file));
       try {
         let results = await Promise.all(files);
         const successfully = results.filter(({ error }) => !error);
@@ -628,8 +608,8 @@ export default {
         if (successfully.length === 0) {
           notyf.error(`Oops! An error occurred while processing your files.`);
         }
-        store.addResults(...successfully.map(({ error, data: file }) => file));
-        store.resetFiles();
+        store.addNftResults(...successfully.map(({ error, data: file }) => file));
+        store.resetNftFiles();
         fileRef.value.value = null;
       } catch (error) {
         // notyf.error(`Oops! an error while processing your files.`);
@@ -642,13 +622,14 @@ export default {
         isUploading.value = false;
       }
     };
+    /* Computed values for our uploader */
     const fileCount = computed(() => {
-      return store.files.length;
+      return store.filesNft.length;
     });
     const result = computed(() => {
       return {
-        count: store.results.length,
-        size: store.results.reduce((sum, result) => {
+        count: store.nftResults.length,
+        size: store.nftResults.reduce((sum, result) => {
           return sum + result.file.size;
         }, 0),
       };
@@ -665,7 +646,7 @@ export default {
       fileCount,
       result,
       isDragged,
-      currentAccount,
+      account,
       formTab,
       tokenId,
       cid,
@@ -693,7 +674,7 @@ export default {
       addNFTAttributesTab,
       mintNFT,
       updateNFT,
-      generateLink,
+      generateNFTImageLink,
       fileSize,
       onDragEnter,
       onDragLeave,

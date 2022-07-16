@@ -4,21 +4,18 @@
       <i-mdi-flash-outline />
       <span>Offline Mode Ready</span>
     </div>
-
     <div class="pwa-toast--update" v-if="needRefresh">
       <i-mdi-timer-sand />
       <span>Working Auto Update</span>
     </div>
   </div>
 </template>
-
 <script>
 import { useRegisterSW } from 'virtual:pwa-register/vue';
-
 import { watch } from '@vue/runtime-core';
 
 const { offlineReady, needRefresh, updateServiceWorker } = useRegisterSW();
-
+/* LFG */
 export default {
   name: 'ReloadPrompt',
   setup() {
@@ -47,7 +44,6 @@ export default {
   },
 };
 </script>
-
 <style lang="scss">
 .pwa-toast {
   position: fixed;

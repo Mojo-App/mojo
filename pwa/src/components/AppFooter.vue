@@ -2,18 +2,34 @@
   <footer id="footer">
     <div class="footer-title">
       <span
-        >Instant File Sharing powered by
-        <a href="https://infura.io/product/ipfs" target="_blank" rel="noopener">IPFS Protocol</a>
-        and <a href="https://tableland.xyz/" target="_blank" rel="noopener">TableLand</a></span
+        >Web3 content streaming powered by
+        <a href="https://infura.io/product/ipfs" alt="IPFS" target="_blank" rel="noopener">IPFS</a>
+        and
+        <a href="https://filecoin.io/" alt="Filecoin" target="_blank" rel="noopener"
+          >Filecoin</a
+        ></span
       >
     </div>
     <div class="footer-menu">
       <nav class="footer-navbar">
-        <a href="https://ethglobal.com/showcase/mojo-11hkx" target="_blank" rel="noopener"
+        <a
+          href="https://ethglobal.com/showcase/mojo-11hkx"
+          alt="HackFS"
+          target="_blank"
+          rel="noopener"
           >HackFS</a
         >
-        <a href="https://github.com/Mojo-App" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://twitter.com/webmoss" target="_blank" rel="noopener">Twitter</a>
+        <a href="https://github.com/Mojo-App" alt="GitHub" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://twitter.com/webmoss" alt="Twitter" target="_blank" rel="noopener"
+          >Twitter</a
+        >
+        <a
+          href="https://www.linkedin.com/in/craig-moss-21822628/"
+          alt="LinkedIn"
+          target="_blank"
+          rel="noopener"
+          >LinkedIn</a
+        >
       </nav>
     </div>
   </footer>

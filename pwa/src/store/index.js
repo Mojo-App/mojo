@@ -4,54 +4,62 @@ import Storage from '../services/storage';
 const db = new Storage('app');
 
 db.read();
-db.data ||= { version: '0.0.1', results: [] };
+db.data ||= { version: '0.0.1', results: [], nftResults: [] };
 
 export const useStore = defineStore({
   id: 'store',
   state() {
     return {
-      counter: 0,
-      user: {},
-      playlists: [],
-      playResults: db.data.playResults,
+      account: null,
+      filesNft: [],
+      nftResults: db.data.nftResults,
       files: [],
       results: db.data.results,
       newArrivals: [],
+      counter: 0,
       fetching: false,
     };
   },
   getters: {
+    getAccount(state) {
+      return state.account;
+    },
+    getNftResults(state) {
+      return state.nftResults;
+    },
+    getResults(state) {
+      return state.results;
+    },
+    getNewArrivals(state) {
+      return state.newArrivals;
+    },
     getCount(state) {
       return state.counter;
-    },
-    user(state) {
-      return state.user;
-    },
-    playlists(state) {
-      return state.playlists;
-    },
-    results(state) {
-      return state.newArrivals;
     },
     isFetching(state) {
       return state.fetching;
     },
   },
   actions: {
-    updateUser(...user) {
-      this.user = { ...user };
+    updateAccount(account) {
+      this.account = account;
     },
-    resetPlaylists() {
-      this.playlists = [];
+    resetNftFiles() {
+      this.filesNft = [];
     },
-    addPlaylists(...playlists) {
-      this.playlists.push(...playlists);
+    addNftFiles(...files) {
+      this.filesNft.push(...files);
     },
-    addPlayResults(...playlists) {
-      this.playResults.push(...playlists);
-      this.playResults = this.playResults.filter(({ cid }) => !!cid);
+    addNftResults(...files) {
+      this.nftResults.push(...files);
+      this.results = this.nftResults.filter(function (cid) {
+        return !!cid;
+      });
 
-      db.data.playResults = [...this.playResults];
+      console.log("this.results[0]", this.results[0]);
+
+      db.data.nftResults = [...this.results[0]];
+      console.log('db.data.nftResults', db.data.nftResults);
       db.write();
     },
     resetFiles() {
@@ -63,14 +71,10 @@ export const useStore = defineStore({
     addResults(...files) {
       this.results.push(...files);
       console.log('this.results', this.results);
-      // BUG HERE
       this.results = this.results.filter(function (cid) {
         return !!cid;
       });
-      console.log('this.results', this.results[0]);
       db.data.results = [...this.results[0]];
-
-      console.log('db.data.results', db.data.results);
       db.write();
     },
     /**
@@ -86,7 +90,6 @@ export const useStore = defineStore({
 
         return result;
       });
-
       db.data.results = [...this.results];
       db.write();
     },

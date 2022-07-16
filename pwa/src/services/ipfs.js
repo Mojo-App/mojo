@@ -1,5 +1,4 @@
 import IPFSNetwork from '../services/IPFSNetwork';
-
 /**
  * Upload Blob to NFT Storage
  *
@@ -12,14 +11,11 @@ import IPFSNetwork from '../services/IPFSNetwork';
  */
 export const uploadBlob = async (file) => {
   const client = new IPFSNetwork();
-
   let detail = getCidDetail({ cid: null, file });
-
-  // Max 50MB Upload
+  /* Max 50MB Upload size*/
   if (file.size > 52428800) {
-    return [new Error(`Maximum file size to be upload is 50 MB`), detail];
+    return [new Error(`Maximum file upload size 50 MB`), detail];
   }
-
   try {
     const cid = await client.storeBlob(file);
     detail = getCidDetail({ cid, file });
@@ -28,7 +24,6 @@ export const uploadBlob = async (file) => {
     return { error, data: detail };
   }
 };
-
 /**
  * Get CID Detail with File
  *
@@ -52,9 +47,7 @@ export const getCidDetail = ({ cid, file }) => {
     size: file.size,
     created_at: Date.now(),
   };
-
   if (!cid) return { cid: null, file: base };
-
   return {
     cid,
     file: base,

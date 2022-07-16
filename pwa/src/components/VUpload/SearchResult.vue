@@ -14,7 +14,6 @@
     </div>
   </div>
 </template>
-
 <script>
 export default {
   name: 'SearchResult',
@@ -31,7 +30,6 @@ export default {
   emits: ['onChanged'],
 };
 </script>
-
 <style lang="scss">
 .search-wrapper {
   display: flex;

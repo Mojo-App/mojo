@@ -21,7 +21,7 @@
               >
             </div>
             <div class="item-action">
-              <a
+              <!-- <a
                 v-if="!!item.shorten"
                 title="Open Shorten Link"
                 target="_blank"
@@ -29,7 +29,7 @@
                 rel="noopener"
               >
                 <i-ri-link-unlink-m class="icon-color" />
-              </a>
+              </a> -->
               <a title="Open Link" target="_blank" :href="generateLink(item)" rel="noopener">
                 <i-ri-external-link-fill class="icon-color" />
               </a>

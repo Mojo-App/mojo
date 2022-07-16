@@ -8,8 +8,7 @@ defineProps({
 });
 /* Define Emits */
 const emit = defineEmits(['update:modelValue']);
-
-/* connectWallet method */
+/* Connect Wallet method */
 async function connectWallet() {
   const { ethereum } = window;
   try {

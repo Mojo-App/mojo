@@ -204,12 +204,18 @@ export default {
   border: 2px solid #f4f4f4;
   border-radius: 6px;
   overflow: hidden;
-  float: left;
-  margin: 0 20px 20px 80px;
-  @include breakpoint($medium) {
-    margin: 0 20px 20px 0;
+  float: center;
+  margin: 0 auto 20px;
+  @include breakpoint($breakpoint-sm) {
+    float: left;
+    margin: 0 10px 20px 10px;
   }
-  @include breakpoint($large) {
+  @include breakpoint($breakpoint-md) {
+    float: left;
+    margin: 0 10px 20px 10px;
+  }
+  @include breakpoint($breakpoint-xl) {
+    float: left;
     margin: 0 20px 20px 0;
   }
 

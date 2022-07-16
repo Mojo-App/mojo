@@ -7,10 +7,14 @@
       <nav class="header-navbar">
         <router-link :to="{ name: 'home' }" active-class="active" exact>Home</router-link>
         <router-link :to="{ name: 'stream' }" active-class="active" exact>Stream</router-link>
-        <router-link v-if="currentAccount" :to="{ name: 'mint' }" active-class="active" exact>Mint</router-link>
-        <router-link v-if="currentAccount" :to="{ name: 'upload' }" active-class="active" exact>Upload</router-link>
-        <div v-if="!currentAccount" class="right">
-          <ConnectWalletButton v-model="currentAccount" v-if="!currentAccount" btnSize="small" />
+        <router-link v-if="account" :to="{ name: 'mint' }" active-class="active" exact
+          >Mint</router-link
+        >
+        <router-link v-if="account" :to="{ name: 'upload' }" active-class="active" exact
+          >Upload</router-link
+        >
+        <div v-if="!account" class="right">
+          <ConnectWalletButton v-model="account" v-if="!account" btnSize="small" />
         </div>
         <i :title="`Let's Jam ${isDark ? 'Light' : 'Dark'} Mode`">
           <i-mdi-brightness-7 v-if="isDark" class="icon-color" @click="toggleTheme" />
@@ -22,6 +26,9 @@
 </template>
 <script>
 import { ref, onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
+/* Import Store */
+import { useStore } from '../store';
 /* Components */
 import ConnectWalletButton from '../components/ConnectWalletButton.vue';
 /* LFG */
@@ -29,9 +36,12 @@ export default {
   name: 'AppHeader',
   components: [ConnectWalletButton],
   setup() {
+    // Init Store
+    const store = useStore();
+    const { account } = storeToRefs(store);
+    // Darth Vader Mode
     const isDarkClassAvailable = document.body.classList.contains('dark-theme');
     const isDark = ref(isDarkClassAvailable);
-    const currentAccount = ref();
     /**
      * Get our current Metamask account details
      */
@@ -45,10 +55,10 @@ export default {
         /* Get our Current Account */
         const accounts = await ethereum.request({ method: 'eth_accounts' });
         if (accounts.length !== 0) {
-          const account = accounts[0];
-          currentAccount.value = account;
+          store.updateAccount(accounts[0]);
+          console.log('Current Account: ', account.value);
         } else {
-          console.log('No authorized accounts connected!');
+          console.log('No authorized MetaMask accounts connected!');
         }
       } catch (error) {
         console.log(error);
@@ -74,7 +84,7 @@ export default {
 
     return {
       isDark,
-      currentAccount,
+      account,
       getCurrentAccount,
       toggleTheme,
     };

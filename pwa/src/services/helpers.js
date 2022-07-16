@@ -1,5 +1,5 @@
 /**
- * File size human readble
+ * File size, make it human readble
  * @param {Number} bytes
  * @param {Boolean} round
  * @param {Number} fixed decimal
@@ -50,7 +50,23 @@ export const isVideo = (type) => {
 };
 
 /**
- * Generate IPFS Gateway link
+ * Generate IPFS URI for image according to IPFS best practises
+ * https://docs.ipfs.io/how-to/best-practices-for-nft-data/#types-of-ipfs-links-and-when-to-use-them
+ *
+ * @typedef {Object} IFile
+ * @property {String} cid
+ * @property {Object} file
+ * @property {String} file.type
+ * @param {IFile} item
+ * @returns {String}
+ */
+export const generateNFTImageLink = (item) => {
+  return `ipfs://${item.cid}`;
+};
+
+/**
+ * Generate IPFS Gateway link for browser friendly links that can be shared, NOT for NFT metadata usage
+ * HTTP gateways provide interoperability for legacy user-agents that cannot resolve IPFS URIs natively.
  *
  * @typedef {Object} IFile
  * @property {String} cid
@@ -64,12 +80,11 @@ export const isVideo = (type) => {
 export const generateLink = (item, isShorten = false) => {
   if (isShorten && !!item.shorten) return item.shorten;
   if (isVideo(item.file.type)) return `https://${item.cid}.ipfs.dweb.link`;
-
   return `https://cloudflare-ipfs.com/ipfs/${item.cid}`;
 };
 
 /**
- * Check is website running on PWA mode.
+ * Check if website is running on PWA mode
  * @returns {Boolean}
  */
 export const isRunningOnPWA = () => {

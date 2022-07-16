@@ -48,7 +48,6 @@ export default {
     const isDragged = ref(false);
     const finished = ref(0);
     const isUploading = ref(false);
-
     /**
      * Drag n Drop File Manager
      */
@@ -174,6 +173,7 @@ section#panel-upload {
       display: flex;
       flex-direction: column;
       align-items: center;
+      margin-top: 20px;
       padding: 0.8rem;
       border-radius: 0.5rem;
       text-align: center;
