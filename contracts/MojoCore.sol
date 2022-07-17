@@ -93,7 +93,7 @@ contract MojoCore is ERC721URIStorage, Ownable {
     /*
      * safeMint allows anyone to mint a token in this project.
      * Any time a token is minted, a new row of metadata will be
-     * dynamically insterted into the metadata table.
+     * dynamically inserted into the Tableland metadata table.
      */
     function safeMint(address to, NFT memory nft) public {
         uint256 tokenId = _tokenIds.current();
@@ -122,16 +122,12 @@ contract MojoCore is ERC721URIStorage, Ownable {
         );
         _safeMint(to, tokenId, '');
         _tokenIds.increment();
-
         /* Emit our newly created NFT to our front-end */
         emit NewNftMinted(msg.sender, block.timestamp, tokenId);
     }
 
     /*
-     * makeMove is an example of how to encode gameplay into both the
-     * smart contract and the metadata. Whenever a token owner calls
-     * make move, they can supply a new x,y coordinate and update
-     * their token's metadata.
+     * updateNFT allows NFT owners to update a tokens core NFT Tableland metadata
      */
     function updateNFT(NFT memory nft) public {
         // Check token ownership

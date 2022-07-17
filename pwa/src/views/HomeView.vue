@@ -48,13 +48,13 @@
           <div class="right">
             <ConnectWalletButton v-model="account" v-if="!account" btnSize="large" />
             <button @click="$router.push('stream')" v-if="account" className="stream-button">
-              Let's Stream 🎶
+              Let's Stream
             </button>
             <button @click="$router.push('upload')" v-if="account" className="upload-button">
-              IPFS Upload 🎤
+              IPFS Upload
             </button>
             <button @click="$router.push('mint')" v-if="account" className="mint-media-button">
-              Get Minty 🧪
+              Get Minty
             </button>
           </div>
         </div>
@@ -155,8 +155,7 @@ async function checkIfWalletIsConnected() {
      */
     const { ethereum } = window;
     if (!ethereum) {
-      notyf.error(`Please connect MetaMask to continue!`);
-      console.log('Error: No Ethereum window object');
+      notyf.error(`⛽ Please connect MetaMask to continue!`);
       return;
     }
     /* Get our Current Account */
@@ -169,7 +168,7 @@ async function checkIfWalletIsConnected() {
 }
 /**
  * Fetch NFT Audio/Media data
- * @dev This will change to pull our NFTs and their metadata from Tableland
+ * @dev WIP: This will change to pull our NFTs and their metadata from Tableland
  */
 async function fetchData() {
   categoryTracks.value = null;

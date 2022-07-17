@@ -56,9 +56,11 @@ export default {
         const accounts = await ethereum.request({ method: 'eth_accounts' });
         if (accounts.length !== 0) {
           store.updateAccount(accounts[0]);
-          console.log('Current Account: ', account.value);
+          /* Console log with some style */
+          const stylesAccounts = ['color: black', 'background: cyan'].join(';');
+          console.log('%c🧰 Web3 Account %s 🧰', stylesAccounts, account.value);
         } else {
-          console.log('No authorized MetaMask accounts connected!');
+          console.log('⚠ No authorized MetaMask accounts connected!');
         }
       } catch (error) {
         console.log(error);

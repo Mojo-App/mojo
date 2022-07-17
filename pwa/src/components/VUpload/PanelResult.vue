@@ -21,16 +21,7 @@
               >
             </div>
             <div class="item-action">
-              <!-- <a
-                v-if="!!item.shorten"
-                title="Open Shorten Link"
-                target="_blank"
-                :href="generateLink(item, true)"
-                rel="noopener"
-              >
-                <i-ri-link-unlink-m class="icon-color" />
-              </a> -->
-              <a title="Open Link" target="_blank" :href="generateLink(item)" rel="noopener">
+              <a title="Open link" target="_blank" :href="generateLink(item)" rel="noopener">
                 <i-ri-external-link-fill class="icon-color" />
               </a>
             </div>
@@ -45,7 +36,6 @@
                 :value="generateLink(item)"
               />
             </label>
-
             <a title="Copy to clipboard" @click="copyFileLink(item)">
               <i-ri-clipboard-line class="icon-color" />
             </a>
@@ -55,34 +45,40 @@
     </div>
   </section>
 </template>
-
 <script>
 import { ref, computed, inject } from 'vue';
-
+/* Import our Pinia Store */
 import { useStore } from '../../store';
+/* Import our helpers */
 import { fileSize, copyToClipboard, generateLink } from '../../services/helpers';
-
+/* Components */
 import SearchResult from '../../components/VUpload/SearchResult.vue';
-
+/* LFG */
 export default {
   name: 'PanelResult',
   components: {
     SearchResult,
   },
   setup() {
+    /* Inject Notyf */
     const notyf = inject('notyf');
+    // Init Store
     const store = useStore();
+    // Variables
     const search = ref('');
-
+    /**
+     * Copy to Clipboard function
+     */
     const copyFileLink = (item) => {
       const url = generateLink(item);
       copyToClipboard(url);
-      notyf.success('Copied to clipboard!');
+      notyf.success('Link copied to clipboard!');
     };
+    /* Update search value */
     const onSearchChanged = ($event) => {
       search.value = $event.target.value;
     };
-
+    /* Filters files to find by search value */
     const files = computed(() =>
       store.results
         .slice()

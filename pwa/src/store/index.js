@@ -44,6 +44,7 @@ export const useStore = defineStore({
     updateAccount(account) {
       this.account = account;
     },
+    // Mint
     resetNftFiles() {
       this.filesNft = [];
     },
@@ -52,16 +53,13 @@ export const useStore = defineStore({
     },
     addNftResults(...files) {
       this.nftResults.push(...files);
-      this.results = this.nftResults.filter(function (cid) {
+      this.nftResults = this.nftResults.filter(function (cid) {
         return !!cid;
       });
-
-      console.log("this.results[0]", this.results[0]);
-
-      db.data.nftResults = [...this.results[0]];
-      console.log('db.data.nftResults', db.data.nftResults);
+      db.data.nftResults = [...this.nftResults];
       db.write();
     },
+    // IPFS Uploader
     resetFiles() {
       this.files = [];
     },
@@ -70,11 +68,10 @@ export const useStore = defineStore({
     },
     addResults(...files) {
       this.results.push(...files);
-      console.log('this.results', this.results);
       this.results = this.results.filter(function (cid) {
         return !!cid;
       });
-      db.data.results = [...this.results[0]];
+      db.data.results = [...this.results];
       db.write();
     },
     /**
@@ -87,7 +84,6 @@ export const useStore = defineStore({
         if (result.cid === cid) {
           return { ...result, shorten: link };
         }
-
         return result;
       });
       db.data.results = [...this.results];

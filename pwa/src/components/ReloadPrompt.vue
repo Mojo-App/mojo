@@ -13,7 +13,7 @@
 <script>
 import { useRegisterSW } from 'virtual:pwa-register/vue';
 import { watch } from '@vue/runtime-core';
-
+/* Register Service workers */
 const { offlineReady, needRefresh, updateServiceWorker } = useRegisterSW();
 /* LFG */
 export default {

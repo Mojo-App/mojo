@@ -41,7 +41,6 @@ import { useStore } from '../store';
 import PlayButtonWhite from '../components/icons/PlayButtonWhite.vue';
 import TrackPlayer from '../components/TrackPlayer.vue';
 // Create an instance of Notyf
-// Create an instance of Notyf
 var notyf = new Notyf({
   duration: 2000,
   position: {
@@ -75,8 +74,7 @@ async function checkIfWalletIsConnected() {
      */
     const { ethereum } = window;
     if (!ethereum) {
-      notyf.error(`Please connect Metamask to continue!`);
-      console.log('Error: No ethereum window object');
+      notyf.error(`⛽ Please connect Metamask to continue!`);
       return;
     }
     /* Get our Current Account */
@@ -87,7 +85,6 @@ async function checkIfWalletIsConnected() {
     console.log(error);
   }
 }
-
 /* Track Player */
 const categories = ref([
   { id: 1, label: 'Fresh Jams' },
