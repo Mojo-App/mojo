@@ -68,7 +68,6 @@ contract MojoCore is ERC721URIStorage, Ownable {
             '_',
             Strings.toString(_metadataTableId)
         );
-
         /**
          * Stores the unique ID for the newly created NFT metadata attributes table.
          */
@@ -92,14 +91,14 @@ contract MojoCore is ERC721URIStorage, Ownable {
             Strings.toString(_metadataAttrTableId)
         );
     }
-
     /*
      * safeMint allows anyone to mint a token in this project.
      * Any time a token is minted, a new row of metadata will be
      * dynamically inserted into the Tableland metadata table.
      */
-    function safeMint(address to, NFT memory nft) public {
+    function safeMint(address to, NFT memory nft) public returns (uint256) {
         uint256 tokenId = _tokenIds.current();
+        /* Tableland Insert */
         _tableland.runSQL(
             address(this),
             _metadataTableId,
@@ -119,8 +118,8 @@ contract MojoCore is ERC721URIStorage, Ownable {
                 ', ',
                 nft.backgroundColor,
                 ', ',
-                _metadataAttrTable,
-                ', )'
+                nft.attributes,
+                ')'
             )
         );
         _safeMint(to, tokenId, '');
@@ -133,8 +132,9 @@ contract MojoCore is ERC721URIStorage, Ownable {
         _tokenIds.increment();
         /* Emit our newly created NFT to our front-end */
         emit NewNftMinted(msg.sender, block.timestamp, tokenId);
+        /* Return tokenId */
+        return tokenId;
     }
-
     /*
      * updateNFT allows NFT owners to update a tokens core NFT Tableland metadata
      */
@@ -155,15 +155,15 @@ contract MojoCore is ERC721URIStorage, Ownable {
                 _metadataTable,
                 ' SET name = ',
                 nft.name,
-                ', description = ',
+                'AND description = ',
                 nft.description,
-                ', image = ',
+                'AND image = ',
                 nft.imageUrl,
-                ', external_url = ',
+                'AND external_url = ',
                 nft.externalUrl,
-                ', background_color = ',
+                'AND background_color = ',
                 nft.backgroundColor,
-                ', attributes = ',
+                'AND attributes = ',
                 nft.attributes,
                 ' WHERE id = ',
                 Strings.toString(nft.tokenId),

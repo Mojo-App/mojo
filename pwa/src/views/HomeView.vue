@@ -120,9 +120,9 @@ import SpheronLogo from '../assets/svgs/SpheronLogo.vue';
 import PolygonLogo from '../assets/svgs/PolygonLogo.vue';
 import Filecoin from '../assets/svgs/Filecoin.vue';
 import MetaMask from '../assets/svgs/MetaMask.vue';
-// Create an instance of Notyf
+/* Create an instance of Notyf with settings */
 var notyf = new Notyf({
-  duration: 2000,
+  duration: 5000,
   position: {
     x: 'center',
     y: 'bottom',
@@ -131,10 +131,30 @@ var notyf = new Notyf({
     {
       type: 'loading',
       background: 'orange',
-      duration: 0,
+      duration: 15000,
       dismissible: true,
       icon: {
         className: 'icon icon-loading',
+        tagName: 'i',
+      },
+    },
+    {
+      type: 'success',
+      background: 'green',
+      duration: 20000,
+      dismissible: true,
+      icon: {
+        className: 'icon icon-success',
+        tagName: 'i',
+      },
+    },
+    {
+      type: 'error',
+      background: 'indianred',
+      duration: 10000,
+      dismissible: true,
+      icon: {
+        className: 'icon icon-error',
         tagName: 'i',
       },
     },

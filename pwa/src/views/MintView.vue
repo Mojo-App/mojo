@@ -1,7 +1,7 @@
 <template>
   <section id="content">
     <div class="main">
-      <section id="connect">
+      <section id="mint">
         <h2>Mint an Audio/Media NFT</h2>
         <!-- Top Row -->
         <div class="row">
@@ -59,8 +59,9 @@
           <!-- END MetaMask NOT Connected -->
           <!-- MetaMask Connected -->
           <div v-if="account" class="right">
+            <!-- Tab One Main NFT Metadata -->
             <div v-if="formTab === 'one'" id="form-tab-one" class="form-container">
-              <h2>NFT Metadata</h2>
+              <h2>1. Create your NFT</h2>
               <div class="input-row hidden">
                 <input type="text" placeholder="Token ID" v-model="tokenId" />
               </div>
@@ -98,27 +99,54 @@
               </div>
               <!-- Button Row -->
               <div v-if="account && formTab === 'one'" class="button-container">
-                <button v-if="!tokenId" class="mint-button" @click="mintNFT()">Mint NFT</button>
+                <button class="update-button" @click="switchToTab('two')">Add Details</button>
               </div>
               <!-- END Button Row -->
             </div>
-
+            <!-- END Tab One Main NFT Metadata -->
+            <!-- Tab Two NFT Metadata Attributes -->
             <div v-if="formTab === 'two'" id="form-tab-two" class="form-container">
-              <h2>Metadata Attributes</h2>
+              <h2>2. Add Details</h2>
               <div class="input-row">
-                <input type="text" placeholder="Track Title" v-model="title" />
+                <input type="text" placeholder="Title" v-model="title" />
               </div>
               <div class="input-row">
                 <input type="text" placeholder="Category" v-model="category" />
               </div>
               <div class="input-row">
+                <input type="text" placeholder="Website" v-model="website" />
+              </div>
+              <div class="input-row">
                 <input type="text" placeholder="License" v-model="license" />
               </div>
               <div class="input-row">
-                <input type="text" placeholder="Website Link" v-model="website" />
+                <input type="text" placeholder="Royalty Fee" v-model="royaltyPercentage" />
               </div>
               <div class="input-row">
-                <input type="text" placeholder="Long Description" v-model="longDescription" />
+                <input type="text" placeholder="Price in ETH" v-model="price" />
+              </div>
+              <div class="input-row hidden">
+                <input type="text" placeholder="Max invocations" v-model="maxInvocations" />
+              </div>
+
+              <!-- Button Row -->
+              <div v-if="account && formTab === 'two'" class="button-container">
+                <button class="back-button-blue" @click="switchToTab('one')">🔙</button>
+                <button class="attr-button" @click="switchToTab('three')">Add Media</button>
+              </div>
+              <!-- END Button Row -->
+            </div>
+            <!-- END Tab Two NFT Metadata Attributes -->
+            <!-- Tab Three NFT Pricing -->
+            <div v-if="formTab === 'three'" id="form-tab-three" class="form-container">
+              <h2>3. Add Media</h2>
+              <div class="input-row">
+                <textarea
+                  v-model="longDescription"
+                  placeholder="Add a full description here..."
+                  rows="4"
+                  cols="50"
+                ></textarea>
               </div>
               <div class="input-row">
                 <input type="text" placeholder="Preview Link" v-model="preview" />
@@ -132,22 +160,11 @@
               <div class="input-row">
                 <input type="text" placeholder="Duration" v-model="duration" />
               </div>
-              <div class="input-row">
-                <input type="text" placeholder="Duration" v-model="created_at" />
-              </div>
-              <div class="input-row">
-                <input type="text" placeholder="Max invocations" v-model="maxInvocations" />
-              </div>
-              <div class="input-row">
-                <input type="text" placeholder="Royalty Percentage" v-model="royaltyPercentage" />
-              </div>
-              <div class="input-row">
-                <input type="text" placeholder="Price" v-model="price" />
-              </div>
+
               <!-- Button Row -->
-              <div v-if="account && formTab === 'two'" class="button-container">
-                <button class="back-button" @click="goBack">🔙</button>
-                <button class="update-button" @click="updateNFT(tokenId)">Update NFT</button>
+              <div v-if="account && formTab === 'three'" class="button-container">
+                <button class="back-button-purple" @click="switchToTab('two')">🔙</button>
+                <button v-if="!tokenId" class="mint-button" @click="mintNFT()">Mint NFT</button>
               </div>
               <!-- END Button Row -->
             </div>
@@ -169,7 +186,7 @@ import { storeToRefs } from 'pinia';
 import { useStore } from '../store';
 /* Import our IPFS Services */
 import { uploadBlob } from '../services/ipfs.js';
-import { fileSize, generateNFTImageLink } from '../services/helpers';
+import { fileSize, generateLink } from '../services/helpers';
 /* Import Smart Contract ABI */
 import contractAbi from '../../../artifacts/contracts/MojoCore.sol/MojoCore.json';
 /* Manually set our Contract Address */
@@ -187,9 +204,9 @@ export default {
   name: 'MintView',
   components: [ConnectWalletButton, ArrowBack],
   setup() {
-    /* Create an instance of Notyf */
+    /* Create an instance of Notyf with settings */
     var notyf = new Notyf({
-      duration: 3000,
+      duration: 5000,
       position: {
         x: 'center',
         y: 'bottom',
@@ -198,7 +215,7 @@ export default {
         {
           type: 'loading',
           background: 'orange',
-          duration: 3000,
+          duration: 15000,
           dismissible: true,
           icon: {
             className: 'icon icon-loading',
@@ -208,10 +225,20 @@ export default {
         {
           type: 'success',
           background: 'green',
-          duration: 10000,
+          duration: 20000,
           dismissible: true,
           icon: {
             className: 'icon icon-success',
+            tagName: 'i',
+          },
+        },
+        {
+          type: 'error',
+          background: 'indianred',
+          duration: 10000,
+          dismissible: true,
+          icon: {
+            className: 'icon icon-error',
             tagName: 'i',
           },
         },
@@ -256,7 +283,6 @@ export default {
     const audioVideoURL = ref('');
     const resoultion = ref('');
     const duration = ref('');
-
     /**
      * Check if our Wallet is Connected to Metamask
      */
@@ -288,18 +314,22 @@ export default {
        */
       if (!name.value) {
         notyf.error(`Please enter a name to continue!`);
+        switchToTab('one');
         return;
       }
       if (name.value.length < 3) {
         notyf.error(`Name must be longer then 3 characters!`);
+        switchToTab('one');
         return;
       }
       if (!imageUrl.value) {
         notyf.error(`Please upload an image to continue!`);
+        switchToTab('one');
         return;
       }
       if (imageUrl.value.length < 10) {
         notyf.error(`Please upload a valid image to continue!`);
+        switchToTab('one');
         return;
       }
       /**
@@ -307,10 +337,12 @@ export default {
        */
       if (!description.value) {
         notyf.error(`Please enter a description to continue!`);
+        switchToTab('one');
         return;
       }
       if (description.value.length < 10) {
         notyf.error(`Description must be longer then 10 characters!`);
+        switchToTab('one');
         return;
       }
       /* Init loading indicator */
@@ -318,7 +350,6 @@ export default {
         type: 'loading',
         message: '⏳ Please wait while we get our mojo on! Minting NFT shortly...',
       });
-
       /**
        * Mint our NFT with fresh metadata
        */
@@ -341,6 +372,7 @@ export default {
             console.log('timestamp ', timestamp);
             const createdTime = new Date(timestamp);
             console.log('createdTime ', createdTime);
+
             createdAt.value = new Intl.DateTimeFormat('en-US').format(createdTime);
             console.log('createdAt.value ', createdAt.value);
 
@@ -379,7 +411,7 @@ export default {
             /* Console log with some style */
             const stylesPolygon = ['color: white', 'background: #7e44df'].join(';');
             console.log(
-              `%c🧬 NFT Minted on Polygon, see transaction: https://mumbai.polygonscan.com/txs/${nftTxn.hash} %s`,
+              `%c🧬 NFT Minted on Polygon, see transaction: https://mumbai.polygonscan.com/tx/${nftTxn.hash} %s`,
               stylesPolygon,
               nftTxn.hash
             );
@@ -387,10 +419,10 @@ export default {
             notyf.dismiss(loadingIndicator);
             notyf.open({
               type: 'success',
-              message: `🧬 NFT has been minted successfully, see transaction: https://mumbai.polygonscan.com/txs/${nftTxn.hash}`,
+              message: `🧬 NFT has been minted successfully, see transaction: https://mumbai.polygonscan.com/tx/${nftTxn.hash}`,
             });
             /* Set to NFT Metadata Attributes Tab to setup Tableland NFT metadata attributes */
-            this.addNFTAttributesTab();
+            formTab.value = 'two';
           }
           notyf.error('Error minting NFT metadata!');
           return;
@@ -498,14 +530,14 @@ export default {
              */
             const stylesPolygon = ['color: white', 'background: #7e44df'].join(';');
             console.log(
-              `%c🔧 NFT metadata updated on Tableland, see transaction: https://mumbai.polygonscan.com/txs/${nftTxn.hash} %s`,
+              `%c🔧 NFT metadata updated on Tableland, see transaction: https://mumbai.polygonscan.com/tx/${nftTxn.hash} %s`,
               stylesPolygon,
               nftTxn.hash
             );
             /* Remove loading indicator and show success notification */
             notyf.dismiss(loadingIndicator);
             notyf.success(
-              `🧬 NFT has been updated successfully, see transaction: https://mumbai.polygonscan.com/txshttps://rinkeby.etherscan.io/tx/${nftTxn.hash}`
+              `🧬 NFT has been updated successfully, see transaction: https://mumbai.polygonscan.com/tx/${nftTxn.hash}`
             );
             /* Reset our NFT Metadata Form Values */
             name.value = '';
@@ -530,7 +562,7 @@ export default {
             size.value = '';
             createdAt.value = '';
             /* Set to NFT Main Attributes Tab */
-            this.goBack();
+            formTab.value('one');
           }
           notyf.error('Error updating NFT metadata!');
           return;
@@ -544,16 +576,10 @@ export default {
       }
     };
     /**
-     * Switch Form Tab
+     * Switch Tab
      */
-    const addNFTAttributesTab = () => {
-      formTab.value = 'two';
-    };
-    /**
-     * Switch Form Tab Back
-     */
-    const goBack = () => {
-      formTab.value = 'one';
+    const switchToTab = (value) => {
+      formTab.value = value;
     };
     /**
      * Drag n Drop File Manager
@@ -588,17 +614,23 @@ export default {
       }
       /* Set our NFT Metadata Form Values using IPFS best practises */
       cid.value = uploadResult.data.cid;
-      /* Strip image type off our name eg, .png, .jpeg */
-      name.value = uploadResult.data.file.name.substring(
-        0,
-        uploadResult.data.file.name.lastIndexOf('.')
-      );
-      /* Generate and IPFS URI for NFT's */
-      imageUrl.value = generateNFTImageLink(uploadResult.data);
-      /* Set details from file upload */
-      audioVideoType.value = uploadResult.data.file.type;
-      size.value = fileSize(uploadResult.data.file.size);
-      createdAt.value = uploadResult.data.file.created_at;
+
+      if (formTab.value === 'three') {
+        /* Generate and IPFS URI for Audio/Media */
+        audioVideoURL.value = generateLink(uploadResult.data);
+      } else {
+        /* Strip image type off our name eg, .png, .jpeg */
+        name.value = uploadResult.data.file.name.substring(
+          0,
+          uploadResult.data.file.name.lastIndexOf('.')
+        );
+        /* Generate and IPFS URI for NFT's */
+        imageUrl.value = generateLink(uploadResult.data);
+        /* Set details from file upload */
+        audioVideoType.value = uploadResult.data.file.type;
+        size.value = fileSize(uploadResult.data.file.size);
+        // createdAt.value = uploadResult.data.file.created_at;
+      }
       return uploadResult;
     };
     /*
@@ -679,11 +711,10 @@ export default {
       duration,
       size,
       createdAt,
-      goBack,
-      addNFTAttributesTab,
+      switchToTab,
       mintNFT,
       updateNFT,
-      generateNFTImageLink,
+      generateLink,
       fileSize,
       onDragEnter,
       onDragLeave,
@@ -717,7 +748,7 @@ section#content {
       height: 99%;
     }
 
-    section#connect {
+    section#mint {
       height: 100%;
       color: #1a1a1a;
       background: #fff;
@@ -768,6 +799,7 @@ section#content {
           background-color: var(--gradient-100);
           border-top-left-radius: 1rem;
           border-top-right-radius: 1rem;
+          border-bottom-left-radius: 0;
           width: 100%;
           height: 100%;
 
@@ -787,13 +819,12 @@ section#content {
 
           .panel-upload--dropzone {
             position: relative;
-            cursor: pointer;
-            overflow: hidden;
-
             display: flex;
             align-content: center;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
 
             &.active {
               > * {
@@ -825,17 +856,20 @@ section#content {
               }
 
               span {
+                color: #1a1a1a;
                 font-size: 0.8rem;
               }
             }
 
             .dropzone-details {
+              color: #1a1a1a;
               position: absolute;
               display: flex;
               bottom: 1rem;
               left: 1rem;
 
               .dropzone-detail {
+                color: #1a1a1a;
                 font-size: 0.8rem;
                 background-color: var(--gradient-300);
                 border-radius: 1rem;
@@ -905,6 +939,7 @@ section#content {
         .form-container {
           display: flex;
           width: 99%;
+          height: 505px;
           flex-direction: column;
           justify-content: center;
           align-items: center;
@@ -951,20 +986,38 @@ section#content {
           padding: 10px;
           text-align: center;
         }
-
         input::placeholder {
           color: #a8a8a8;
           letter-spacing: 1px;
         }
-
         input:read-only {
           color: #1a1a1a;
           border: 2px dashed #e0e0e0;
           letter-spacing: 2px;
           cursor: not-allowed;
         }
-
         input:focus {
+          border: 2px solid #2bb5f0;
+          outline: none;
+        }
+        textarea {
+          color: #1a1a1a;
+          background-color: #fdfdfd;
+          border: 2px solid var(--gradient-100);
+          border-radius: 10px;
+          letter-spacing: 1px;
+          font-size: 14px;
+          width: 300px;
+          margin-bottom: 10px;
+          padding: 10px;
+          text-align: center;
+        }
+        textarea::placeholder {
+          color: #a8a8a8;
+          letter-spacing: 1px;
+        }
+        textarea:focus {
+          border: 2px solid #e9429b;
           outline: none;
         }
 
@@ -1049,14 +1102,14 @@ section#content {
 
         .attr-button {
           color: #fff;
-          background-color: #550072;
+          background-color: #8d50f5;
           font-size: 18px;
           font-weight: bold;
           width: auto;
           height: 55px;
           border: 0;
-          padding-left: 90px;
-          padding-right: 90px;
+          padding-left: 71px;
+          padding-right: 71px;
           border-radius: 10px;
           cursor: pointer;
         }
@@ -1067,14 +1120,29 @@ section#content {
           cursor: not-allowed;
         }
 
-        .back-button {
-          color: #08d0a5;
+        .back-button-blue {
+          color: #1c8bfe;
           background-color: #fff;
           font-size: 18px;
           font-weight: bold;
           width: auto;
           height: 55px;
-          border: 2px solid #08d0a5;
+          border: 2px solid #1c8bfe;
+          padding-left: 20px;
+          padding-right: 20px;
+          border-radius: 10px;
+          margin-right: 10px;
+          cursor: pointer;
+        }
+
+        .back-button-purple {
+          color: #8d50f5;
+          background-color: #fff;
+          font-size: 18px;
+          font-weight: bold;
+          width: auto;
+          height: 55px;
+          border: 2px solid #8d50f5;
           padding-left: 20px;
           padding-right: 20px;
           border-radius: 10px;
@@ -1090,8 +1158,8 @@ section#content {
           width: auto;
           height: 55px;
           border: 0;
-          padding-left: 114px;
-          padding-right: 114px;
+          padding-left: 78px;
+          padding-right: 78px;
           border-radius: 10px;
           cursor: pointer;
         }
@@ -1110,8 +1178,8 @@ section#content {
           width: auto;
           height: 55px;
           border: 0;
-          padding-left: 68px;
-          padding-right: 68px;
+          padding-left: 105px;
+          padding-right: 105px;
           border-radius: 10px;
           cursor: pointer;
         }
@@ -1141,16 +1209,6 @@ section#content {
         font-weight: bold;
         border-bottom: 1px solid #1a1a1a;
         text-decoration: none;
-
-        &.author {
-          padding: 6px 12px;
-          border-radius: 8px;
-          background-color: var(--gradient-100);
-          color: var(--icon-color);
-          font-size: 0.85rem;
-
-          border-bottom: none;
-        }
       }
 
       p {
@@ -1166,13 +1224,56 @@ body.dark-theme {
   section#content .main section#mint .author {
     background-color: var(--gradient-800);
   }
-}
+  section#panel-upload {
+    background-color: var(--gradient-800);
 
-@media (min-width: 1024px) {
-  .mint {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
+    .dropzone-box {
+      span {
+        color: #ffffff;
+      }
+    }
+
+    .dropzone-details .dropzone-detail {
+      color: #fff;
+      background-color: var(--gradient-900);
+    }
+
+    .dropzone-is-loading {
+      background-color: var(--gradient-700);
+
+      .dropzone-loading--bar {
+        background-color: var(--icon-color);
+      }
+    }
+  }
+}
+@keyframes indeterminate {
+  0% {
+    left: -35%;
+    right: 100%;
+  }
+  60% {
+    left: 100%;
+    right: -90%;
+  }
+
+  100% {
+    left: 100%;
+    right: -90%;
+  }
+}
+@keyframes indeterminate-short {
+  0% {
+    left: -200%;
+    right: 100%;
+  }
+  60% {
+    left: 107%;
+    right: -8%;
+  }
+  100% {
+    left: 107%;
+    right: -8%;
   }
 }
 </style>

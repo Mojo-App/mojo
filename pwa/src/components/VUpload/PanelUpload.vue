@@ -15,7 +15,8 @@
           <i-mdi-timer-sand v-if="isUploading" class="icon-color" />
           <i-mdi-upload v-else class="icon-color" />
           <!-- END Uploader Icon -->
-          <span>Drop files here or click to select files to upload to IPFS</span>
+          <span>Drop files here or select to upload to IPFS</span>
+          <span>Copy your link and share</span>
           <div class="dropzone-is-loading" :class="{ active: isUploading }">
             <div class="dropzone-loading--bar"></div>
           </div>
@@ -133,10 +134,24 @@ export default {
 </script>
 
 <style lang="scss">
+@import '../../assets/styles/variables.scss';
+@import '../../assets/styles/mixins.scss';
+
 section#panel-upload {
   background-color: var(--gradient-100);
   border-top-left-radius: 1rem;
   border-bottom-left-radius: 1rem;
+  border-bottom-left-radius: 0;
+  width: 100%;
+  height: 100%;
+
+  @include breakpoint($medium) {
+    margin-top: 0;
+    padding-top: 0;
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+    border-top-right-radius: 0;
+  }
 
   .panel-upload--content,
   .panel-upload--content .panel-upload--dropzone {
@@ -146,13 +161,12 @@ section#panel-upload {
 
   .panel-upload--dropzone {
     position: relative;
-    cursor: pointer;
-    overflow: hidden;
-
     display: flex;
     align-content: center;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
 
     &.active {
       > * {
@@ -185,17 +199,20 @@ section#panel-upload {
       }
 
       span {
+        color: #1a1a1a;
         font-size: 0.8rem;
       }
     }
 
     .dropzone-details {
+      color: #1a1a1a;
       position: absolute;
       display: flex;
       bottom: 1rem;
       left: 1rem;
 
       .dropzone-detail {
+        color: #1a1a1a;
         font-size: 0.8rem;
         background-color: var(--gradient-300);
         border-radius: 1rem;
@@ -253,7 +270,14 @@ body.dark-theme {
   section#panel-upload {
     background-color: var(--gradient-800);
 
+    .dropzone-box {
+      span {
+        color: #ffffff;
+      }
+    }
+
     .dropzone-details .dropzone-detail {
+      color: #fff;
       background-color: var(--gradient-900);
     }
 
@@ -272,7 +296,6 @@ body.dark-theme {
     left: -35%;
     right: 100%;
   }
-
   60% {
     left: 100%;
     right: -90%;
@@ -283,18 +306,15 @@ body.dark-theme {
     right: -90%;
   }
 }
-
 @keyframes indeterminate-short {
   0% {
     left: -200%;
     right: 100%;
   }
-
   60% {
     left: 107%;
     right: -8%;
   }
-
   100% {
     left: 107%;
     right: -8%;

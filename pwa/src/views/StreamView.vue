@@ -41,9 +41,10 @@ import { useStore } from '../store';
 /* Components */
 import PlayButtonWhite from '../components/icons/PlayButtonWhite.vue';
 import TrackPlayer from '../components/TrackPlayer.vue';
-// Create an instance of Notyf
+
+/* Create an instance of Notyf with settings */
 var notyf = new Notyf({
-  duration: 2000,
+  duration: 5000,
   position: {
     x: 'center',
     y: 'bottom',
@@ -52,10 +53,30 @@ var notyf = new Notyf({
     {
       type: 'loading',
       background: 'orange',
-      duration: 0,
+      duration: 15000,
       dismissible: true,
       icon: {
         className: 'icon icon-loading',
+        tagName: 'i',
+      },
+    },
+    {
+      type: 'success',
+      background: 'green',
+      duration: 20000,
+      dismissible: true,
+      icon: {
+        className: 'icon icon-success',
+        tagName: 'i',
+      },
+    },
+    {
+      type: 'error',
+      background: 'indianred',
+      duration: 10000,
+      dismissible: true,
+      icon: {
+        className: 'icon icon-error',
         tagName: 'i',
       },
     },

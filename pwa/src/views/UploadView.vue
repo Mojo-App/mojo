@@ -52,28 +52,29 @@ export default {
 section#content {
   position: relative;
   height: 100%;
+  overflow: hidden;
 
   .main {
     display: flex;
     align-content: center;
     align-items: center;
     justify-content: center;
-    height: 98%;
+    height: 99%;
     color: #1a1a1a;
     background: #ffca28;
-    padding: 10px 10px 0 10px;
+    padding: 1% 10px 0 10px;
+    overflow: hidden;
 
     .main-content {
       position: absolute;
       z-index: 3;
       display: flex;
-      border-radius: 1em;
-      overflow: hidden;
+      border-radius: 0.8em;
 
       section {
         color: #fff;
         width: 100%;
-        height: 300px;
+        height: 360px;
 
         @include breakpoint($breakpoint-sm) {
           width: 100%;

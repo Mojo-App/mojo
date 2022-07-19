@@ -5,7 +5,7 @@
 
       <div class="content-file--items">
         <div class="content-file--item empty" v-if="files.length === 0">
-          <span v-if="search !== ''">No results. Try other file name.</span>
+          <span v-if="search !== ''">No results found. Try another file name.</span>
           <span v-else>List of files that you upload will appear here.</span>
         </div>
 
@@ -110,7 +110,7 @@ section#panel-result {
   border-left: 1px solid rgba(0, 0, 0, 0.05);
 
   .panel-result--content {
-    padding: 0.8rem;
+    padding: 0.8rem !important;
     height: calc(100% - 1.6rem);
 
     .content-file--items {
@@ -173,17 +173,18 @@ section#panel-result {
             flex: 1;
 
             .item-detail--title {
+              color: #1a1a1a;
               font-size: 0.7rem;
               width: 220px;
               white-space: nowrap;
               overflow: hidden;
               text-overflow: ellipsis;
-
               margin-bottom: 0.4rem;
             }
 
             .item-detail--subtitle {
-              font-size: 0.7rem;
+              color: #a8a8a8;
+              font-size: 0.6rem;
             }
           }
 
@@ -237,6 +238,10 @@ body.dark-theme {
 
     .content-file--items .content-file--item {
       background-color: rgba(255, 255, 255, 0.05);
+
+      .item-detail--title {
+        color: #ffffff !important;
+      }
 
       .item-detail--subtitle {
         color: rgba(255, 255, 255, 0.5);
