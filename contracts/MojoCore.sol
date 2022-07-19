@@ -36,6 +36,8 @@ contract MojoCore is ERC721URIStorage, Ownable {
         string attributes;
     }
 
+    // State variable stored permanently in smart contract storage
+    uint256 public totalNftCount;
     NFT[] public nfts;
 
     constructor(address registry) ERC721('MojoNFT', 'mNFT') {
@@ -52,7 +54,7 @@ contract MojoCore is ERC721URIStorage, Ownable {
                 _tablePrefix,
                 '_',
                 Strings.toString(block.chainid),
-                ' (id int, name text, description text, image text, external_url text, background_color text, attributes text);'
+                ' (id int, name text, description text, image text, external_url text, background_color text, attributes text, PRIMARY KEY (id));'
             )
         );
         /**
@@ -73,9 +75,10 @@ contract MojoCore is ERC721URIStorage, Ownable {
         _metadataAttrTableId = _tableland.createTable(
             address(this),
             string.concat(
-                'CREATE TABLE mojo_media_meta',
+                'CREATE TABLE mojo_meta_attributes',
+                '_',
                 Strings.toString(block.chainid),
-                ' (id int, max_invocations int, royalty int, sales_total, int title text, category text, license text, website text, long_description text, preview_url text, audio_video_type text, audio_video_url text, resolution text, duration text, size text, created_at text);'
+                ' (id int, max_invocations int, royalty int, sales_total int, title text, category text, license text, website text, long_description text, preview_url text, audio_video_type text, audio_video_url text, resolution text, duration text, size text, created_at text, PRIMARY KEY (id));'
             )
         );
         /**
@@ -121,6 +124,12 @@ contract MojoCore is ERC721URIStorage, Ownable {
             )
         );
         _safeMint(to, tokenId, '');
+        /* Increment our NFT Total count */
+        totalNftCount += 1;
+        /* Add NFT to our main Array */
+        NFT memory newNft = NFT(tokenId, nft.name, nft.description, nft.imageUrl, nft.externalUrl, nft.backgroundColor, _metadataAttrTable);
+        nfts.push(newNft);
+        /* Increment tokenId for our next minting */
         _tokenIds.increment();
         /* Emit our newly created NFT to our front-end */
         emit NewNftMinted(msg.sender, block.timestamp, tokenId);
@@ -154,6 +163,8 @@ contract MojoCore is ERC721URIStorage, Ownable {
                 nft.externalUrl,
                 ', background_color = ',
                 nft.backgroundColor,
+                ', attributes = ',
+                nft.attributes,
                 ' WHERE id = ',
                 Strings.toString(nft.tokenId),
                 ';'
@@ -211,6 +222,24 @@ contract MojoCore is ERC721URIStorage, Ownable {
                 Strings.toString(tokenId),
                 '&mode=list'
             );
+    }
+
+    /**
+     * View the Contract’s Metadata Table
+     */
+    function metadataURI() public view returns (string memory) {
+        string memory base = _baseURI();
+
+        return string.concat(base, 'SELECT%20*%20FROM%20', _metadataTable);
+    }
+
+    /**
+     * View the Contract’s Metadata Attributes Table
+     */
+    function metadataAttrURI() public view returns (string memory) {
+        string memory base = _baseURI();
+
+        return string.concat(base, 'SELECT%20*%20FROM%20', _metadataAttrTable);
     }
 
     /*

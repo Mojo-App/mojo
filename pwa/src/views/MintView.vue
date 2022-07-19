@@ -173,7 +173,7 @@ import { fileSize, generateNFTImageLink } from '../services/helpers';
 /* Import Smart Contract ABI */
 import contractAbi from '../../../artifacts/contracts/MojoCore.sol/MojoCore.json';
 /* Manually set our Contract Address */
-const contractAddress = '0x61d3038A40307B913415800432E1101bFfb33192';
+const contractAddress = '0xCdf4Ea9F77590Bb3531050a4150D1c7a78d752D7';
 /* Console log with some style */
 const stylesContract = ['color: black', 'background: cyan'].join(';');
 console.log('%c🏦 Mojo Contract Address %s 🏦', stylesContract, contractAddress);
@@ -327,9 +327,6 @@ export default {
         if (ethereum) {
           const provider = new ethers.providers.Web3Provider(ethereum);
           const signer = provider.getSigner();
-          /**
-           *  @dev Note: Reset this once Contracts deployed or re-dployed
-           */
           const contract = new ethers.Contract(contractAddress, contractAbi.abi, signer);
           /* Console log with some style */
           const styles = ['color: black', 'background: green'].join(';');
@@ -351,6 +348,7 @@ export default {
             tokenId.value = tokenId.toNumber();
             console.log('tokenId.value ', tokenId.value);
           });
+
           /* Mint our NFT using complex Struct */
           let nftTxn = await contract.safeMint(signer.getAddress(), [
             ethers.BigNumber.from('0'),
@@ -392,7 +390,7 @@ export default {
               message: `🧬 NFT has been minted successfully, see transaction: https://mumbai.polygonscan.com/txs/${nftTxn.hash}`,
             });
             /* Set to NFT Metadata Attributes Tab to setup Tableland NFT metadata attributes */
-            addNFTAttributesTab();
+            this.addNFTAttributesTab();
           }
           notyf.error('Error minting NFT metadata!');
           return;

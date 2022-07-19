@@ -2,6 +2,7 @@
   <section id="content">
     <div class="main">
       <section id="stream">
+        Account: {{ account }} <br />Tracks: {{ categoryTracks }}
         <div class="left">
           <h2>Find your groove</h2>
           <ul class="category-list">
@@ -34,7 +35,7 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue';
 import { Notyf } from 'notyf';
-// import { storeToRefs } from 'pinia';
+import { storeToRefs } from 'pinia';
 /* Import our Pinia Store */
 import { useStore } from '../store';
 /* Components */
@@ -62,8 +63,11 @@ var notyf = new Notyf({
 });
 // Init Store
 const store = useStore();
-// Metamask Account
-// const { account } = storeToRefs(store);
+// Store Values and Methods
+const { account } = storeToRefs(store);
+// Local Vars
+const categorySelectedId = ref(1);
+const categoryTracks = ref(null);
 /**
  * Check if our Wallet is Connected to Metamask
  */
@@ -95,25 +99,21 @@ const categories = ref([
   { id: 6, label: 'Cinematic & Soundscapes' },
   { id: 7, label: 'More' },
 ]);
-
-const categorySelectedId = ref(1);
-const categoryTracks = ref(null);
-
+/* Select a new Category */
 function selectCategory(category) {
-  console.log('Selected Category:', category);
   categorySelectedId.value = category.id;
   console.log('categorySelectedId:', categorySelectedId.value);
 }
+/* Fetch new NFT audio/media by Category or Name */
 async function fetchData() {
-  categoryTracks.value = null;
-  const res = await fetch(`./tracks/${categorySelectedId.value}.json`);
-  console.log('Tracks Loaded:', res);
-  categoryTracks.value = await res.json();
+  categoryTracks.value = await store.searchNfts(categorySelectedId.value);
+  /* Console log with some style */
+  const stylesTracks = ['color: black', 'background: yellow'].join(';');
+  console.log('%c📻 NFT Audio/Media fetched : %s 📻', stylesTracks, categoryTracks.value);
 }
-
-fetchData();
+/* Watch for Category Changes */
 watch(categorySelectedId, fetchData);
-
+fetchData();
 onMounted(() => {
   checkIfWalletIsConnected();
 });
@@ -174,6 +174,7 @@ section#content {
         justify-content: center;
         align-items: center;
         padding: 60px 20px 0;
+
         .track-list {
           width: 100%;
           max-width: 960px;

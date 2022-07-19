@@ -1,11 +1,11 @@
 # Mojo
 
-Mojo is an audio/media streaming platform that empowers artists and content creators through web3 and various blockchain technologies including Etheruem, IPFS, Tableland and is deployed to the Polygon testnet using Spheron and deployed via Filecoin.
+Mojo is an audio/media streaming platform that empowers artists and content creators through web3 and various blockchain technologies including Etheruem, IPFS, Tableland and is deployed to the Polygon testnet using Spheron and stored on Filecoin.
 
 The Mojo web3 application allows you to upload your valuable digital assets to the IPFS Network. Files can never be deleted, hacked, edited, stolen and are never saved to any server making them 100% decentralised. Mojo allows creators to broaden their social reach offering custom NFTs that allow their followers and subscribers and access special content and features.
 
 Mojo allows creators to build custom Metadata and attach this to their homemade NFTs.
-Assign different attributes and values to your cusotmised NFT. NFT Metadata is managed using Tableland which allows you to add, edit and update metadata attributes.
+Assign different attributes and values to your customised NFT. NFT Metadata is managed using Tableland which allows you to add, edit and update metadata attributes.
 
 IPFS is a wonderful technology. It allows for content ownership, portability, and verifiability. It powers NFT marketplaces, individual websites, file-sharing platforms, and more. However, IPFS, the protocol, does not have a responsibility to match the experience of traditional cloud file services. Instead, that responsibility falls onto the shoulders of IPFS’s adoptors.
 
@@ -34,7 +34,7 @@ GAS_REPORT=true npx hardhat test
 
 This project will only deploy to Mumbai Testnet due to the address registry passed to the contract constructor function
 
-MojoCore smart contract deployed to:  0x61d3038A40307B913415800432E1101bFfb33192
+MojoCore smart contract deployed to:  0xCdf4Ea9F77590Bb3531050a4150D1c7a78d752D7
 Mojo Token smart contract deployed to:  0x424B6A8beF4c0807c1db53f21ea8bB8217B3AC7e
 
 ```shell
