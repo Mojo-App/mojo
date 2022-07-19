@@ -190,7 +190,7 @@ import { fileSize, generateLink } from '../services/helpers';
 /* Import Smart Contract ABI */
 import contractAbi from '../../../artifacts/contracts/MojoCore.sol/MojoCore.json';
 /* Manually set our Contract Address */
-const contractAddress = '0xCdf4Ea9F77590Bb3531050a4150D1c7a78d752D7';
+const contractAddress = '0xa8533121Ae08dc3ec3fbfED9508abc0B35F32D6c';
 /* Console log with some style */
 const stylesContract = ['color: black', 'background: cyan'].join(';');
 console.log('%c🏦 Mojo Contract Address %s 🏦', stylesContract, contractAddress);
@@ -986,20 +986,24 @@ section#content {
           padding: 10px;
           text-align: center;
         }
+
         input::placeholder {
           color: #a8a8a8;
           letter-spacing: 1px;
         }
+
         input:read-only {
           color: #1a1a1a;
           border: 2px dashed #e0e0e0;
           letter-spacing: 2px;
           cursor: not-allowed;
         }
+
         input:focus {
           border: 2px solid #2bb5f0;
           outline: none;
         }
+
         textarea {
           color: #1a1a1a;
           background-color: #fdfdfd;
@@ -1012,10 +1016,12 @@ section#content {
           padding: 10px;
           text-align: center;
         }
+
         textarea::placeholder {
           color: #a8a8a8;
           letter-spacing: 1px;
         }
+
         textarea:focus {
           border: 2px solid #e9429b;
           outline: none;
@@ -1224,6 +1230,7 @@ body.dark-theme {
   section#content .main section#mint .author {
     background-color: var(--gradient-800);
   }
+
   section#panel-upload {
     background-color: var(--gradient-800);
 
@@ -1247,11 +1254,13 @@ body.dark-theme {
     }
   }
 }
+
 @keyframes indeterminate {
   0% {
     left: -35%;
     right: 100%;
   }
+
   60% {
     left: 100%;
     right: -90%;
@@ -1262,15 +1271,18 @@ body.dark-theme {
     right: -90%;
   }
 }
+
 @keyframes indeterminate-short {
   0% {
     left: -200%;
     right: 100%;
   }
+
   60% {
     left: 107%;
     right: -8%;
   }
+
   100% {
     left: 107%;
     right: -8%;

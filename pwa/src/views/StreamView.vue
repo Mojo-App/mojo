@@ -2,7 +2,6 @@
   <section id="content">
     <div class="main">
       <section id="stream">
-        Account: {{ account }} <br />Tracks: {{ categoryTracks }}
         <div class="left">
           <h2>Find your groove</h2>
           <ul class="category-list">
@@ -20,13 +19,18 @@
           </ul>
         </div>
         <div class="right">
-          <div class="track-list">
+          <div v-if="categoryTracks" class="track-list">
             <TrackPlayer
               v-for="track in categoryTracks"
               :track="track"
               :key="track.id"
             ></TrackPlayer>
           </div>
+          <p v-if="!categoryTracks"></p>
+          <h2>Please be patient while we spin another mix...</h2>
+          <img src="../assets/images/DJ.png" alt="DJ Saved my Life" />
+          <p>Account: {{ account }}</p>
+          <p>Tracks: {{ categoryTracks }}</p>
         </div>
       </section>
     </div>

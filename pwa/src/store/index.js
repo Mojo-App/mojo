@@ -5,7 +5,7 @@ import Storage from '../services/storage';
 /* Import Smart Contract ABI */
 import contractAbi from '../../../artifacts/contracts/MojoCore.sol/MojoCore.json';
 /* Manually set our Contract Address */
-const contractAddress = '0xCdf4Ea9F77590Bb3531050a4150D1c7a78d752D7';
+const contractAddress = '0xa8533121Ae08dc3ec3fbfED9508abc0B35F32D6c';
 /* Setup Offline Storage */
 const db = new Storage('app');
 db.read();
@@ -159,9 +159,7 @@ export const useStore = defineStore({
           const polygonTestnet = SUPPORTED_CHAINS['polygon-mumbai'];
           // Connect to the Tableland testnet (defaults to Goerli testnet)
           // @return {Connection} Interface to access the Tableland network and target chain
-
           // 0x4b48841d4b32C4650E4ABc117A03FE8B51f38F68
-
           // Connect to the Tableland network
           const tableland = await connect({
             // network: polygonTestnet.network,
@@ -171,7 +169,8 @@ export const useStore = defineStore({
           })
             .then((connection) => {
               // Run a SQL select on our project table
-              return connection.read('select * from mojo_80001_281');
+              return connection.read('select * from mojo_80001_306');
+              // return connection.read('select * from mojo_media_meta_80001_307');
             })
             .then((data) => {
               // Format and store our data in the points[] array
