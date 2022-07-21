@@ -187,9 +187,9 @@ import { fileSize, generateLink } from "../services/helpers";
 /* Import Smart Contract ABI */
 import contractAbi from "../../../artifacts/contracts/MojoCore.sol/MojoCore.json";
 /* Manually set our Contract Address */
-const contractAddress = "0x58364cDc29aCF05E9a914A8c25e49E9267C8Ca73";
+const contractAddress = "0x8da77B9Ef91929E28858C89f96AdCe5399a50d5e";
 /* Console log with some style */
-const stylesContract = ["color: black", "background: cyan"].join(";");
+const stylesContract = ["color: black", "background: #e9429b"].join(";");
 console.log("%c🏦 Mojo Contract Address %s 🏦", stylesContract, contractAddress);
 const stylesAbi = ["color: black", "background: cyan"].join(";");
 console.log("%c🧭 Contract ABI Source %s 🧭", stylesAbi, contractAbi.sourceName);
@@ -346,6 +346,7 @@ export default {
         type: "loading",
         message: "⏳ Please wait while we get our mojo on! Minting NFT shortly...",
       });
+
       /**
        * Mint our NFT with fresh metadata
        */
@@ -369,32 +370,112 @@ export default {
             const createdTime = new Date(timestamp);
             console.log("createdTime ", createdTime);
 
-            createdAt.value = new Intl.DateTimeFormat("en-US").format(createdTime);
-            console.log("createdAt.value ", createdAt.value);
-
             console.log("tokenId ", tokenId.toNumber());
             tokenId.value = tokenId.toNumber();
             console.log("tokenId.value ", tokenId.value);
           });
 
+          // NFT Form Metadata Attributes
+          let attributes = [
+            {
+              display_type: "size",
+              trait_type: "Size",
+              value: size.value,
+            },
+            {
+              display_type: "created_at",
+              trait_type: "Created At",
+              value: createdAt.value,
+            },
+            {
+              display_type: "audio_video_type",
+              trait_type: "Audio Video Type",
+              value: audioVideoType.value,
+            },
+            {
+              display_type: "max_invocations",
+              trait_type: "Max Invocations",
+              value: maxInvocations.value,
+            },
+            {
+              display_type: "royalty",
+              trait_type: "Royalty Percentage",
+              value: royaltyPercentage.value,
+            },
+            {
+              display_type: "price",
+              trait_type: "Price",
+              value: price.value,
+            },
+            {
+              display_type: "title",
+              trait_type: "Title",
+              value: title.value,
+            },
+            {
+              display_type: "category",
+              trait_type: "Category",
+              value: category.value,
+            },
+            {
+              display_type: "license",
+              trait_type: "License",
+              value: license.value,
+            },
+            {
+              display_type: "website",
+              trait_type: "Website",
+              value: website.value,
+            },
+            {
+              display_type: "long_description",
+              trait_type: "Long Description",
+              value: longDescription.value,
+            },
+            {
+              display_type: "preview",
+              trait_type: "Preview",
+              value: preview.value,
+            },
+            {
+              display_type: "audio_video_url",
+              trait_type: "Audio Video URL",
+              value: audioVideoURL.value,
+            },
+            {
+              display_type: "resoultion",
+              trait_type: "Resoultion",
+              value: resoultion.value,
+            },
+            {
+              display_type: "duration",
+              trait_type: "Duration",
+              value: duration.value,
+            },
+          ];
+
           /* Mint our NFT using complex Struct */
           let nftTxn = await contract.safeMint(
-            signer.getAddress(),
             name.value,
             description.value,
-            imageUrl.value
+            imageUrl.value,
+            audioVideoType.value,
+            externalUrl.value,
+            []
           );
           /* Console log with some style */
           const stylesMining = ["color: black", "background: yellow"].join(";");
           console.log("%c⛏ Mining...please wait!  %s ⛏", stylesMining, nftTxn.hash);
+
           // The OpenZeppelin base ERC721 contract emits a Transfer event
           // when a token is issued. tx.wait() will wait until a block containing
           // our transaction has been mined and confirmed. The transaction receipt
           // contains events emitted while processing the transaction.
           const receipt = await nftTxn.wait();
           /* Console log with some style */
-          const stylesReceipt = ["color: black", "background: yellow"].join(";");
+          const stylesReceipt = ["color: black", "background: #e9429b"].join(";");
           console.log("%c💎 We just mined another gem! %s 💎", stylesReceipt, nftTxn.hash);
+
           /* Check our Transaction results */
           if (receipt.status === 1) {
             /**
@@ -408,36 +489,30 @@ export default {
               stylesPolygon,
               nftTxn.hash
             );
+
+            /* Set the record manually after we create  */
+            // nftTxn = await contract.setRecord(
+            //   name.value,
+            //   description.value,
+            //   imageUrl.value,
+            //   externalUrl.value
+            // );
+            // await nftTxn.wait();
+            // console.log(
+            //   `%c🧬 NFT data set on Tableland, see transaction: https://mumbai.polygonscan.com/tx/${nftTxn.hash} %s`,
+            //   stylesPolygon,
+            //   nftTxn.hash
+            // );
+
             /* Remove loading indicator and show success notification */
             notyf.dismiss(loadingIndicator);
             notyf.open({
               type: "success",
-              message: `🧬 NFT has been minted successfully, see transaction: https://mumbai.polygonscan.com/tx/${nftTxn.hash}`,
+              message: `🧬 NFT has been minted successfully, see transaction<br />https://mumbai.polygonscan.com/tx/${nftTxn.hash}`,
             });
+
             /* Set to NFT Metadata Attributes Tab to setup Tableland NFT metadata attributes */
-            /* Reset our NFT Metadata Form Values */
-            name.value = "";
-            description.value = "";
-            externalUrl.value = "";
-            imageUrl.value = "";
-            maxInvocations.value = null;
-            royaltyPercentage.value = null;
-            price.value = null;
-            /* Reset our NFT Metadata Attributes Form Values */
-            title.value = "";
-            category.value = "";
-            license.value = "";
-            website.value = "";
-            longDescription.value = "";
-            preview.value = "";
-            audioVideoType.value = "";
-            audioVideoURL.value = "";
-            resoultion.value = "";
-            duration.value = "";
-            size.value = "";
-            createdAt.value = "";
-            /* Set to NFT Main Attributes Tab */
-            switchToTab("one");
+            switchToTab("two");
             return;
           }
           notyf.error("Error minting NFT metadata!");
