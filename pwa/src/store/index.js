@@ -5,7 +5,7 @@ import Storage from "../services/storage";
 /* Import Smart Contract ABI */
 import contractAbi from "../../../artifacts/contracts/MojoCore.sol/MojoCore.json";
 /* Manually set our Contract Address */
-const contractAddress = "0x8da77B9Ef91929E28858C89f96AdCe5399a50d5e";
+const contractAddress = "0x2Ba3Ba5504E10547125fC869f0e9537a05bFa5c4";
 /* Setup Offline Storage */
 const db = new Storage("app");
 db.read();
@@ -224,7 +224,7 @@ export const useStore = defineStore({
 
           // Check if a user already has a table on Mumbai Testnet - chainId 80001
           const mainHashRes = await tableland.hash(
-            "CREATE TABLE mojo_80001 (id int, name text, description text, image text, external_url text, attributes text);"
+            "CREATE TABLE mojo_80001 (id int, external_link text);"
           );
           const appMainTableStructure = mainHashRes.structureHash;
 

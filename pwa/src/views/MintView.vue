@@ -187,7 +187,7 @@ import { fileSize, generateLink } from "../services/helpers";
 /* Import Smart Contract ABI */
 import contractAbi from "../../../artifacts/contracts/MojoCore.sol/MojoCore.json";
 /* Manually set our Contract Address */
-const contractAddress = "0x8da77B9Ef91929E28858C89f96AdCe5399a50d5e";
+const contractAddress = "0x2Ba3Ba5504E10547125fC869f0e9537a05bFa5c4";
 /* Console log with some style */
 const stylesContract = ["color: black", "background: #e9429b"].join(";");
 console.log("%c🏦 Mojo Contract Address %s 🏦", stylesContract, contractAddress);
@@ -376,93 +376,86 @@ export default {
           });
 
           // NFT Form Metadata Attributes
-          let attributes = [
-            {
-              display_type: "size",
-              trait_type: "Size",
-              value: size.value,
-            },
-            {
-              display_type: "created_at",
-              trait_type: "Created At",
-              value: createdAt.value,
-            },
-            {
-              display_type: "audio_video_type",
-              trait_type: "Audio Video Type",
-              value: audioVideoType.value,
-            },
-            {
-              display_type: "max_invocations",
-              trait_type: "Max Invocations",
-              value: maxInvocations.value,
-            },
-            {
-              display_type: "royalty",
-              trait_type: "Royalty Percentage",
-              value: royaltyPercentage.value,
-            },
-            {
-              display_type: "price",
-              trait_type: "Price",
-              value: price.value,
-            },
-            {
-              display_type: "title",
-              trait_type: "Title",
-              value: title.value,
-            },
-            {
-              display_type: "category",
-              trait_type: "Category",
-              value: category.value,
-            },
-            {
-              display_type: "license",
-              trait_type: "License",
-              value: license.value,
-            },
-            {
-              display_type: "website",
-              trait_type: "Website",
-              value: website.value,
-            },
-            {
-              display_type: "long_description",
-              trait_type: "Long Description",
-              value: longDescription.value,
-            },
-            {
-              display_type: "preview",
-              trait_type: "Preview",
-              value: preview.value,
-            },
-            {
-              display_type: "audio_video_url",
-              trait_type: "Audio Video URL",
-              value: audioVideoURL.value,
-            },
-            {
-              display_type: "resoultion",
-              trait_type: "Resoultion",
-              value: resoultion.value,
-            },
-            {
-              display_type: "duration",
-              trait_type: "Duration",
-              value: duration.value,
-            },
-          ];
+          // let attributes = [
+          //   {
+          //     display_type: "size",
+          //     trait_type: "Size",
+          //     value: size.value,
+          //   },
+          //   {
+          //     display_type: "created_at",
+          //     trait_type: "Created At",
+          //     value: createdAt.value,
+          //   },
+          //   {
+          //     display_type: "audio_video_type",
+          //     trait_type: "Audio Video Type",
+          //     value: audioVideoType.value,
+          //   },
+          //   {
+          //     display_type: "max_invocations",
+          //     trait_type: "Max Invocations",
+          //     value: maxInvocations.value,
+          //   },
+          //   {
+          //     display_type: "royalty",
+          //     trait_type: "Royalty Percentage",
+          //     value: royaltyPercentage.value,
+          //   },
+          //   {
+          //     display_type: "price",
+          //     trait_type: "Price",
+          //     value: price.value,
+          //   },
+          //   {
+          //     display_type: "title",
+          //     trait_type: "Title",
+          //     value: title.value,
+          //   },
+          //   {
+          //     display_type: "category",
+          //     trait_type: "Category",
+          //     value: category.value,
+          //   },
+          //   {
+          //     display_type: "license",
+          //     trait_type: "License",
+          //     value: license.value,
+          //   },
+          //   {
+          //     display_type: "website",
+          //     trait_type: "Website",
+          //     value: website.value,
+          //   },
+          //   {
+          //     display_type: "long_description",
+          //     trait_type: "Long Description",
+          //     value: longDescription.value,
+          //   },
+          //   {
+          //     display_type: "preview",
+          //     trait_type: "Preview",
+          //     value: preview.value,
+          //   },
+          //   {
+          //     display_type: "audio_video_url",
+          //     trait_type: "Audio Video URL",
+          //     value: audioVideoURL.value,
+          //   },
+          //   {
+          //     display_type: "resoultion",
+          //     trait_type: "Resoultion",
+          //     value: resoultion.value,
+          //   },
+          //   {
+          //     display_type: "duration",
+          //     trait_type: "Duration",
+          //     value: duration.value,
+          //   },
+          // ];
 
           /* Mint our NFT using complex Struct */
-          let nftTxn = await contract.safeMint(
-            name.value,
-            description.value,
-            imageUrl.value,
-            audioVideoType.value,
-            externalUrl.value,
-            []
-          );
+          let nftTxn = await contract.safeMint(signer.getAddress());
           /* Console log with some style */
           const stylesMining = ["color: black", "background: yellow"].join(";");
           console.log("%c⛏ Mining...please wait!  %s ⛏", stylesMining, nftTxn.hash);
@@ -510,9 +503,29 @@ export default {
               type: "success",
               message: `🧬 NFT has been minted successfully, see transaction<br />https://mumbai.polygonscan.com/tx/${nftTxn.hash}`,
             });
-
-            /* Set to NFT Metadata Attributes Tab to setup Tableland NFT metadata attributes */
-            switchToTab("two");
+            /* Reset our NFT Metadata Form Values */
+            name.value = "";
+            description.value = "";
+            externalUrl.value = "";
+            imageUrl.value = "";
+            maxInvocations.value = null;
+            royaltyPercentage.value = null;
+            price.value = null;
+            /* Reset our NFT Metadata Attributes Form Values */
+            title.value = "";
+            category.value = "";
+            license.value = "";
+            website.value = "";
+            longDescription.value = "";
+            preview.value = "";
+            audioVideoType.value = "";
+            audioVideoURL.value = "";
+            resoultion.value = "";
+            duration.value = "";
+            size.value = "";
+            createdAt.value = "";
+            /* Set to NFT Main Attributes Tab */
+            formTab.value("one");
             return;
           }
           notyf.error("Error minting NFT metadata!");
@@ -591,13 +604,7 @@ export default {
           const contract = new ethers.Contract(contractAddress, contractAbi.abi, signer);
           console.log("Talk to the wallet and pay gas fees", signer);
 
-          let nftTxn = await contract.updateNFT(
-            tokenId,
-            name.value,
-            description.value,
-            imageUrl.value,
-            externalUrl.value
-          );
+          let nftTxn = await contract.setExternalURL("https://testnets.opensea.io/assets/mumbai/");
           /* Console log with some style */
           const stylesUpdate = ["color: black", "background: yellow"].join(";");
           console.log("%c⏳ Updating NFT ...please wait! %s", stylesUpdate, nftTxn.hash);

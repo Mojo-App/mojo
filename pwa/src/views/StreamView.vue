@@ -40,51 +40,51 @@
   </section>
 </template>
 <script setup>
-import { ref, watch, onMounted } from 'vue';
-import { Notyf } from 'notyf';
-import { storeToRefs } from 'pinia';
+import { ref, watch, onMounted } from "vue";
+import { Notyf } from "notyf";
+import { storeToRefs } from "pinia";
 /* Import our Pinia Store */
-import { useStore } from '../store';
+import { useStore } from "../store";
 /* Components */
-import PlayButtonWhite from '../components/icons/PlayButtonWhite.vue';
-import TrackPlayer from '../components/TrackPlayer.vue';
+import PlayButtonWhite from "../components/icons/PlayButtonWhite.vue";
+import TrackPlayer from "../components/TrackPlayer.vue";
 
 /* Create an instance of Notyf with settings */
 var notyf = new Notyf({
   duration: 5000,
   position: {
-    x: 'center',
-    y: 'bottom',
+    x: "center",
+    y: "bottom",
   },
   types: [
     {
-      type: 'loading',
-      background: 'orange',
+      type: "loading",
+      background: "orange",
       duration: 15000,
       dismissible: true,
       icon: {
-        className: 'icon icon-loading',
-        tagName: 'i',
+        className: "icon icon-loading",
+        tagName: "i",
       },
     },
     {
-      type: 'success',
-      background: 'green',
+      type: "success",
+      background: "green",
       duration: 20000,
       dismissible: true,
       icon: {
-        className: 'icon icon-success',
-        tagName: 'i',
+        className: "icon icon-success",
+        tagName: "i",
       },
     },
     {
-      type: 'error',
-      background: 'indianred',
+      type: "error",
+      background: "indianred",
       duration: 10000,
       dismissible: true,
       icon: {
-        className: 'icon icon-error',
-        tagName: 'i',
+        className: "icon icon-error",
+        tagName: "i",
       },
     },
   ],
@@ -110,7 +110,7 @@ async function checkIfWalletIsConnected() {
       return;
     }
     /* Get our Current Account */
-    const accounts = await ethereum.request({ method: 'eth_accounts' });
+    const accounts = await ethereum.request({ method: "eth_accounts" });
     /* Update our Current Account in the Store */
     if (accounts.length !== 0) store.updateAccount(accounts[0]);
   } catch (error) {
@@ -119,25 +119,25 @@ async function checkIfWalletIsConnected() {
 }
 /* Track Player */
 const categories = ref([
-  { id: 1, label: 'Fresh Jams' },
-  { id: 2, label: 'Dance & Electronica' },
-  { id: 3, label: 'Pop' },
-  { id: 4, label: 'Jazz & Classical' },
-  { id: 5, label: 'World & Ethnic' },
-  { id: 6, label: 'Cinematic & Soundscapes' },
-  { id: 7, label: 'More' },
+  { id: 1, label: "Fresh Jams" },
+  { id: 2, label: "Dance & Electronica" },
+  { id: 3, label: "Pop" },
+  { id: 4, label: "Jazz & Classical" },
+  { id: 5, label: "World & Ethnic" },
+  { id: 6, label: "Cinematic & Soundscapes" },
+  { id: 7, label: "More" },
 ]);
 /* Select a new Category */
 function selectCategory(category) {
   categorySelectedId.value = category.id;
-  console.log('categorySelectedId:', categorySelectedId.value);
+  console.log("categorySelectedId:", categorySelectedId.value);
 }
 /* Fetch new NFT audio/media by Category or Name */
 async function fetchData() {
   categoryTracks.value = await store.searchNfts(categorySelectedId.value);
   /* Console log with some style */
-  const stylesTracks = ['color: black', 'background: yellow'].join(';');
-  console.log('%c📻 NFT Audio/Media fetched : %s 📻', stylesTracks, categoryTracks.value);
+  const stylesTracks = ["color: black", "background: yellow"].join(";");
+  console.log("%c📻 NFT Audio/Media fetched : %s 📻", stylesTracks, categoryTracks.value);
 }
 /* Watch for Category Changes */
 watch(categorySelectedId, fetchData);
@@ -147,8 +147,8 @@ onMounted(() => {
 });
 </script>
 <style lang="scss" scoped>
-@import '../assets/styles/variables.scss';
-@import '../assets/styles/mixins.scss';
+@import "../assets/styles/variables.scss";
+@import "../assets/styles/mixins.scss";
 
 section#content {
   position: relative;

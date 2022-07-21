@@ -9,14 +9,14 @@
   </section>
 </template>
 <script>
-import { provide } from 'vue';
-import { Notyf } from 'notyf';
+import { provide } from "vue";
+import { Notyf } from "notyf";
 /* Components */
-import PanelUpload from '../components/VUpload/PanelUpload.vue';
-import PanelResult from '../components/VUpload/PanelResult.vue';
+import PanelUpload from "../components/VUpload/PanelUpload.vue";
+import PanelResult from "../components/VUpload/PanelResult.vue";
 /* LFG */
 export default {
-  name: 'UploadView',
+  name: "UploadView",
   components: {
     PanelUpload,
     PanelResult,
@@ -25,29 +25,29 @@ export default {
     const NotfyProvider = new Notyf({
       duration: 2000,
       position: {
-        x: 'center',
-        y: 'bottom',
+        x: "center",
+        y: "bottom",
       },
       types: [
         {
-          type: 'loading',
-          background: 'orange',
+          type: "loading",
+          background: "orange",
           duration: 0,
           dismissible: true,
           icon: {
-            className: 'icon icon-loading',
-            tagName: 'i',
+            className: "icon icon-loading",
+            tagName: "i",
           },
         },
       ],
     });
-    provide('notyf', NotfyProvider);
+    provide("notyf", NotfyProvider);
   },
 };
 </script>
 <style lang="scss" scoped>
-@import '../assets/styles/variables.scss';
-@import '../assets/styles/mixins.scss';
+@import "../assets/styles/variables.scss";
+@import "../assets/styles/mixins.scss";
 
 section#content {
   position: relative;
