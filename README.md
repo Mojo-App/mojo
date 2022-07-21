@@ -34,9 +34,9 @@ GAS_REPORT=true npx hardhat test
 
 This project will only deploy to Mumbai Testnet due to the address registry passed to the contract constructor function
 
-Mojo NFT Core smart contract deployed to:  0xC57E286cE48b6d5Fb1DC70340DCb2D5e74274DE7
+Mojo NFT Core smart contract deployed to: 0x9CA5D338f3cB8c76cC14B81058F9c1f7c3914bA4
 
-Mojo Token smart contract deployed to:  0x424B6A8beF4c0807c1db53f21ea8bB8217B3AC7e
+Mojo Token smart contract deployed to: 0x424B6A8beF4c0807c1db53f21ea8bB8217B3AC7e
 
 ```shell
 npx hardhat run scripts/deploy.js --network alchemy

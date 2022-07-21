@@ -175,68 +175,68 @@
   </section>
 </template>
 <script>
-import { ref, computed, onMounted } from 'vue';
-import { ethers } from 'ethers';
-import { Notyf } from 'notyf';
-import { storeToRefs } from 'pinia';
+import { ref, computed, onMounted } from "vue";
+import { ethers } from "ethers";
+import { Notyf } from "notyf";
+import { storeToRefs } from "pinia";
 /* Import our Pinia Store */
-import { useStore } from '../store';
+import { useStore } from "../store";
 /* Import our IPFS Services */
-import { uploadBlob } from '../services/ipfs.js';
-import { fileSize, generateLink } from '../services/helpers';
+import { uploadBlob } from "../services/ipfs.js";
+import { fileSize, generateLink } from "../services/helpers";
 /* Import Smart Contract ABI */
-import contractAbi from '../../../artifacts/contracts/MojoCore.sol/MojoCore.json';
+import contractAbi from "../../../artifacts/contracts/MojoCore.sol/MojoCore.json";
 /* Manually set our Contract Address */
-const contractAddress = '0xC57E286cE48b6d5Fb1DC70340DCb2D5e74274DE7';
+const contractAddress = "0x58364cDc29aCF05E9a914A8c25e49E9267C8Ca73";
 /* Console log with some style */
-const stylesContract = ['color: black', 'background: cyan'].join(';');
-console.log('%c🏦 Mojo Contract Address %s 🏦', stylesContract, contractAddress);
-const stylesAbi = ['color: black', 'background: cyan'].join(';');
-console.log('%c🧭 Contract ABI Source %s 🧭', stylesAbi, contractAbi.sourceName);
+const stylesContract = ["color: black", "background: cyan"].join(";");
+console.log("%c🏦 Mojo Contract Address %s 🏦", stylesContract, contractAddress);
+const stylesAbi = ["color: black", "background: cyan"].join(";");
+console.log("%c🧭 Contract ABI Source %s 🧭", stylesAbi, contractAbi.sourceName);
 /* Import Components */
-import ConnectWalletButton from '../components/ConnectWalletButton.vue';
-import ArrowBack from '../assets/svgs/ArrowBack.vue';
+import ConnectWalletButton from "../components/ConnectWalletButton.vue";
+import ArrowBack from "../assets/svgs/ArrowBack.vue";
 /* LFG */
 export default {
-  name: 'MintView',
+  name: "MintView",
   components: [ConnectWalletButton, ArrowBack],
   setup() {
     /* Create an instance of Notyf with settings */
     var notyf = new Notyf({
       duration: 5000,
       position: {
-        x: 'center',
-        y: 'bottom',
+        x: "center",
+        y: "bottom",
       },
       types: [
         {
-          type: 'loading',
-          background: 'orange',
+          type: "loading",
+          background: "orange",
           duration: 15000,
           dismissible: true,
           icon: {
-            className: 'icon icon-loading',
-            tagName: 'i',
+            className: "icon icon-loading",
+            tagName: "i",
           },
         },
         {
-          type: 'success',
-          background: 'green',
+          type: "success",
+          background: "green",
           duration: 20000,
           dismissible: true,
           icon: {
-            className: 'icon icon-success',
-            tagName: 'i',
+            className: "icon icon-success",
+            tagName: "i",
           },
         },
         {
-          type: 'error',
-          background: 'indianred',
+          type: "error",
+          background: "indianred",
           duration: 10000,
           dismissible: true,
           icon: {
-            className: 'icon icon-error',
-            tagName: 'i',
+            className: "icon icon-error",
+            tagName: "i",
           },
         },
       ],
@@ -246,7 +246,7 @@ export default {
     // Metamask Account
     const { account } = storeToRefs(store);
     // Set Form Tab
-    const formTab = ref('one');
+    const formTab = ref("one");
     // File Uploader
     const fileRef = ref(null);
     const isDragged = ref(false);
@@ -255,30 +255,30 @@ export default {
 
     // NFT Form Metadata fields
     const tokenId = ref();
-    const cid = ref('');
+    const cid = ref("");
     // Visible on form, above hidden on form
-    const name = ref('');
-    const description = ref('');
-    const externalUrl = ref('');
-    const imageUrl = ref('');
+    const name = ref("");
+    const description = ref("");
+    const externalUrl = ref("");
+    const imageUrl = ref("");
     // Calculated on Mint and IPFS upload
-    const size = ref('');
-    const createdAt = ref('');
+    const size = ref("");
+    const createdAt = ref("");
 
     // NFT Form Metadata Attributes
-    const audioVideoType = ref('');
+    const audioVideoType = ref("");
     const maxInvocations = ref(null);
     const royaltyPercentage = ref(null);
     const price = ref(null);
-    const title = ref('');
-    const category = ref('');
-    const license = ref('');
-    const website = ref('');
-    const longDescription = ref('');
-    const preview = ref('');
-    const audioVideoURL = ref('');
-    const resoultion = ref('');
-    const duration = ref('');
+    const title = ref("");
+    const category = ref("");
+    const license = ref("");
+    const website = ref("");
+    const longDescription = ref("");
+    const preview = ref("");
+    const audioVideoURL = ref("");
+    const resoultion = ref("");
+    const duration = ref("");
     /**
      * Check if our Wallet is Connected to Metamask
      */
@@ -290,10 +290,10 @@ export default {
         const { ethereum } = window;
         if (!ethereum) {
           notyf.error(`⛽ Please connect Metamask to continue!`);
-          console.log('Error: No ethereum window object');
+          console.log("Error: No ethereum window object");
           return;
         }
-        const accounts = await ethereum.request({ method: 'eth_accounts' });
+        const accounts = await ethereum.request({ method: "eth_accounts" });
         /* Update our Current Account in the Store */
         if (accounts.length !== 0) store.updateAccount(accounts[0]);
       } catch (error) {
@@ -310,22 +310,22 @@ export default {
        */
       if (!name.value) {
         notyf.error(`Please enter a name to continue!`);
-        switchToTab('one');
+        switchToTab("one");
         return;
       }
       if (name.value.length < 3) {
         notyf.error(`Name must be longer then 3 characters!`);
-        switchToTab('one');
+        switchToTab("one");
         return;
       }
       if (!imageUrl.value) {
         notyf.error(`Please upload an image to continue!`);
-        switchToTab('one');
+        switchToTab("one");
         return;
       }
       if (imageUrl.value.length < 10) {
         notyf.error(`Please upload a valid image to continue!`);
-        switchToTab('one');
+        switchToTab("one");
         return;
       }
       /**
@@ -333,18 +333,18 @@ export default {
        */
       if (!description.value) {
         notyf.error(`Please enter a description to continue!`);
-        switchToTab('one');
+        switchToTab("one");
         return;
       }
       if (description.value.length < 10) {
         notyf.error(`Description must be longer then 10 characters!`);
-        switchToTab('one');
+        switchToTab("one");
         return;
       }
       /* Init loading indicator */
       const loadingIndicator = notyf.open({
-        type: 'loading',
-        message: '⏳ Please wait while we get our mojo on! Minting NFT shortly...',
+        type: "loading",
+        message: "⏳ Please wait while we get our mojo on! Minting NFT shortly...",
       });
       /**
        * Mint our NFT with fresh metadata
@@ -356,46 +356,45 @@ export default {
           const signer = provider.getSigner();
           const contract = new ethers.Contract(contractAddress, contractAbi.abi, signer);
           /* Console log with some style */
-          const styles = ['color: black', 'background: green'].join(';');
-          console.log('%c🎧 Mojo Core Smart Contract Address:  %s 🎧', styles, contractAddress);
+          const styles = ["color: black", "background: green"].join(";");
+          console.log("%c🎧 Mojo Core Smart Contract Address:  %s 🎧", styles, contractAddress);
           /**
            *  Receive Emitted Event from Contract
            *  @dev See NewNftMinted emitted from our smart contract safeMint function
            */
-          contract.on('NewNftMinted', (receiver, timestamp, tokenId) => {
-            console.log('receiver ', receiver);
+          contract.on("NewNftMinted", (receiver, timestamp, tokenId) => {
+            console.log("receiver ", receiver);
 
-            console.log('timestamp ', timestamp);
+            console.log("timestamp ", timestamp);
             const createdTime = new Date(timestamp);
-            console.log('createdTime ', createdTime);
+            console.log("createdTime ", createdTime);
 
-            createdAt.value = new Intl.DateTimeFormat('en-US').format(createdTime);
-            console.log('createdAt.value ', createdAt.value);
+            createdAt.value = new Intl.DateTimeFormat("en-US").format(createdTime);
+            console.log("createdAt.value ", createdAt.value);
 
-            console.log('tokenId ', tokenId.toNumber());
+            console.log("tokenId ", tokenId.toNumber());
             tokenId.value = tokenId.toNumber();
-            console.log('tokenId.value ', tokenId.value);
+            console.log("tokenId.value ", tokenId.value);
           });
 
           /* Mint our NFT using complex Struct */
-          let nftTxn = await contract.safeMint(signer.getAddress(), [
-            ethers.BigNumber.from('0'),
+          let nftTxn = await contract.safeMint(
+            signer.getAddress(),
             name.value,
             description.value,
-            imageUrl.value,
-            externalUrl.value,
-          ]);
+            imageUrl.value
+          );
           /* Console log with some style */
-          const stylesMining = ['color: black', 'background: yellow'].join(';');
-          console.log('%c⛏ Mining...please wait!  %s ⛏', stylesMining, nftTxn.hash);
+          const stylesMining = ["color: black", "background: yellow"].join(";");
+          console.log("%c⛏ Mining...please wait!  %s ⛏", stylesMining, nftTxn.hash);
           // The OpenZeppelin base ERC721 contract emits a Transfer event
           // when a token is issued. tx.wait() will wait until a block containing
           // our transaction has been mined and confirmed. The transaction receipt
           // contains events emitted while processing the transaction.
           const receipt = await nftTxn.wait();
           /* Console log with some style */
-          const stylesReceipt = ['color: black', 'background: yellow'].join(';');
-          console.log('%c💎 We just mined another gem! %s 💎', stylesReceipt, nftTxn.hash);
+          const stylesReceipt = ["color: black", "background: yellow"].join(";");
+          console.log("%c💎 We just mined another gem! %s 💎", stylesReceipt, nftTxn.hash);
           /* Check our Transaction results */
           if (receipt.status === 1) {
             /**
@@ -403,7 +402,7 @@ export default {
              * Currently set to use Polygon Mumbai Testnet
              */
             /* Console log with some style */
-            const stylesPolygon = ['color: white', 'background: #7e44df'].join(';');
+            const stylesPolygon = ["color: white", "background: #7e44df"].join(";");
             console.log(
               `%c🧬 NFT Minted on Polygon, see transaction: https://mumbai.polygonscan.com/tx/${nftTxn.hash} %s`,
               stylesPolygon,
@@ -412,14 +411,36 @@ export default {
             /* Remove loading indicator and show success notification */
             notyf.dismiss(loadingIndicator);
             notyf.open({
-              type: 'success',
+              type: "success",
               message: `🧬 NFT has been minted successfully, see transaction: https://mumbai.polygonscan.com/tx/${nftTxn.hash}`,
             });
             /* Set to NFT Metadata Attributes Tab to setup Tableland NFT metadata attributes */
-            formTab.value = 'two';
+            /* Reset our NFT Metadata Form Values */
+            name.value = "";
+            description.value = "";
+            externalUrl.value = "";
+            imageUrl.value = "";
+            maxInvocations.value = null;
+            royaltyPercentage.value = null;
+            price.value = null;
+            /* Reset our NFT Metadata Attributes Form Values */
+            title.value = "";
+            category.value = "";
+            license.value = "";
+            website.value = "";
+            longDescription.value = "";
+            preview.value = "";
+            audioVideoType.value = "";
+            audioVideoURL.value = "";
+            resoultion.value = "";
+            duration.value = "";
+            size.value = "";
+            createdAt.value = "";
+            /* Set to NFT Main Attributes Tab */
+            switchToTab("one");
             return;
           }
-          notyf.error('Error minting NFT metadata!');
+          notyf.error("Error minting NFT metadata!");
           return;
         } else {
           notyf.dismiss(loadingIndicator);
@@ -427,7 +448,7 @@ export default {
         }
       } catch (error) {
         notyf.dismiss(loadingIndicator);
-        console.log('error', error);
+        console.log("error", error);
       }
     };
     /**
@@ -444,22 +465,22 @@ export default {
        */
       if (!name.value) {
         notyf.error(`Please enter a name to continue!`);
-        formTab.value = 'one';
+        formTab.value = "one";
         return;
       }
       if (name.value.length < 3) {
         notyf.error(`NFT name must be longer then 3 characters!`);
-        formTab.value = 'one';
+        formTab.value = "one";
         return;
       }
       if (!imageUrl.value) {
         notyf.error(`Please enter a imageUrl to continue!`);
-        formTab.value = 'one';
+        formTab.value = "one";
         return;
       }
       if (imageUrl.value.length < 10) {
         notyf.error(`NFT image Url must be longer then 10 characters!`);
-        formTab.value = 'one';
+        formTab.value = "one";
         return;
       }
       /**
@@ -467,18 +488,18 @@ export default {
        */
       if (!description.value) {
         notyf.error(`Please enter a description to continue!`);
-        formTab.value = 'one';
+        formTab.value = "one";
         return;
       }
       if (description.value.length < 10) {
         notyf.error(`NFT description must be longer then 10 characters!`);
-        formTab.value = 'one';
+        formTab.value = "one";
         return;
       }
       /* Init loading indicator */
       const loadingIndicator = notyf.open({
-        type: 'loading',
-        message: '⏳ Please wait while we update your NFT metadata.',
+        type: "loading",
+        message: "⏳ Please wait while we update your NFT metadata.",
       });
 
       /**
@@ -493,35 +514,35 @@ export default {
            *  @dev Note: Reset this once Contracts deployed or re-dployed
            */
           const contract = new ethers.Contract(contractAddress, contractAbi.abi, signer);
-          console.log('Talk to the wallet and pay gas fees', signer);
+          console.log("Talk to the wallet and pay gas fees", signer);
 
-          let nftTxn = await contract.updateNFT([
+          let nftTxn = await contract.updateNFT(
             tokenId,
             name.value,
             description.value,
             imageUrl.value,
-            externalUrl.value,
-          ]);
+            externalUrl.value
+          );
           /* Console log with some style */
-          const stylesUpdate = ['color: black', 'background: yellow'].join(';');
-          console.log('%c⏳ Updating NFT ...please wait! %s', stylesUpdate, nftTxn.hash);
+          const stylesUpdate = ["color: black", "background: yellow"].join(";");
+          console.log("%c⏳ Updating NFT ...please wait! %s", stylesUpdate, nftTxn.hash);
           // The OpenZeppelin base ERC721 contract emits a Transfer event
           // when a token is issued. tx.wait() will wait until a block containing
           // our transaction has been mined and confirmed. The transaction receipt
           // contains events emitted while processing the transaction.
           /* Console log with some style */
-          const stylesMining = ['color: black', 'background: yellow'].join(';');
-          console.log('%c⛏ Mining...please wait! ⛏ %s', stylesMining, nftTxn.hash);
+          const stylesMining = ["color: black", "background: yellow"].join(";");
+          console.log("%c⛏ Mining...please wait! ⛏ %s", stylesMining, nftTxn.hash);
           const receipt = await nftTxn.wait();
           /* Console log with some style */
-          const stylesReceipt = ['color: black', 'background: yellow'].join(';');
-          console.log('%c💎 Congrats on polishing your gem! 💎 %s', stylesReceipt, nftTxn.hash);
+          const stylesReceipt = ["color: black", "background: yellow"].join(";");
+          console.log("%c💎 Congrats on polishing your gem! 💎 %s", stylesReceipt, nftTxn.hash);
           if (receipt.status === 1) {
             /**
              * @dev NOTE: Switch up these links once we go to Production
              * Currently set to use Polygon Mumbai Testnet
              */
-            const stylesPolygon = ['color: white', 'background: #7e44df'].join(';');
+            const stylesPolygon = ["color: white", "background: #7e44df"].join(";");
             console.log(
               `%c🔧 NFT metadata updated on Tableland, see transaction: https://mumbai.polygonscan.com/tx/${nftTxn.hash} %s`,
               stylesPolygon,
@@ -533,30 +554,30 @@ export default {
               `🧬 NFT has been updated successfully, see transaction: https://mumbai.polygonscan.com/tx/${nftTxn.hash}`
             );
             /* Reset our NFT Metadata Form Values */
-            name.value = '';
-            description.value = '';
-            externalUrl.value = '';
-            imageUrl.value = '';
+            name.value = "";
+            description.value = "";
+            externalUrl.value = "";
+            imageUrl.value = "";
             maxInvocations.value = null;
             royaltyPercentage.value = null;
             price.value = null;
             /* Reset our NFT Metadata Attributes Form Values */
-            title.value = '';
-            category.value = '';
-            license.value = '';
-            website.value = '';
-            longDescription.value = '';
-            preview.value = '';
-            audioVideoType.value = '';
-            audioVideoURL.value = '';
-            resoultion.value = '';
-            duration.value = '';
-            size.value = '';
-            createdAt.value = '';
+            title.value = "";
+            category.value = "";
+            license.value = "";
+            website.value = "";
+            longDescription.value = "";
+            preview.value = "";
+            audioVideoType.value = "";
+            audioVideoURL.value = "";
+            resoultion.value = "";
+            duration.value = "";
+            size.value = "";
+            createdAt.value = "";
             /* Set to NFT Main Attributes Tab */
-            formTab.value('one');
+            formTab.value("one");
           }
-          notyf.error('Error updating NFT metadata!');
+          notyf.error("Error updating NFT metadata!");
           return;
         } else {
           notyf.dismiss(loadingIndicator);
@@ -564,7 +585,7 @@ export default {
         }
       } catch (error) {
         notyf.dismiss(loadingIndicator);
-        console.log('error', error);
+        console.log("error", error);
       }
     };
     /**
@@ -607,14 +628,14 @@ export default {
       /* Set our NFT Metadata Form Values using IPFS best practises */
       cid.value = uploadResult.data.cid;
 
-      if (formTab.value === 'three') {
+      if (formTab.value === "three") {
         /* Generate and IPFS URI for Audio/Media */
         audioVideoURL.value = generateLink(uploadResult.data);
       } else {
         /* Strip image type off our name eg, .png, .jpeg */
         name.value = uploadResult.data.file.name.substring(
           0,
-          uploadResult.data.file.name.lastIndexOf('.')
+          uploadResult.data.file.name.lastIndexOf(".")
         );
         /* Generate and IPFS URI for NFT's */
         imageUrl.value = generateLink(uploadResult.data);
@@ -635,7 +656,7 @@ export default {
       try {
         let results = await Promise.all(files);
         const successfully = results.filter(({ error }) => !error);
-        console.log('Successfully uploaded', successfully[0].data);
+        console.log("Successfully uploaded", successfully[0].data);
         if (successfully.length > 0) {
           notyf.success(`${successfully.length} files successfully uploaded to IPFS`);
         }
@@ -651,7 +672,7 @@ export default {
         finished.value = 0;
         isUploading.value = false;
       } finally {
-        console.log('finally');
+        console.log("finally");
         finished.value = 0;
         isUploading.value = false;
       }
@@ -718,8 +739,8 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import '../assets/styles/variables.scss';
-@import '../assets/styles/mixins.scss';
+@import "../assets/styles/variables.scss";
+@import "../assets/styles/mixins.scss";
 
 section#content {
   display: flex;
@@ -888,7 +909,7 @@ section#content {
                 background-color: var(--gradient-800);
 
                 &:before {
-                  content: '';
+                  content: "";
                   position: absolute;
                   background-color: inherit;
                   top: 0;
@@ -899,7 +920,7 @@ section#content {
                 }
 
                 &:after {
-                  content: '';
+                  content: "";
                   position: absolute;
                   background-color: inherit;
                   top: 0;
