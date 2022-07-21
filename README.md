@@ -34,7 +34,8 @@ GAS_REPORT=true npx hardhat test
 
 This project will only deploy to Mumbai Testnet due to the address registry passed to the contract constructor function
 
-MojoCore smart contract deployed to:  0xa8533121Ae08dc3ec3fbfED9508abc0B35F32D6c
+Mojo NFT Core smart contract deployed to:  0xC57E286cE48b6d5Fb1DC70340DCb2D5e74274DE7
+
 Mojo Token smart contract deployed to:  0x424B6A8beF4c0807c1db53f21ea8bB8217B3AC7e
 
 ```shell

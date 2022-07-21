@@ -254,7 +254,7 @@ section#content {
         .player-graphic {
           width: 100%;
           margin: 0 auto;
-          padding: 0 10px;
+          padding: 0;
           overflow: hidden;
 
           @include breakpoint($medium) {
@@ -263,8 +263,7 @@ section#content {
 
           img,
           svg {
-            width: 100%;
-            height: 100%;
+            width: 90%;
             object-fit: cover;
             overflow: hidden;
           }

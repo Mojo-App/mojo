@@ -68,9 +68,6 @@
               <div class="input-row hidden">
                 <input type="text" placeholder="Content ID" v-model="cid" />
               </div>
-              <div class="input-row hidden">
-                <input type="text" v-model="backgroundColor" />
-              </div>
               <div class="input-row">
                 <input type="text" placeholder="Name" v-model="name" />
               </div>
@@ -190,7 +187,7 @@ import { fileSize, generateLink } from '../services/helpers';
 /* Import Smart Contract ABI */
 import contractAbi from '../../../artifacts/contracts/MojoCore.sol/MojoCore.json';
 /* Manually set our Contract Address */
-const contractAddress = '0xa8533121Ae08dc3ec3fbfED9508abc0B35F32D6c';
+const contractAddress = '0xC57E286cE48b6d5Fb1DC70340DCb2D5e74274DE7';
 /* Console log with some style */
 const stylesContract = ['color: black', 'background: cyan'].join(';');
 console.log('%c🏦 Mojo Contract Address %s 🏦', stylesContract, contractAddress);
@@ -259,7 +256,6 @@ export default {
     // NFT Form Metadata fields
     const tokenId = ref();
     const cid = ref('');
-    const backgroundColor = ref('ffffff');
     // Visible on form, above hidden on form
     const name = ref('');
     const description = ref('');
@@ -388,8 +384,6 @@ export default {
             description.value,
             imageUrl.value,
             externalUrl.value,
-            backgroundColor.value,
-            '',
           ]);
           /* Console log with some style */
           const stylesMining = ['color: black', 'background: yellow'].join(';');
@@ -423,6 +417,7 @@ export default {
             });
             /* Set to NFT Metadata Attributes Tab to setup Tableland NFT metadata attributes */
             formTab.value = 'two';
+            return;
           }
           notyf.error('Error minting NFT metadata!');
           return;
@@ -506,8 +501,6 @@ export default {
             description.value,
             imageUrl.value,
             externalUrl.value,
-            backgroundColor.value,
-            '',
           ]);
           /* Console log with some style */
           const stylesUpdate = ['color: black', 'background: yellow'].join(';');
@@ -544,7 +537,6 @@ export default {
             description.value = '';
             externalUrl.value = '';
             imageUrl.value = '';
-            backgroundColor.value = 'ffffff';
             maxInvocations.value = null;
             royaltyPercentage.value = null;
             price.value = null;
@@ -695,7 +687,6 @@ export default {
       description,
       externalUrl,
       imageUrl,
-      backgroundColor,
       maxInvocations,
       royaltyPercentage,
       price,

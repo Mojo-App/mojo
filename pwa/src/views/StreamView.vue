@@ -26,11 +26,14 @@
               :key="track.id"
             ></TrackPlayer>
           </div>
-          <p v-if="!categoryTracks"></p>
-          <h2>Please be patient while we spin another mix...</h2>
-          <img src="../assets/images/DJ.png" alt="DJ Saved my Life" />
-          <p>Account: {{ account }}</p>
-          <p>Tracks: {{ categoryTracks }}</p>
+          <div v-if="!categoryTracks">
+            <h2>Please be patient while we spin another mix...</h2>
+            <div class="dj-graphic">
+              <img src="../assets/images/DJ.png" alt="DJ Saved my Life" />
+            </div>
+            <p>Account: {{ account }}</p>
+            <p>Tracks: {{ categoryTracks }}</p>
+          </div>
         </div>
       </section>
     </div>
@@ -166,7 +169,7 @@ section#content {
       align-content: center;
       align-items: center;
       justify-content: center;
-      padding: 0;
+      padding: 0 10px;
       overflow: hidden;
 
       @include breakpoint($medium) {
@@ -198,13 +201,43 @@ section#content {
         align-content: center;
         justify-content: center;
         align-items: center;
-        padding: 60px 20px 0;
+        padding: 0;
+        @include breakpoint($medium) {
+          padding: 60px 20px 0;
+        }
 
         .track-list {
           width: 100%;
           max-width: 960px;
           display: inline-block;
           margin: 0 auto;
+        }
+
+        .dj-graphic {
+          width: 100%;
+          margin: 20px auto 0;
+          padding: 0 10px;
+          overflow: hidden;
+
+          @include breakpoint($medium) {
+            padding: 0;
+          }
+
+          img,
+          svg {
+            width: 85%;
+            height: auto;
+            object-fit: cover;
+            overflow: hidden;
+          }
+        }
+
+        h2 {
+          font-size: 2rem;
+          margin: 0;
+          @include breakpoint($medium) {
+            font-size: 2.45rem;
+          }
         }
       }
 

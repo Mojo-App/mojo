@@ -20,7 +20,7 @@ async function main() {
     '0x4b48841d4b32c4650e4abc117a03fe8b51f38f68'
   );
   await mojoContract.deployed();
-  console.log('MojoCore smart contract deployed to: ', mojoContract.address);
+  console.log('Mojo Core smart contract deployed to: ', mojoContract.address);
 
   // Call the function.
   // let nftURI = "URI_HERE";
