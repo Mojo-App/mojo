@@ -109,7 +109,7 @@ export const useStore = defineStore({
       this.loading = value;
     },
     /**
-     * Get User Metamask Account Balance
+     * Get User 🦊 Metamask Account Balance
      */
     async getBalance() {
       this.setLoader(true);

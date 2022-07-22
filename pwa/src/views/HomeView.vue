@@ -162,7 +162,7 @@ var notyf = new Notyf({
 });
 // Init Store
 const store = useStore();
-// Metamask Account
+// 🦊 Metamask Account
 const { account } = storeToRefs(store);
 const categoryTracks = ref(null);
 /**

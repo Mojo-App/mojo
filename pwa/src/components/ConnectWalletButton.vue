@@ -7,21 +7,21 @@ defineProps({
   },
 });
 /* Define Emits */
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(["update:modelValue"]);
 /* Connect Wallet method */
 async function connectWallet() {
   const { ethereum } = window;
   try {
     if (!ethereum) {
-      alert('⛽ Please connect Metamask to continue!');
+      alert("Please connect 🦊 Metamask to continue!");
       return;
     }
     const accounts = await ethereum.request({
-      method: 'eth_requestAccounts',
+      method: "eth_requestAccounts",
     });
-    emit('update:modelValue', accounts[0]);
+    emit("update:modelValue", accounts[0]);
   } catch (error) {
-    console.log('Error', error);
+    console.log("Error", error);
   }
 }
 </script>

@@ -77,8 +77,8 @@ section#content {
         height: 360px;
 
         @include breakpoint($breakpoint-sm) {
-          width: 100%;
-          height: 400px;
+          width: 400px;
+          height: 500px;
         }
         @include breakpoint($breakpoint-md) {
           width: 500px;

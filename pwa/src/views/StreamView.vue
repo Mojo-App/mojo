@@ -97,7 +97,7 @@ const { account } = storeToRefs(store);
 const categorySelectedId = ref(1);
 const categoryTracks = ref(null);
 /**
- * Check if our Wallet is Connected to Metamask
+ * Check if our Wallet is Connected to 🦊 Metamask
  */
 async function checkIfWalletIsConnected() {
   try {
@@ -106,7 +106,7 @@ async function checkIfWalletIsConnected() {
      */
     const { ethereum } = window;
     if (!ethereum) {
-      notyf.error(`⛽ Please connect Metamask to continue!`);
+      notyf.error(`Please connect 🦊 Metamask to continue!`);
       return;
     }
     /* Get our Current Account */
@@ -133,12 +133,26 @@ function selectCategory(category) {
   console.log("categorySelectedId:", categorySelectedId.value);
 }
 /* Fetch new NFT audio/media by Category or Name */
+// async function fetchData() {
+//   categoryTracks.value = await store.searchNfts(categorySelectedId.value);
+//   /* Console log with some style */
+//   const stylesTracks = ["color: black", "background: yellow"].join(";");
+//   console.log("%c📻 NFT Audio/Media fetched : %s 📻", stylesTracks, categoryTracks.value);
+// }
+
+/**
+ * Fetch NFT Audio/Media data
+ * @dev WIP: This will change to pull our NFTs and their metadata from Tableland
+ */
 async function fetchData() {
-  categoryTracks.value = await store.searchNfts(categorySelectedId.value);
-  /* Console log with some style */
-  const stylesTracks = ["color: black", "background: yellow"].join(";");
-  console.log("%c📻 NFT Audio/Media fetched : %s 📻", stylesTracks, categoryTracks.value);
+  categoryTracks.value = null;
+  const res = await fetch(
+    `https://testnet.tableland.network/query?mode=list&s=SELECT%20*%20FROM%20mojo_80001_417`
+  );
+  console.log("Tracks Loaded:", res);
+  categoryTracks.value = await res.json();
 }
+
 /* Watch for Category Changes */
 watch(categorySelectedId, fetchData);
 fetchData();
