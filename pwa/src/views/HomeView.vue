@@ -62,10 +62,10 @@
       <section id="sponsors">
         <div class="row">
           <div class="sponsors-logo">
-            <PolygonLogo />
+            <SpheronLogo />
           </div>
           <div class="sponsors-logo">
-            <SpheronLogo />
+            <PolygonLogo />
           </div>
           <div class="sponsors-logo">
             <Tableland />
@@ -74,10 +74,7 @@
             <img alt="IPFS" src="@/assets/images/IPFS.png" height="38" />
           </div>
           <div class="sponsors-logo">
-            <Filecoin />
-          </div>
-          <div class="sponsors-logo">
-            <MetaMask />
+            <NFTStorage />
           </div>
         </div>
       </section>
@@ -118,8 +115,7 @@ import TrackPlayer from "../components/TrackPlayer.vue";
 import Tableland from "../assets/svgs/TableLand.vue";
 import SpheronLogo from "../assets/svgs/SpheronLogo.vue";
 import PolygonLogo from "../assets/svgs/PolygonLogo.vue";
-import Filecoin from "../assets/svgs/Filecoin.vue";
-import MetaMask from "../assets/svgs/MetaMask.vue";
+import NFTStorage from "../assets/svgs/NFTStorage.vue";
 /* Create an instance of Notyf with settings */
 var notyf = new Notyf({
   duration: 5000,

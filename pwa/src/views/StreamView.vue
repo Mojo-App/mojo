@@ -19,21 +19,21 @@
           </ul>
         </div>
         <div class="right">
-          <div v-if="categoryTracks" class="track-list">
+          <div class="track-list">
             <TrackPlayer
               v-for="track in categoryTracks"
               :track="track"
               :key="track.id"
             ></TrackPlayer>
           </div>
-          <div v-if="!categoryTracks">
+          <!-- <div v-if="!categoryTracks">
             <h2>Please be patient while we spin another mix...</h2>
             <div class="dj-graphic">
               <img src="../assets/images/DJ.png" alt="DJ Saved my Life" />
             </div>
             <p>Account: {{ account }}</p>
             <p>Tracks: {{ categoryTracks }}</p>
-          </div>
+          </div> -->
         </div>
       </section>
     </div>
@@ -48,7 +48,6 @@ import { useStore } from "../store";
 /* Components */
 import PlayButtonWhite from "../components/icons/PlayButtonWhite.vue";
 import TrackPlayer from "../components/TrackPlayer.vue";
-
 /* Create an instance of Notyf with settings */
 var notyf = new Notyf({
   duration: 5000,
@@ -132,6 +131,17 @@ function selectCategory(category) {
   categorySelectedId.value = category.id;
   console.log("categorySelectedId:", categorySelectedId.value);
 }
+/**
+ * Fetch NFT Audio/Media data
+ * @dev WIP: This will change to pull our NFTs and their metadata from Tableland
+ */
+async function fetchData() {
+  categoryTracks.value = null;
+  const res = await fetch(`./tracks/6.json`);
+  console.log("Tracks Loaded:", res);
+  categoryTracks.value = await res.json();
+}
+
 /* Fetch new NFT audio/media by Category or Name */
 // async function fetchData() {
 //   categoryTracks.value = await store.searchNfts(categorySelectedId.value);
@@ -144,14 +154,14 @@ function selectCategory(category) {
  * Fetch NFT Audio/Media data
  * @dev WIP: This will change to pull our NFTs and their metadata from Tableland
  */
-async function fetchData() {
-  categoryTracks.value = null;
-  const res = await fetch(
-    `https://testnet.tableland.network/query?mode=list&s=SELECT%20*%20FROM%20mojo_80001_417`
-  );
-  console.log("Tracks Loaded:", res);
-  categoryTracks.value = await res.json();
-}
+// async function fetchData() {
+//   categoryTracks.value = null;
+//   const res = await fetch(
+//     `https://testnet.tableland.network/query?mode=list&s=SELECT%20*%20FROM%20mojo_80001_417`
+//   );
+//   console.log("Tracks Loaded:", res);
+//   categoryTracks.value = await res.json();
+// }
 
 /* Watch for Category Changes */
 watch(categorySelectedId, fetchData);

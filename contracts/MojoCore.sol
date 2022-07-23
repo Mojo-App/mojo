@@ -49,7 +49,8 @@ contract MojoCore is ERC721URIStorage, Ownable {
      * Any time a token is minted, a new row of metadata will be
      * dynamically inserted into the metadata table.
      */
-    function safeMint(address to) public returns (uint256) {
+    function safeMint(address to, string memory newTokenURI) public returns (uint256) {
+        _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
         _tableland.runSQL(
             address(this),
@@ -66,8 +67,7 @@ contract MojoCore is ERC721URIStorage, Ownable {
         );
 
         _safeMint(to, newItemId, "");
-        _setTokenURI(newItemId, tokenURI(newItemId));
-        _tokenIds.increment();
+        _setTokenURI(newItemId, newTokenURI);
         emit NewNftMinted(msg.sender, block.timestamp, newItemId);
         return newItemId;
     }

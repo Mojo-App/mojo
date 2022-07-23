@@ -7,11 +7,9 @@
       <nav class="header-navbar">
         <router-link :to="{ name: 'home' }" active-class="active" exact>Home</router-link>
         <router-link :to="{ name: 'stream' }" active-class="active" exact>Stream</router-link>
+        <router-link :to="{ name: 'upload' }" active-class="active" exact>Upload</router-link>
         <router-link v-if="account" :to="{ name: 'mint' }" active-class="active" exact
           >Mint</router-link
-        >
-        <router-link v-if="account" :to="{ name: 'upload' }" active-class="active" exact
-          >Upload</router-link
         >
         <div v-if="!account" class="right">
           <ConnectWalletButton v-model="account" v-if="!account" btnSize="small" />
