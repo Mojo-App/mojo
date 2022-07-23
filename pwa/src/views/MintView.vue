@@ -195,7 +195,7 @@
 import { ref, computed, onMounted } from "vue";
 import { ethers } from "ethers";
 import { BigNumber } from "bignumber.js";
-import { moment } from "moment";
+import { moment } from "moment.js";
 import { Notyf } from "notyf";
 import { storeToRefs } from "pinia";
 /* Import our Pinia Store */
