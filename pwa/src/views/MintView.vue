@@ -140,7 +140,7 @@
               <div v-if="account && formTab === 'two'" class="button-container">
                 <button class="back-button-blue" @click="switchToTab('one')">🔙</button>
                 <button class="attr-button" @click="switchToTab('three')">
-                  Add Media {{ tokenId }}
+                  {{ tokenId }} Add Media
                 </button>
               </div>
               <!-- END Button Row -->
@@ -195,7 +195,7 @@
 import { ref, computed, onMounted } from "vue";
 import { ethers } from "ethers";
 import { BigNumber } from "bignumber.js";
-import { moment } from "moment.js";
+import moment from "moment";
 import { Notyf } from "notyf";
 import { storeToRefs } from "pinia";
 /* Import our Pinia Store */
@@ -399,14 +399,13 @@ export default {
           contract.on("NewNftMinted", (receiver, timestamp, newTokenId) => {
             console.log("receiver ", receiver);
 
-            console.log("timestamp ", timestamp);
             createdAt.value = moment.unix(timestamp).toString();
             console.log("createdAt.value ", createdAt.value);
 
             let tokenIdBigNo = new BigNumber(newTokenId);
 
             console.log("tokenId ", tokenIdBigNo);
-            tokenId.value = tokenIdBigNo.integerValue();
+            tokenId.value = tokenIdBigNo.toNumber();
             console.log("tokenId.value ", tokenId.value);
           });
 
@@ -545,7 +544,7 @@ export default {
 
               let tokenIdBigNo = new BigNumber(tokenId);
               console.log("tokenId ", tokenIdBigNo);
-              rowId.value = tokenIdBigNo.integerValue();
+              rowId.value = tokenIdBigNo.toNumber();
               console.log("rowId.value ", rowId.value);
 
               console.log("metadataTableId ", metadataTableId);

@@ -220,7 +220,7 @@ export const useStore = defineStore({
 
           // Check if we can load our main table to UPDATE our aid and gid
           const metaAttrHashRes = await tableland.hash(
-            'CREATE TABLE mojo_80001 (id int, aid int, gid int, external_link text);'
+            'CREATE TABLE mojo_80001 (id int, external_link text);'
           );
           const appAttrTableStructure = metaAttrHashRes.structureHash;
           // Returns an Object with the Tables the connected address owns
