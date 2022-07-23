@@ -4,7 +4,7 @@
       <span
         >Web3 content streaming powered by
         <a href="https://infura.io/product/ipfs" alt="IPFS" target="_blank" rel="noopener">IPFS</a>
-        and
+        &amp;
         <a href="https://filecoin.io/" alt="Filecoin" target="_blank" rel="noopener"
           >Filecoin</a
         ></span
@@ -36,12 +36,12 @@
 </template>
 <script>
 export default {
-  name: 'AppFooter',
+  name: "AppFooter",
 };
 </script>
 <style lang="scss">
-@import '../assets/styles/variables.scss';
-@import '../assets/styles/mixins.scss';
+@import "../assets/styles/variables.scss";
+@import "../assets/styles/mixins.scss";
 
 #footer {
   display: flex;
@@ -49,26 +49,43 @@ export default {
   align-items: center;
   transition: border-top 0.5s ease;
   border-top: 1px solid #000000;
-  padding: 1em 64px;
+  padding: 10px 0;
+  @include breakpoint($medium) {
+    padding: 1em 64px;
+  }
 
   color: #000000;
   background: #fff;
   border-top: 1px solid #000000;
 
   .footer-title {
-    padding-left: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1em 0 0 0;
+    font-size: 0.7rem;
     @include breakpoint($medium) {
-      padding-left: 100px;
-    }
-    span {
+      padding: 0.3em;
       font-size: 0.8rem;
-      a {
+      justify-content: flex-start;
+    }
+
+    span {
+      font-size: 0.6rem;
+      @include breakpoint($medium) {
         font-size: 0.8rem;
+      }
+      a {
+        font-size: 0.6rem;
         color: var(--contrast-color);
         padding-bottom: 1px;
         text-decoration: none;
         border-bottom: 1px solid;
         cursor: pointer;
+        @include breakpoint($medium) {
+          font-size: 0.8rem;
+        }
+
         &.active {
           font-weight: bold;
         }
@@ -84,19 +101,26 @@ export default {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0.3em;
+      margin: 0;
+      padding: 0;
+      font-size: 0.8rem;
       @include breakpoint($medium) {
+        padding: 0.3em;
+        font-size: 0.8rem;
         justify-content: flex-end;
       }
 
       a {
-        font-size: 0.8rem;
+        font-size: 0.6rem;
         color: var(--contrast-color);
         margin-right: 14px;
         padding-bottom: 1px;
         text-decoration: none;
         border-bottom: 1px solid;
         cursor: pointer;
+        @include breakpoint($medium) {
+          font-size: 0.8rem;
+        }
 
         &.active {
           font-weight: bold;

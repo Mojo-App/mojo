@@ -1,4 +1,4 @@
-import IPFSNetwork from '../services/IPFSNetwork';
+import IPFSNetwork from "../services/IPFSNetwork";
 /**
  * Upload Blob to NFT Storage
  *

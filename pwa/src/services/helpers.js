@@ -9,12 +9,12 @@ export const fileSize = (bytes, si = false, dp = 1) => {
   const thresh = si ? 1000 : 1024;
 
   if (Math.abs(bytes) < thresh) {
-    return bytes + ' B';
+    return bytes + " B";
   }
 
   const units = si
-    ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-    : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+    ? ["kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+    : ["KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"];
   let u = -1;
   const r = 10 ** dp;
 
@@ -23,7 +23,7 @@ export const fileSize = (bytes, si = false, dp = 1) => {
     ++u;
   } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
 
-  return bytes.toFixed(dp) + ' ' + units[u];
+  return bytes.toFixed(dp) + " " + units[u];
 };
 
 /**
@@ -32,11 +32,11 @@ export const fileSize = (bytes, si = false, dp = 1) => {
  * @returns {Void}
  */
 export const copyToClipboard = (value) => {
-  const textArea = document.createElement('textarea');
+  const textArea = document.createElement("textarea");
   textArea.value = value;
   document.body.appendChild(textArea);
   textArea.select();
-  document.execCommand('copy');
+  document.execCommand("copy");
   textArea.remove();
 };
 
@@ -46,7 +46,7 @@ export const copyToClipboard = (value) => {
  * @returns {Boolean}
  **/
 export const isVideo = (type) => {
-  return type.indexOf('video') >= 0;
+  return type.indexOf("video") >= 0;
 };
 
 /**
@@ -88,5 +88,5 @@ export const generateLink = (item, isShorten = false) => {
  * @returns {Boolean}
  */
 export const isRunningOnPWA = () => {
-  return window.matchMedia('(display-mode: standalone)').matches;
+  return window.matchMedia("(display-mode: standalone)").matches;
 };

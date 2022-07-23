@@ -7,11 +7,9 @@
       <nav class="header-navbar">
         <router-link :to="{ name: 'home' }" active-class="active" exact>Home</router-link>
         <router-link :to="{ name: 'stream' }" active-class="active" exact>Stream</router-link>
+        <router-link :to="{ name: 'upload' }" active-class="active" exact>Upload</router-link>
         <router-link v-if="account" :to="{ name: 'mint' }" active-class="active" exact
           >Mint</router-link
-        >
-        <router-link v-if="account" :to="{ name: 'upload' }" active-class="active" exact
-          >Upload</router-link
         >
         <div v-if="!account" class="right">
           <ConnectWalletButton v-model="account" v-if="!account" btnSize="small" />
@@ -25,25 +23,25 @@
   </header>
 </template>
 <script>
-import { ref, onMounted } from 'vue';
-import { storeToRefs } from 'pinia';
+import { ref, onMounted } from "vue";
+import { storeToRefs } from "pinia";
 /* Import Store */
-import { useStore } from '../store';
+import { useStore } from "../store";
 /* Components */
-import ConnectWalletButton from '../components/ConnectWalletButton.vue';
+import ConnectWalletButton from "../components/ConnectWalletButton.vue";
 /* LFG */
 export default {
-  name: 'AppHeader',
+  name: "AppHeader",
   components: [ConnectWalletButton],
   setup() {
     // Init Store
     const store = useStore();
     const { account } = storeToRefs(store);
     // Darth Vader Mode
-    const isDarkClassAvailable = document.body.classList.contains('dark-theme');
+    const isDarkClassAvailable = document.body.classList.contains("dark-theme");
     const isDark = ref(isDarkClassAvailable);
     /**
-     * Get our current Metamask account details
+     * Get our current 🦊 Metamask account details
      */
     const getCurrentAccount = async () => {
       try {
@@ -53,14 +51,14 @@ export default {
         const { ethereum } = window;
         if (!ethereum) return;
         /* Get our Current Account */
-        const accounts = await ethereum.request({ method: 'eth_accounts' });
+        const accounts = await ethereum.request({ method: "eth_accounts" });
         if (accounts.length !== 0) {
           store.updateAccount(accounts[0]);
           /* Console log with some style */
-          const stylesAccounts = ['color: black', 'background: cyan'].join(';');
-          console.log('%c🧰 Web3 Account %s 🧰', stylesAccounts, account.value);
+          const stylesAccounts = ["color: black", "background: cyan"].join(";");
+          console.log("%c🧰 Web3 Account %s 🧰", stylesAccounts, account.value);
         } else {
-          console.log('⚠ No authorized MetaMask accounts connected!');
+          console.log("⚠ No authorized MetaMask accounts connected!");
         }
       } catch (error) {
         console.log(error);
@@ -70,15 +68,15 @@ export default {
      * Toggle our theme colors and Animations
      */
     const toggleTheme = () => {
-      document.body.classList.toggle('dark-theme');
+      document.body.classList.toggle("dark-theme");
       requestAnimationFrame(toggleAnimation);
       isDark.value = !isDark.value;
     };
     const toggleAnimation = () => {
-      const element = document.querySelector('section#content .main');
-      element.classList.remove('animated');
+      const element = document.querySelector("section#content .main");
+      element.classList.remove("animated");
       void element.offsetWidth;
-      element.classList.add('animated');
+      element.classList.add("animated");
     };
     onMounted(() => {
       getCurrentAccount();
@@ -104,7 +102,7 @@ export default {
 
   .header-title {
     h1 {
-      font-family: 'Ubuntu Mono', Roboto, Ubuntu, 'Open Sans', 'Helvetica Neue', sans-serif;
+      font-family: "Ubuntu Mono", Roboto, Ubuntu, "Open Sans", "Helvetica Neue", sans-serif;
       font-size: 2.3rem;
       font-weight: 700;
       margin: 0 0 8px 0;

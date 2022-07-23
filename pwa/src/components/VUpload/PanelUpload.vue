@@ -11,12 +11,14 @@
       >
         <input type="file" multiple ref="fileRef" @change="onFileChangedHandler" />
         <div class="dropzone-box" @click="openSelectFile">
+          <div class="sponsors-logo">
+            <img alt="IPFS" src="@/assets/images/IPFS.png" />
+          </div>
           <!-- Uploader Icon -->
           <i-mdi-timer-sand v-if="isUploading" class="icon-color" />
           <i-mdi-upload v-else class="icon-color" />
           <!-- END Uploader Icon -->
-          <span>Drop files here or select to upload to IPFS</span>
-          <span>Copy your link and share</span>
+          <span>Drop files here or select to upload</span>
           <div class="dropzone-is-loading" :class="{ active: isUploading }">
             <div class="dropzone-loading--bar"></div>
           </div>
@@ -33,15 +35,15 @@
   </section>
 </template>
 <script>
-import { ref, computed, inject } from 'vue';
-import { useStore } from '../../store';
-import { uploadBlob } from '../../services/ipfs.js';
-import { fileSize } from '../../services/helpers';
+import { ref, computed, inject } from "vue";
+import { useStore } from "../../store";
+import { uploadBlob } from "../../services/ipfs.js";
+import { fileSize } from "../../services/helpers";
 /* LFG */
 export default {
-  name: 'PanelUpload',
+  name: "PanelUpload",
   setup() {
-    const notyf = inject('notyf');
+    const notyf = inject("notyf");
     // Init Store
     const store = useStore();
     // File Uploader
@@ -86,7 +88,7 @@ export default {
       try {
         let results = await Promise.all(files);
         const successfully = results.filter(({ error }) => !error);
-        console.log('successfully', successfully);
+        console.log("successfully", successfully);
         if (successfully.length > 0) {
           notyf.success(`${successfully.length} files successfully uploaded to IPFS`);
         }
@@ -134,8 +136,8 @@ export default {
 </script>
 
 <style lang="scss">
-@import '../../assets/styles/variables.scss';
-@import '../../assets/styles/mixins.scss';
+@import "../../assets/styles/variables.scss";
+@import "../../assets/styles/mixins.scss";
 
 section#panel-upload {
   background-color: var(--gradient-100);
@@ -191,6 +193,15 @@ section#panel-upload {
       padding: 0.8rem;
       border-radius: 0.5rem;
       text-align: center;
+      .sponsors-logo {
+        margin-bottom: 1rem;
+        img {
+          height: 60px;
+          @include breakpoint($breakpoint-sm) {
+            height: 160px;
+          }
+        }
+      }
 
       svg {
         height: 48px;
@@ -240,7 +251,7 @@ section#panel-upload {
         background-color: var(--gradient-800);
 
         &:before {
-          content: '';
+          content: "";
           position: absolute;
           background-color: inherit;
           top: 0;
@@ -251,7 +262,7 @@ section#panel-upload {
         }
 
         &:after {
-          content: '';
+          content: "";
           position: absolute;
           background-color: inherit;
           top: 0;

@@ -62,10 +62,10 @@
       <section id="sponsors">
         <div class="row">
           <div class="sponsors-logo">
-            <PolygonLogo />
+            <SpheronLogo />
           </div>
           <div class="sponsors-logo">
-            <SpheronLogo />
+            <PolygonLogo />
           </div>
           <div class="sponsors-logo">
             <Tableland />
@@ -74,10 +74,7 @@
             <img alt="IPFS" src="@/assets/images/IPFS.png" height="38" />
           </div>
           <div class="sponsors-logo">
-            <Filecoin />
-          </div>
-          <div class="sponsors-logo">
-            <MetaMask />
+            <NFTStorage />
           </div>
         </div>
       </section>
@@ -107,62 +104,61 @@
   </section>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue';
-import { Notyf } from 'notyf';
-import { storeToRefs } from 'pinia';
+import { ref, onMounted } from "vue";
+import { Notyf } from "notyf";
+import { storeToRefs } from "pinia";
 /* Import our Pinia Store */
-import { useStore } from '../store';
+import { useStore } from "../store";
 /* Components */
-import ConnectWalletButton from '../components/ConnectWalletButton.vue';
-import TrackPlayer from '../components/TrackPlayer.vue';
-import Tableland from '../assets/svgs/TableLand.vue';
-import SpheronLogo from '../assets/svgs/SpheronLogo.vue';
-import PolygonLogo from '../assets/svgs/PolygonLogo.vue';
-import Filecoin from '../assets/svgs/Filecoin.vue';
-import MetaMask from '../assets/svgs/MetaMask.vue';
+import ConnectWalletButton from "../components/ConnectWalletButton.vue";
+import TrackPlayer from "../components/TrackPlayer.vue";
+import Tableland from "../assets/svgs/TableLand.vue";
+import SpheronLogo from "../assets/svgs/SpheronLogo.vue";
+import PolygonLogo from "../assets/svgs/PolygonLogo.vue";
+import NFTStorage from "../assets/svgs/NFTStorage.vue";
 /* Create an instance of Notyf with settings */
 var notyf = new Notyf({
   duration: 5000,
   position: {
-    x: 'center',
-    y: 'bottom',
+    x: "center",
+    y: "bottom",
   },
   types: [
     {
-      type: 'loading',
-      background: 'orange',
+      type: "loading",
+      background: "orange",
       duration: 15000,
       dismissible: true,
       icon: {
-        className: 'icon icon-loading',
-        tagName: 'i',
+        className: "icon icon-loading",
+        tagName: "i",
       },
     },
     {
-      type: 'success',
-      background: 'green',
+      type: "success",
+      background: "green",
       duration: 20000,
       dismissible: true,
       icon: {
-        className: 'icon icon-success',
-        tagName: 'i',
+        className: "icon icon-success",
+        tagName: "i",
       },
     },
     {
-      type: 'error',
-      background: 'indianred',
+      type: "error",
+      background: "indianred",
       duration: 10000,
       dismissible: true,
       icon: {
-        className: 'icon icon-error',
-        tagName: 'i',
+        className: "icon icon-error",
+        tagName: "i",
       },
     },
   ],
 });
 // Init Store
 const store = useStore();
-// Metamask Account
+// 🦊 Metamask Account
 const { account } = storeToRefs(store);
 const categoryTracks = ref(null);
 /**
@@ -179,7 +175,7 @@ async function checkIfWalletIsConnected() {
       return;
     }
     /* Get our Current Account */
-    const accounts = await ethereum.request({ method: 'eth_accounts' });
+    const accounts = await ethereum.request({ method: "eth_accounts" });
     /* Update our Current Account in the Store */
     if (accounts.length !== 0) store.updateAccount(accounts[0]);
   } catch (error) {
@@ -193,7 +189,7 @@ async function checkIfWalletIsConnected() {
 async function fetchData() {
   categoryTracks.value = null;
   const res = await fetch(`./tracks/1.json`);
-  console.log('Tracks Loaded:', res);
+  console.log("Tracks Loaded:", res);
   categoryTracks.value = await res.json();
 }
 fetchData();
@@ -202,13 +198,13 @@ onMounted(() => {
   window.scrollTo({
     top: 0,
     left: 0,
-    behavior: 'smooth',
+    behavior: "smooth",
   });
 });
 </script>
 <style lang="scss" scoped>
-@import '../assets/styles/variables.scss';
-@import '../assets/styles/mixins.scss';
+@import "../assets/styles/variables.scss";
+@import "../assets/styles/mixins.scss";
 
 section#content {
   position: relative;
@@ -490,7 +486,7 @@ section#content {
 
     .multi-bg-header {
       background: #fff;
-      background-image: url('./GreenCorner.png');
+      background-image: url("./GreenCorner.png");
       background-repeat: no-repeat;
       background-position: center left;
       background-size: auto;

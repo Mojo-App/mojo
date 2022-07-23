@@ -62,7 +62,7 @@
             <!-- Tab One Main NFT Metadata -->
             <div v-if="formTab === 'one'" id="form-tab-one" class="form-container">
               <h2>1. Create your NFT</h2>
-              <div class="input-row hidden">
+              <div class="input-row">
                 <input type="text" placeholder="Token ID" v-model="tokenId" />
               </div>
               <div class="input-row hidden">
@@ -70,6 +70,9 @@
               </div>
               <div class="input-row">
                 <input type="text" placeholder="Name" v-model="name" />
+              </div>
+              <div class="input-row">
+                <input type="text" placeholder="Enter a description" v-model="description" />
               </div>
               <div class="input-row">
                 <input type="text" placeholder="Image Url" v-model="imageUrl" readonly />
@@ -89,14 +92,21 @@
                 <input type="text" placeholder="Created" v-model="createdAt" readonly />
               </div>
               <div class="input-row">
-                <input type="text" placeholder="Enter a description" v-model="description" />
-              </div>
-              <div class="input-row">
                 <input type="text" placeholder="Add an external link" v-model="externalUrl" />
               </div>
               <!-- Button Row -->
               <div v-if="account && formTab === 'one'" class="button-container">
-                <button class="update-button" @click="switchToTab('two')">Add Details</button>
+                <button
+                  v-if="!tokenId"
+                  class="mint-button"
+                  :disabled="!name || !description"
+                  @click="mintNFT()"
+                >
+                  Mint NFT
+                </button>
+                <button v-if="tokenId" class="mint-button" @click="setExternalUrl(tokenId)">
+                  Set URL
+                </button>
               </div>
               <!-- END Button Row -->
             </div>
@@ -129,7 +139,9 @@
               <!-- Button Row -->
               <div v-if="account && formTab === 'two'" class="button-container">
                 <button class="back-button-blue" @click="switchToTab('one')">🔙</button>
-                <button class="attr-button" @click="switchToTab('three')">Add Media</button>
+                <button class="attr-button" @click="switchToTab('three')">
+                  Add Media {{ tokenId }}
+                </button>
               </div>
               <!-- END Button Row -->
             </div>
@@ -148,20 +160,25 @@
               <div class="input-row">
                 <input type="text" placeholder="Preview Link" v-model="preview" />
               </div>
-              <div class="input-row">
+              <div class="input-row hidden">
                 <input type="text" placeholder="Audio/Video Link" v-model="audioVideoURL" />
               </div>
               <div class="input-row">
-                <input type="text" placeholder="Resolution" v-model="resoultion" />
+                <input type="text" placeholder="Animation Link" v-model="animationURL" />
+              </div>
+              <div class="input-row">
+                <input type="text" placeholder="Youtube Link" v-model="youtubeURL" />
+              </div>
+              <div class="input-row">
+                <input type="text" placeholder="Resolution" v-model="resolution" />
               </div>
               <div class="input-row">
                 <input type="text" placeholder="Duration" v-model="duration" />
               </div>
-
               <!-- Button Row -->
               <div v-if="account && formTab === 'three'" class="button-container">
                 <button class="back-button-purple" @click="switchToTab('two')">🔙</button>
-                <button v-if="!tokenId" class="mint-button" @click="mintNFT()">Mint NFT</button>
+                <button class="update-button" @click="createNFTRow()">Finish NFT</button>
               </div>
               <!-- END Button Row -->
             </div>
@@ -177,22 +194,28 @@
 <script>
 import { ref, computed, onMounted } from "vue";
 import { ethers } from "ethers";
+import { BigNumber } from "bignumber.js";
+import { moment } from "moment";
 import { Notyf } from "notyf";
 import { storeToRefs } from "pinia";
 /* Import our Pinia Store */
 import { useStore } from "../store";
-/* Import our IPFS Services */
+/* Import our IPFS and NftStorage Services */
 import { uploadBlob } from "../services/ipfs.js";
 import { fileSize, generateLink } from "../services/helpers";
+import { nftStorage } from "../services/nftStorage.js";
+
 /* Import Smart Contract ABI */
 import contractAbi from "../../../artifacts/contracts/MojoCore.sol/MojoCore.json";
 /* Manually set our Contract Address */
-const contractAddress = "0x58364cDc29aCF05E9a914A8c25e49E9267C8Ca73";
+const contractAddress = "0xe72190E01EbF16FcD1CF91e761Ee5BA98Ba6d251";
+
 /* Console log with some style */
-const stylesContract = ["color: black", "background: cyan"].join(";");
+const stylesContract = ["color: black", "background: #e9429b"].join(";");
 console.log("%c🏦 Mojo Contract Address %s 🏦", stylesContract, contractAddress);
 const stylesAbi = ["color: black", "background: cyan"].join(";");
 console.log("%c🧭 Contract ABI Source %s 🧭", stylesAbi, contractAbi.sourceName);
+
 /* Import Components */
 import ConnectWalletButton from "../components/ConnectWalletButton.vue";
 import ArrowBack from "../assets/svgs/ArrowBack.vue";
@@ -243,10 +266,13 @@ export default {
     });
     // Init Store
     const store = useStore();
-    // Metamask Account
+
+    // 🦊 Metamask Account
     const { account } = storeToRefs(store);
+
     // Set Form Tab
     const formTab = ref("one");
+
     // File Uploader
     const fileRef = ref(null);
     const isDragged = ref(false);
@@ -254,13 +280,14 @@ export default {
     const isUploading = ref(false);
 
     // NFT Form Metadata fields
-    const tokenId = ref();
+    const tokenId = ref("");
+    const rowId = ref("");
     const cid = ref("");
     // Visible on form, above hidden on form
     const name = ref("");
     const description = ref("");
     const externalUrl = ref("");
-    const imageUrl = ref("");
+    const imageUrl = ref(null);
     // Calculated on Mint and IPFS upload
     const size = ref("");
     const createdAt = ref("");
@@ -277,10 +304,13 @@ export default {
     const longDescription = ref("");
     const preview = ref("");
     const audioVideoURL = ref("");
-    const resoultion = ref("");
+    const animationURL = ref("");
+    const youtubeURL = ref("");
+    const resolution = ref("");
     const duration = ref("");
+
     /**
-     * Check if our Wallet is Connected to Metamask
+     * Check if our Wallet is Connected to 🦊 Metamask
      */
     const checkIfWalletIsConnected = async () => {
       try {
@@ -289,7 +319,7 @@ export default {
          */
         const { ethereum } = window;
         if (!ethereum) {
-          notyf.error(`⛽ Please connect Metamask to continue!`);
+          notyf.error(`Please connect 🦊 Metamask to continue!`);
           console.log("Error: No ethereum window object");
           return;
         }
@@ -300,6 +330,7 @@ export default {
         console.log(error);
       }
     };
+
     /**
      * Mint Mojo Core NFT
      */
@@ -341,11 +372,13 @@ export default {
         switchToTab("one");
         return;
       }
+
       /* Init loading indicator */
       const loadingIndicator = notyf.open({
         type: "loading",
         message: "⏳ Please wait while we get our mojo on! Minting NFT shortly...",
       });
+
       /**
        * Mint our NFT with fresh metadata
        */
@@ -358,43 +391,71 @@ export default {
           /* Console log with some style */
           const styles = ["color: black", "background: green"].join(";");
           console.log("%c🎧 Mojo Core Smart Contract Address:  %s 🎧", styles, contractAddress);
+
           /**
            *  Receive Emitted Event from Contract
            *  @dev See NewNftMinted emitted from our smart contract safeMint function
            */
-          contract.on("NewNftMinted", (receiver, timestamp, tokenId) => {
+          contract.on("NewNftMinted", (receiver, timestamp, newTokenId) => {
             console.log("receiver ", receiver);
 
             console.log("timestamp ", timestamp);
-            const createdTime = new Date(timestamp);
-            console.log("createdTime ", createdTime);
-
-            createdAt.value = new Intl.DateTimeFormat("en-US").format(createdTime);
+            createdAt.value = moment.unix(timestamp).toString();
             console.log("createdAt.value ", createdAt.value);
 
-            console.log("tokenId ", tokenId.toNumber());
-            tokenId.value = tokenId.toNumber();
+            let tokenIdBigNo = new BigNumber(newTokenId);
+
+            console.log("tokenId ", tokenIdBigNo);
+            tokenId.value = tokenIdBigNo.integerValue();
             console.log("tokenId.value ", tokenId.value);
           });
 
-          /* Mint our NFT using complex Struct */
-          let nftTxn = await contract.safeMint(
-            signer.getAddress(),
+          /* Store NFT Metadata on NFT.Storage */
+          const nftStorageTMetadataURI = await nftStorage(
             name.value,
             description.value,
-            imageUrl.value
+            imageUrl.value,
+            size.value,
+            createdAt.value,
+            audioVideoType.value,
+            title.value,
+            category.value,
+            license.value,
+            website.value,
+            longDescription.value,
+            preview.value,
+            audioVideoURL.value,
+            animationURL.value,
+            youtubeURL.value,
+            resolution.value,
+            duration.value
           );
+          /* Console log with some style */
+          const stylesNFTStorage = ["color: black", "background: #f23f3f"].join(";");
+          console.log(
+            "%c💾 NFT.Storage ipfs:// link :  %s 💾",
+            stylesNFTStorage,
+            nftStorageTMetadataURI
+          );
+
+          /* Check our Transaction results */
+          if (!nftStorageTMetadataURI) return;
+
+          /* Mint our NFT using complex Struct */
+          let nftTxn = await contract.safeMint(signer.getAddress(), nftStorageTMetadataURI);
           /* Console log with some style */
           const stylesMining = ["color: black", "background: yellow"].join(";");
           console.log("%c⛏ Mining...please wait!  %s ⛏", stylesMining, nftTxn.hash);
+
           // The OpenZeppelin base ERC721 contract emits a Transfer event
           // when a token is issued. tx.wait() will wait until a block containing
           // our transaction has been mined and confirmed. The transaction receipt
           // contains events emitted while processing the transaction.
           const receipt = await nftTxn.wait();
           /* Console log with some style */
-          const stylesReceipt = ["color: black", "background: yellow"].join(";");
+          const stylesReceipt = ["color: black", "background: #e9429b"].join(";");
           console.log("%c💎 We just mined another gem! %s 💎", stylesReceipt, nftTxn.hash);
+
           /* Check our Transaction results */
           if (receipt.status === 1) {
             /**
@@ -404,7 +465,7 @@ export default {
             /* Console log with some style */
             const stylesPolygon = ["color: white", "background: #7e44df"].join(";");
             console.log(
-              `%c🧬 NFT Minted on Polygon, see transaction: https://mumbai.polygonscan.com/tx/${nftTxn.hash} %s`,
+              `%c🧬 NFT Minted on Polygon, see transaction:<br /> https://mumbai.polygonscan.com/tx/${nftTxn.hash} %s`,
               stylesPolygon,
               nftTxn.hash
             );
@@ -412,35 +473,11 @@ export default {
             notyf.dismiss(loadingIndicator);
             notyf.open({
               type: "success",
-              message: `🧬 NFT has been minted successfully, see transaction: https://mumbai.polygonscan.com/tx/${nftTxn.hash}`,
+              message: `🧬 NFT has been minted successfully, see transaction<br />https://mumbai.polygonscan.com/tx/${nftTxn.hash}`,
             });
-            /* Set to NFT Metadata Attributes Tab to setup Tableland NFT metadata attributes */
-            /* Reset our NFT Metadata Form Values */
-            name.value = "";
-            description.value = "";
-            externalUrl.value = "";
-            imageUrl.value = "";
-            maxInvocations.value = null;
-            royaltyPercentage.value = null;
-            price.value = null;
-            /* Reset our NFT Metadata Attributes Form Values */
-            title.value = "";
-            category.value = "";
-            license.value = "";
-            website.value = "";
-            longDescription.value = "";
-            preview.value = "";
-            audioVideoType.value = "";
-            audioVideoURL.value = "";
-            resoultion.value = "";
-            duration.value = "";
-            size.value = "";
-            createdAt.value = "";
-            /* Set to NFT Main Attributes Tab */
-            switchToTab("one");
-            return;
           }
-          notyf.error("Error minting NFT metadata!");
+          /* Set to NFT Main Attributes Tab */
+          switchToTab("two");
           return;
         } else {
           notyf.dismiss(loadingIndicator);
@@ -451,10 +488,123 @@ export default {
         console.log("error", error);
       }
     };
+
+    /**
+     * Set our NFT External Url field via contract
+     */
+    const setExternalUrl = async (tokenId) => {
+      if (!tokenId.value) {
+        notyf.error(`We need a Token Id to continue!`);
+        return;
+      }
+      /**
+       * Some very basic form validation, these are loaded after IPFS upload
+       * but users can edit so we still need some validation in UI
+       */
+      if (!externalUrl.value) {
+        notyf.error(`Please enter an external url to continue!`);
+        formTab.value = "one";
+        return;
+      }
+      if (externalUrl.value.length < 3) {
+        notyf.error(`NFT external url must be longer then 3 characters!`);
+        formTab.value = "one";
+        return;
+      }
+      /* Init loading indicator */
+      const loadingIndicator = notyf.open({
+        type: "loading",
+        message: "⏳ Please wait while we add your NFT metadata attributes.",
+      });
+      /**
+       * Set our NFT External Url via Contract method
+       * @dev Not sure about this yet but leaves us a few options
+       */
+      try {
+        const { ethereum } = window;
+        if (ethereum) {
+          const provider = new ethers.providers.Web3Provider(ethereum);
+          const signer = provider.getSigner();
+          /**
+           *  @dev Note: Reset this once Contracts deployed or re-dployed
+           */
+          const contract = new ethers.Contract(contractAddress, contractAbi.abi, signer);
+          console.log("Talk to the wallet and pay gas fees", signer);
+          /**
+           *  Receive Emitted Event from Contract
+           *  @dev See NewNftMinted emitted from our smart contract safeMint function
+           */
+          contract.on(
+            "SetNftExternalUrl",
+            (receiver, timestamp, metadataTableId, metadataTable, tokenId) => {
+              console.log("receiver ", receiver);
+
+              console.log("timestamp ", timestamp);
+              createdAt.value = moment.unix(timestamp).toString();
+              console.log("createdAt.value ", createdAt.value);
+
+              let tokenIdBigNo = new BigNumber(tokenId);
+              console.log("tokenId ", tokenIdBigNo);
+              rowId.value = tokenIdBigNo.integerValue();
+              console.log("rowId.value ", rowId.value);
+
+              console.log("metadataTableId ", metadataTableId);
+              console.log("metadataTable ", metadataTable);
+            }
+          );
+          let nftTxn = await contract.setExternalURL(
+            `https://testnets.opensea.io/assets/mumbai/${contractAddress}/${tokenId}`
+          );
+          /* Console log with some style */
+          const stylesUpdate = ["color: black", "background: yellow"].join(";");
+          console.log("%c⏳ Updating NFT ...please wait! %s", stylesUpdate, nftTxn.hash);
+          // The OpenZeppelin base ERC721 contract emits a Transfer event
+          // when a token is issued. tx.wait() will wait until a block containing
+          // our transaction has been mined and confirmed. The transaction receipt
+          // contains events emitted while processing the transaction.
+          /* Console log with some style */
+          const stylesMining = ["color: black", "background: yellow"].join(";");
+          console.log("%c⛏ Mining...please wait! ⛏ %s", stylesMining, nftTxn.hash);
+          const receipt = await nftTxn.wait();
+          /* Console log with some style */
+          const stylesReceipt = ["color: black", "background: purple"].join(";");
+          console.log("%c💎 Congrats on enpowering your gem! 💎 %s", stylesReceipt, nftTxn.hash);
+          if (receipt.status === 1) {
+            /**
+             * @dev NOTE: Switch up these links once we go to Production
+             * Currently set to use Polygon Mumbai Testnet
+             */
+            const stylesPolygon = ["color: white", "background: #7e44df"].join(";");
+            console.log(
+              `%c🔧 NFT external url updated via Tableland contract, see transaction: https://mumbai.polygonscan.com/tx/${nftTxn.hash} %s`,
+              stylesPolygon,
+              nftTxn.hash
+            );
+            /* Remove loading indicator and show success notification */
+            notyf.dismiss(loadingIndicator);
+            notyf.success(
+              `🧬 NFT table row been updated, see transaction: https://mumbai.polygonscan.com/tx/${nftTxn.hash}`
+            );
+            /* Set to NFT Add Media Tab */
+            switchToTab("two");
+            return;
+          }
+          notyf.error("Error updating NFT metadata!");
+          return;
+        } else {
+          notyf.dismiss(loadingIndicator);
+          notyf.error("Ethereum object doesn't exist!");
+        }
+      } catch (error) {
+        notyf.dismiss(loadingIndicator);
+        console.log("error", error);
+      }
+    };
+
     /**
      * Update our NFT metadata
      */
-    const updateNFT = async (tokenId) => {
+    const createNFTRow = async () => {
       if (!tokenId.value) {
         notyf.error(`We need a Token Id to continue!`);
         return;
@@ -502,92 +652,76 @@ export default {
         message: "⏳ Please wait while we update your NFT metadata.",
       });
 
-      /**
-       * Update our NFT with fresh metadata
-       */
-      try {
-        const { ethereum } = window;
-        if (ethereum) {
-          const provider = new ethers.providers.Web3Provider(ethereum);
-          const signer = provider.getSigner();
-          /**
-           *  @dev Note: Reset this once Contracts deployed or re-dployed
-           */
-          const contract = new ethers.Contract(contractAddress, contractAbi.abi, signer);
-          console.log("Talk to the wallet and pay gas fees", signer);
-
-          let nftTxn = await contract.updateNFT(
-            tokenId,
-            name.value,
-            description.value,
-            imageUrl.value,
-            externalUrl.value
-          );
-          /* Console log with some style */
-          const stylesUpdate = ["color: black", "background: yellow"].join(";");
-          console.log("%c⏳ Updating NFT ...please wait! %s", stylesUpdate, nftTxn.hash);
-          // The OpenZeppelin base ERC721 contract emits a Transfer event
-          // when a token is issued. tx.wait() will wait until a block containing
-          // our transaction has been mined and confirmed. The transaction receipt
-          // contains events emitted while processing the transaction.
-          /* Console log with some style */
-          const stylesMining = ["color: black", "background: yellow"].join(";");
-          console.log("%c⛏ Mining...please wait! ⛏ %s", stylesMining, nftTxn.hash);
-          const receipt = await nftTxn.wait();
-          /* Console log with some style */
-          const stylesReceipt = ["color: black", "background: yellow"].join(";");
-          console.log("%c💎 Congrats on polishing your gem! 💎 %s", stylesReceipt, nftTxn.hash);
-          if (receipt.status === 1) {
-            /**
-             * @dev NOTE: Switch up these links once we go to Production
-             * Currently set to use Polygon Mumbai Testnet
-             */
-            const stylesPolygon = ["color: white", "background: #7e44df"].join(";");
-            console.log(
-              `%c🔧 NFT metadata updated on Tableland, see transaction: https://mumbai.polygonscan.com/tx/${nftTxn.hash} %s`,
-              stylesPolygon,
-              nftTxn.hash
-            );
-            /* Remove loading indicator and show success notification */
-            notyf.dismiss(loadingIndicator);
-            notyf.success(
-              `🧬 NFT has been updated successfully, see transaction: https://mumbai.polygonscan.com/tx/${nftTxn.hash}`
-            );
-            /* Reset our NFT Metadata Form Values */
-            name.value = "";
-            description.value = "";
-            externalUrl.value = "";
-            imageUrl.value = "";
-            maxInvocations.value = null;
-            royaltyPercentage.value = null;
-            price.value = null;
-            /* Reset our NFT Metadata Attributes Form Values */
-            title.value = "";
-            category.value = "";
-            license.value = "";
-            website.value = "";
-            longDescription.value = "";
-            preview.value = "";
-            audioVideoType.value = "";
-            audioVideoURL.value = "";
-            resoultion.value = "";
-            duration.value = "";
-            size.value = "";
-            createdAt.value = "";
-            /* Set to NFT Main Attributes Tab */
-            formTab.value("one");
-          }
-          notyf.error("Error updating NFT metadata!");
-          return;
-        } else {
-          notyf.dismiss(loadingIndicator);
-          notyf.error("Ethereum object doesn't exist!");
-        }
-      } catch (error) {
+      const createdRowId = await store.createRow(
+        tokenId.value,
+        cid.value,
+        name.value,
+        description.value,
+        externalUrl.value,
+        imageUrl.value,
+        size.value,
+        createdAt.value,
+        audioVideoType.value,
+        maxInvocations.value,
+        royaltyPercentage.value,
+        price.value,
+        title.value,
+        category.value,
+        license.value,
+        website.value,
+        longDescription.value,
+        preview.value,
+        audioVideoURL.value,
+        animationURL.value,
+        youtubeURL.value,
+        resolution.value,
+        duration.value
+      );
+      if (createdRowId) {
+        /* Console log with some style */
+        const stylesRowEntry = ["color: white", "background: #32c33a"].join(";");
+        console.log(`%c💾 NFT metadata row created ID : %s`, stylesRowEntry, createdRowId);
+        /* Remove loading indicator and show success notification */
         notyf.dismiss(loadingIndicator);
-        console.log("error", error);
+        notyf.open({
+          type: "success",
+          message: `💾 NFT with metadata created ID: ${createdRowId}`,
+        });
+        /* Reset our NFT Metadata Form Values */
+        tokenId.value = "";
+        rowId.value = "";
+        cid.value = "";
+        name.value = "";
+        description.value = "";
+        externalUrl.value = "";
+        imageUrl.value = "";
+        maxInvocations.value = null;
+        royaltyPercentage.value = null;
+        price.value = null;
+        title.value = "";
+        category.value = "";
+        license.value = "";
+        website.value = "";
+        longDescription.value = "";
+        preview.value = "";
+        audioVideoType.value = "";
+        audioVideoURL.value = "";
+        animationURL.value = "";
+        youtubeURL.value = "";
+        resolution.value = "";
+        duration.value = "";
+        size.value = "";
+        createdAt.value = "";
+        /* Set to NFT Main Attributes Tab */
+        switchToTab("one");
+        return;
       }
+      notyf.dismiss(loadingIndicator);
+      notyf.error(`Error adding a new table row, please try again!`);
+      switchToTab("two");
+      return;
     };
+
     /**
      * Switch Tab
      */
@@ -627,23 +761,17 @@ export default {
       }
       /* Set our NFT Metadata Form Values using IPFS best practises */
       cid.value = uploadResult.data.cid;
-
-      if (formTab.value === "three") {
-        /* Generate and IPFS URI for Audio/Media */
-        audioVideoURL.value = generateLink(uploadResult.data);
-      } else {
-        /* Strip image type off our name eg, .png, .jpeg */
-        name.value = uploadResult.data.file.name.substring(
-          0,
-          uploadResult.data.file.name.lastIndexOf(".")
-        );
-        /* Generate and IPFS URI for NFT's */
-        imageUrl.value = generateLink(uploadResult.data);
-        /* Set details from file upload */
-        audioVideoType.value = uploadResult.data.file.type;
-        size.value = fileSize(uploadResult.data.file.size);
-        // createdAt.value = uploadResult.data.file.created_at;
-      }
+      /* Strip image type off our name eg, .png, .jpeg */
+      name.value = uploadResult.data.file.name.substring(
+        0,
+        uploadResult.data.file.name.lastIndexOf(".")
+      );
+      /* Generate and IPFS URI for NFT's */
+      imageUrl.value = generateLink(uploadResult.data);
+      /* Set details from file upload */
+      audioVideoType.value = uploadResult.data.file.type;
+      size.value = fileSize(uploadResult.data.file.size);
+      createdAt.value = uploadResult.data.file.created_at;
       return uploadResult;
     };
     /*
@@ -719,13 +847,16 @@ export default {
       preview,
       audioVideoType,
       audioVideoURL,
-      resoultion,
+      animationURL,
+      youtubeURL,
+      resolution,
       duration,
       size,
       createdAt,
       switchToTab,
       mintNFT,
-      updateNFT,
+      setExternalUrl,
+      createNFTRow,
       generateLink,
       fileSize,
       onDragEnter,
@@ -799,7 +930,15 @@ section#content {
         justify-content: center;
         align-items: flex-end;
 
-        @include breakpoint($medium) {
+        @include breakpoint($breakpoint-sm) {
+          width: 50%;
+        }
+
+        @include breakpoint($breakpoint-md) {
+          width: 50%;
+        }
+
+        @include breakpoint($breakpoint-xl) {
           width: 60%;
         }
 
@@ -944,7 +1083,15 @@ section#content {
         justify-content: center;
         align-items: flex-start;
 
-        @include breakpoint($medium) {
+        @include breakpoint($breakpoint-sm) {
+          width: 50%;
+        }
+
+        @include breakpoint($breakpoint-md) {
+          width: 50%;
+        }
+
+        @include breakpoint($breakpoint-xl) {
           width: 40%;
         }
 
@@ -993,10 +1140,22 @@ section#content {
           border-radius: 10px;
           letter-spacing: 1px;
           font-size: 14px;
-          width: 300px;
+          width: 240px;
           margin-bottom: 10px;
           padding: 10px;
           text-align: center;
+
+          @include breakpoint($breakpoint-sm) {
+            width: 300px;
+          }
+
+          @include breakpoint($breakpoint-md) {
+            width: 300px;
+          }
+
+          @include breakpoint($breakpoint-xl) {
+            width: 300px;
+          }
         }
 
         input::placeholder {
@@ -1123,7 +1282,8 @@ section#content {
           background-color: #8d50f5;
           font-size: 18px;
           font-weight: bold;
-          width: auto;
+          width: 100%;
+          max-width: 360px;
           height: 55px;
           border: 0;
           padding-left: 71px;
@@ -1143,7 +1303,8 @@ section#content {
           background-color: #fff;
           font-size: 18px;
           font-weight: bold;
-          width: auto;
+          width: 100%;
+          max-width: 300px;
           height: 55px;
           border: 2px solid #1c8bfe;
           padding-left: 20px;
@@ -1173,16 +1334,38 @@ section#content {
           background-color: #08d0a5;
           font-size: 18px;
           font-weight: bold;
-          width: auto;
+          width: 100%;
+          max-width: 360px;
           height: 55px;
           border: 0;
-          padding-left: 78px;
-          padding-right: 78px;
+          padding-left: 87px;
+          padding-right: 87px;
           border-radius: 10px;
           cursor: pointer;
         }
 
         .mint-button:disabled {
+          background: #c6c6c6;
+          color: #101010;
+          cursor: not-allowed;
+        }
+
+        .external-url-button {
+          color: #fff;
+          background-color: #e9429b;
+          font-size: 18px;
+          font-weight: bold;
+          width: 100%;
+          max-width: 300px;
+          height: 55px;
+          border: 0;
+          padding-left: 87px;
+          padding-right: 87px;
+          border-radius: 10px;
+          cursor: pointer;
+        }
+
+        .external-url-button:disabled {
           background: #c6c6c6;
           color: #101010;
           cursor: not-allowed;
@@ -1194,10 +1377,11 @@ section#content {
           font-size: 18px;
           font-weight: bold;
           width: auto;
+          max-width: 300px;
           height: 55px;
           border: 0;
-          padding-left: 105px;
-          padding-right: 105px;
+          padding-left: 43px;
+          padding-right: 43px;
           border-radius: 10px;
           cursor: pointer;
         }

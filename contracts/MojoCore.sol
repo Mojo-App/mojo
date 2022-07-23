@@ -20,17 +20,9 @@ contract MojoCore is ERC721URIStorage, Ownable {
 
     /* Event */
     event NewNftMinted(address indexed from, uint256 timestamp, uint256 tokenId);
-    event NftUpdated(address indexed from, uint256 timestamp, uint256 tokenId);
 
     constructor(address registry) ERC721("MojoNFT", "mNFT") {
-        /*
-         * registry if the address of the Tableland registry. You can always find those
-         * here https://github.com/tablelandnetwork/evm-tableland#currently-supported-chains
-         */
         _tableland = ITablelandTables(registry);
-        /*
-         *  CREATE TABLE prefix_chainId (int id, string name, string description, string external_url, int x, int y);
-         */
 
         _metadataTableId = _tableland.createTable(
             address(this),
@@ -39,7 +31,7 @@ contract MojoCore is ERC721URIStorage, Ownable {
                 _tablePrefix,
                 "_",
                 Strings.toString(block.chainid),
-                " (id int, name text, description text, image text, external_url text);"
+                " (id int, external_link text);"
             )
         );
 
@@ -55,14 +47,10 @@ contract MojoCore is ERC721URIStorage, Ownable {
     /*
      * safeMint allows anyone to mint a token in this project.
      * Any time a token is minted, a new row of metadata will be
-     * dynamically insterted into the metadata table.
+     * dynamically inserted into the metadata table.
      */
-    function safeMint(
-      address to,
-      string calldata name,
-      string calldata description,
-      string calldata image
-    ) public returns (uint256) {
+    function safeMint(address to, string memory newTokenURI) public returns (uint256) {
+        _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
         _tableland.runSQL(
             address(this),
@@ -70,21 +58,17 @@ contract MojoCore is ERC721URIStorage, Ownable {
             string.concat(
                 "INSERT INTO ",
                 _metadataTable,
-                " (id, name, description, image, external_url) VALUES (",
+                " (id, external_link) VALUES (",
                 Strings.toString(newItemId),
-                ", '",
-                name,
-                ", '",
-                description,
-                ", '",
-                image,
                 ", '",
                 _externalURL,
                 "')"
             )
         );
+
         _safeMint(to, newItemId, "");
-        _tokenIds.increment();
+        _setTokenURI(newItemId, newTokenURI);
+        emit NewNftMinted(msg.sender, block.timestamp, newItemId);
         return newItemId;
     }
 
@@ -103,7 +87,7 @@ contract MojoCore is ERC721URIStorage, Ownable {
         string memory base = _baseURI();
 
         string memory json_group = "";
-        string[5] memory cols = ["id", "name", "description", "image", "external_url"];
+        string[2] memory cols = ["id", "external_link"];
         for (uint256 i; i < cols.length; i++) {
             if (i > 0) {
                 json_group = string.concat(json_group, ",");
@@ -136,28 +120,11 @@ contract MojoCore is ERC721URIStorage, Ownable {
             string.concat(
                 "update ",
                 _metadataTable,
-                " set external_url = ",
+                " set external_link = ",
                 externalURL,
                 "||'?tokenId='||id", // Turns every row's URL into a URL including get param for tokenId
                 ";"
             )
         );
-    }
-
-    function _addressToString(address x) internal pure returns (string memory) {
-        bytes memory s = new bytes(40);
-        for (uint256 i = 0; i < 20; i++) {
-            bytes1 b = bytes1(uint8(uint256(uint160(x)) / (2**(8 * (19 - i)))));
-            bytes1 hi = bytes1(uint8(b) / 16);
-            bytes1 lo = bytes1(uint8(b) - 16 * uint8(hi));
-            s[2 * i] = char(hi);
-            s[2 * i + 1] = char(lo);
-        }
-        return string(s);
-    }
-
-    function char(bytes1 b) internal pure returns (bytes1 c) {
-        if (uint8(b) < 10) return bytes1(uint8(b) + 0x30);
-        else return bytes1(uint8(b) + 0x57);
     }
 }
