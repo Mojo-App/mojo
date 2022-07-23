@@ -42,11 +42,11 @@ Tableland - Tableland was used to create a SQL table on contract creation which 
 Tableland Examples
 
 ```shell
-https://testnet.tableland.network/query?mode=list&s=SELECT%20*%20FROM%20mojo_80001_417
+https://testnet.tableland.network/query?mode=list&s=SELECT%20*%20FROM%20mojo_80001_554
 ```
 
 ```shell
-https://testnet.tableland.network/query?s=SELECT%20%27id%27,id,%27external_link%27,external_link%20FROM%20mojo_80001_417%20WHERE%20id%3D5
+https://testnet.tableland.network/query?s=SELECT%20%27id%27,id,%27external_link%27,external_link%20FROM%20mojo_80001_554%20WHERE%20id%3D1
 ```
 
 Polygon - Mojo is deployed to the Polygon Mumbai network and uses Matic for payments and minting, Mumbai Testnet for demo purposes only please!
