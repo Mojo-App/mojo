@@ -57,9 +57,11 @@ Pinia - Store management using Pinia
 SCSS - Austin Powers Styling, Yeah Baby!
 HTML - Ok enough, I get it! Thanks for hanging around this long, hope you enjoyed...
 
+Please visit <https://mojo-lgp54n.spheron.app/> to view the Mojo web3 application, feel free to connect your metamask wallet and enjoy
+
 A 🧪 buidl by Craig Moss
-Twitter: @webmoss
-LinkedIn: 
+Twitter: [@webmoss](https://twitter.com/webmoss)
+LinkedIn: (<https://www.linkedin.com/in/craig-moss-21822628/>)
 
 ## Hardhat Project Setup
 
