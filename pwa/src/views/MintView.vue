@@ -139,9 +139,7 @@
               <!-- Button Row -->
               <div v-if="account && formTab === 'two'" class="button-container">
                 <button class="back-button-blue" @click="switchToTab('one')">🔙</button>
-                <button class="attr-button" @click="switchToTab('three')">
-                  {{ tokenId }} Add Media
-                </button>
+                <button class="attr-button" @click="switchToTab('three')">Add Media</button>
               </div>
               <!-- END Button Row -->
             </div>
@@ -405,7 +403,7 @@ export default {
             let tokenIdBigNo = new BigNumber(newTokenId);
 
             console.log("tokenId ", tokenIdBigNo);
-            tokenId.value = tokenIdBigNo.toNumber();
+            tokenId.value = newTokenId.toNumber();
             console.log("tokenId.value ", tokenId.value);
           });
 
