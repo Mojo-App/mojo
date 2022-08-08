@@ -11,6 +11,9 @@
         <router-link v-if="account" :to="{ name: 'mint' }" active-class="active" exact
           >Mint</router-link
         >
+        <router-link v-if="account" :to="{ name: 'collection' }" active-class="active" exact
+          >Collection</router-link
+        >
         <div v-if="!account" class="right">
           <ConnectWalletButton v-model="account" v-if="!account" btnSize="small" />
         </div>
@@ -24,8 +27,8 @@
 </template>
 <script>
 import { ref, onMounted } from "vue";
+/* Import our Pinia Store & Refs */
 import { storeToRefs } from "pinia";
-/* Import Store */
 import { useStore } from "../store";
 /* Components */
 import ConnectWalletButton from "../components/ConnectWalletButton.vue";
