@@ -2,6 +2,8 @@ import axios from "axios";
 /* Get our Mojo Contract Address */
 const mojoContractAddress = import.meta.env.VITE_MOJO_CORE_CONTRACT;
 const etherScapAPI = import.meta.env.VITE_ETHERSCAN_API_KEY;
+const infuraKey = import.meta.env.VITE_INFURA_API_KEY;
+const infuraSecret = import.meta.env.VITE_INFURA_API_SECRET;
 
 export default class authNFT {
   constructor() {
@@ -36,6 +38,11 @@ export default class authNFT {
         isAuthenticated: data.assets && data.assets.length > 0,
       });
     } else {
+      /**
+       * @dev TODO: Need to add a check here for the chain and switch the api
+       */
+
+      console.log("etherScapAPI", etherScapAPI);
       const response = await axios.get("https://api.etherscan.io/api", {
         params: {
           module: "account",
@@ -48,10 +55,39 @@ export default class authNFT {
       });
       const data = response.data;
       console.log("Etherscan Response Data: ", data);
-      console.log("Etherscan Response Status: ", response.status(200));
-      return response.status(200).json({
-        isAuthenticated: data.result > 0,
-      });
+      console.log("Etherscan Response Data Result: ", data.result);
+      return data.result > 0 ? true : false;
+    }
+  }
+
+  /**
+   * @param {String} accountAddress
+   * @returns {Promise<String|Error>}
+   */
+  async fetchAccountNfts(accountAddress) {
+    if (accountAddress) {
+      try {
+        const response = await axios.get(
+          `https://nft.api.infura.io/networks/1/accounts/${accountAddress}/assets/nfts`,
+          {
+            headers: { "X-API-KEY": "" },
+            auth: {
+              username: infuraKey,
+              password: infuraSecret,
+            },
+          }
+        );
+        console.log("response", response);
+        const data = response.data;
+        console.log("data", data);
+
+        return data.response.status(200).json({
+          assets: data.assets,
+        });
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
     }
   }
 }

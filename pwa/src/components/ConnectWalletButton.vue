@@ -33,13 +33,18 @@ async function connectWallet() {
       const [accountAddress] = await ethereum.request({
         method: "eth_requestAccounts",
       });
-      const authAccount = new authNFT();
-      const { data } = await authAccount.authAccountAddress(accountAddress);
-      store.setIsAuthenticated(data.isAuthenticated);
-      store.setWalletConnectionAttempted(true);
-      store.setLoading(false);
-      store.updateAccount(accountAddress);
-      emit("update:modelValue", accountAddress);
+      if (accountAddress) {
+        const authAccount = new authNFT();
+        const authed = await authAccount.authAccountAddress(accountAddress);
+        if (authed) {
+          store.setIsAuthenticated(authed);
+          store.setWalletConnectionAttempted(true);
+          store.setLoading(false);
+          store.updateAccount(accountAddress);
+        }
+        emit("update:modelValue", accountAddress);
+      }
+      console.log("No accountAddress", accountAddress);
     } catch (error) {
       console.log("Error", error);
       store.setIsAuthenticated(false);

@@ -6,6 +6,7 @@
         <div class="row">
           <div v-if="!account">
             <p>Welcome to Mojo, please connect your account to access your NFT Collection</p>
+            <p><ConnectWalletButton v-model="account" v-if="!account" btnSize="large" /></p>
           </div>
 
           <div v-if="account && !isAuthenticated">
@@ -21,21 +22,29 @@
           <div v-if="account && isAuthenticated">
             <p>Thank you for authenticating with a Mojo NFT. Browse your NFT Collection below!</p>
           </div>
+          <div v-if="tokens">
+            <p>tokens: {{ tokens }}</p>
+          </div>
           <p>Account: {{ account }}</p>
           <p>mojoContractAddress: {{ mojoContractAddress }}</p>
           <p>isAuthenticated: {{ isAuthenticated }}</p>
           <p>walletConnectionAttempted: {{ walletConnectionAttempted }}</p>
+          <p>errorMessage: {{ errorMessage }}</p>
         </div>
       </section>
     </div>
   </section>
 </template>
 <script setup>
-import { onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { Notyf } from "notyf";
 /* Import our Pinia Store */
 import { storeToRefs } from "pinia";
 import { useStore } from "../store";
+/* Import our IPFS and NftStorage Services */
+import authNFT from "../services/authNFT.js";
+/* Components */
+import ConnectWalletButton from "../components/ConnectWalletButton.vue";
 /* Create an instance of Notyf with settings */
 var notyf = new Notyf({
   duration: 5000,
@@ -79,9 +88,9 @@ var notyf = new Notyf({
 // Init Store
 const store = useStore();
 // Store Values and Methods
-const { account, isAuthenticated, walletConnectionAttempted } = storeToRefs(store);
+const { account, isAuthenticated, walletConnectionAttempted, errorMessage } = storeToRefs(store);
 const mojoContractAddress = import.meta.env.VITE_MOJO_CORE_CONTRACT;
-console.log(mojoContractAddress);
+let tokens = ref(null);
 /**
  * Check if our Wallet is Connected to 🦊 Metamask
  */
@@ -104,20 +113,22 @@ async function checkIfWalletIsConnected() {
   }
 }
 
-/* Fetch new NFT audio/media by Category or Name */
-async function fetchData() {
-  // try {
-  //   await store.searchNfts(categorySelectedId.value, "");
-  //   /* Console log with some style */
-  //   const stylesTracks = ["color: black", "background: yellow"].join(";");
-  //   console.log("%c📻 NFT Audio/Media fetched : %s 📻", stylesTracks, JSON.stringify(trackList));
-  // } catch (error) {
-  //   console.log(error);
-  // }
+/* Fetch NFT by Account Address */
+async function fetchTokens(accountAddress) {
+  try {
+    const authAccount = new authNFT();
+    const { data } = await authAccount.fetchAccountNfts(accountAddress);
+    return data.assets;
+  } catch (error) {
+    setTimeout(() => {
+      store.setErrorMessage("Error getting tokens");
+    }, 2000);
+    return;
+  }
 }
 
 onMounted(() => {
-  fetchData();
+  tokens = fetchTokens(account);
   checkIfWalletIsConnected();
 });
 </script>
