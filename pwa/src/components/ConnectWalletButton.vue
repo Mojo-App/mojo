@@ -34,17 +34,17 @@ async function connectWallet() {
         method: "eth_requestAccounts",
       });
       if (accountAddress) {
+        store.setWalletConnectionAttempted(true);
         const authAccount = new authNFT();
         const authed = await authAccount.authAccountAddress(accountAddress);
         if (authed) {
           store.setIsAuthenticated(authed);
-          store.setWalletConnectionAttempted(true);
-          store.setLoading(false);
           store.updateAccount(accountAddress);
         }
         emit("update:modelValue", accountAddress);
+        store.setLoading(false);
       }
-      console.log("No accountAddress", accountAddress);
+      console.log("Account Address", accountAddress);
     } catch (error) {
       console.log("Error", error);
       store.setIsAuthenticated(false);

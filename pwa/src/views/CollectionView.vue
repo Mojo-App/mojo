@@ -3,40 +3,45 @@
     <div class="main">
       <section id="collection">
         <h2>Collection</h2>
-        <div class="row">
-          <div v-if="!account">
-            <p>Welcome to Mojo, please connect your account to access your NFT Collection</p>
-            <p><ConnectWalletButton v-model="account" v-if="!account" btnSize="large" /></p>
-          </div>
 
-          <div v-if="account && !isAuthenticated">
-            <p>
-              You don't have the authorized Mojo NFT in your MetaMask Wallet to enable entry.
-              <br />Please check your account for an NFT with the following contract address:
-              <br />
-              <a :href="`https://etherscan.io/address/${mojoContractAddress}`" target="blank">
-                {{ mojoContractAddress }}
-              </a>
-            </p>
+        <div v-if="!account" class="row">
+          <p>Welcome to Mojo, please connect your account to access your NFT Collection</p>
+          <p>
+            <ConnectWalletButton v-model="account" v-if="!account" btnSize="large" />
+          </p>
+        </div>
+
+        <div v-if="account && !isAuthenticated" class="row">
+          <p>
+            You don't have the authorized Mojo NFT in your MetaMask Wallet to enable entry.
+            <br />Please check your account for an NFT with the following contract address:
+            <br />
+            <a :href="`https://etherscan.io/address/${mojoContractAddress}`" target="blank">
+              {{ mojoContractAddress }}
+            </a>
+          </p>
+          <p><button class="mint-button" @click="mintNFT()">Mint NFT</button></p>
+        </div>
+
+        <div v-if="account && isAuthenticated" class="row">
+          <p>Thank you for authenticating with a Mojo NFT. Browse your NFT Collection below!</p>
+        </div>
+
+        <div class="token-list">
+          <div v-for="(token, key) in tokens" :key="key" class="token-card">
+            <div class="token-image">
+              <img :src="`${token.metadata.image}`" :alt="`${token.metadata.name}`" />
+            </div>
+            <!-- <div class="token-title">{{ token.metadata.name }}</div> -->
+            <!-- <div class="token-description">{{ token.metadata.description }}</div> -->
           </div>
-          <div v-if="account && isAuthenticated">
-            <p>Thank you for authenticating with a Mojo NFT. Browse your NFT Collection below!</p>
-          </div>
-          <div v-if="tokens">
-            <p>tokens: {{ tokens }}</p>
-          </div>
-          <p>Account: {{ account }}</p>
-          <p>mojoContractAddress: {{ mojoContractAddress }}</p>
-          <p>isAuthenticated: {{ isAuthenticated }}</p>
-          <p>walletConnectionAttempted: {{ walletConnectionAttempted }}</p>
-          <p>errorMessage: {{ errorMessage }}</p>
         </div>
       </section>
     </div>
   </section>
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
+import { onMounted } from "vue";
 import { Notyf } from "notyf";
 /* Import our Pinia Store */
 import { storeToRefs } from "pinia";
@@ -88,9 +93,9 @@ var notyf = new Notyf({
 // Init Store
 const store = useStore();
 // Store Values and Methods
-const { account, isAuthenticated, walletConnectionAttempted, errorMessage } = storeToRefs(store);
+const { account, tokens, isAuthenticated } = storeToRefs(store);
 const mojoContractAddress = import.meta.env.VITE_MOJO_CORE_CONTRACT;
-let tokens = ref(null);
+
 /**
  * Check if our Wallet is Connected to 🦊 Metamask
  */
@@ -107,28 +112,30 @@ async function checkIfWalletIsConnected() {
     /* Get our Current Account */
     const accounts = await ethereum.request({ method: "eth_accounts" });
     /* Update our Current Account in the Store */
-    if (accounts.length !== 0) store.updateAccount(accounts[0]);
+    if (accounts.length !== 0) {
+      store.updateAccount(accounts[0]);
+      await fetchTokens();
+    }
   } catch (error) {
     console.log(error);
   }
 }
 
 /* Fetch NFT by Account Address */
-async function fetchTokens(accountAddress) {
-  try {
-    const authAccount = new authNFT();
-    const { data } = await authAccount.fetchAccountNfts(accountAddress);
-    return data.assets;
-  } catch (error) {
-    setTimeout(() => {
-      store.setErrorMessage("Error getting tokens");
-    }, 2000);
-    return;
+async function fetchTokens() {
+  if (account.value) {
+    try {
+      const authAccount = new authNFT();
+      let allTokens = await authAccount.fetchAccountNfts(account.value);
+      store.addTokens(allTokens);
+    } catch (error) {
+      store.setErrorMessage("Error getting tokens:", error);
+      notyf.error(`Error fetching tokens, please refresh to try again!`);
+    }
   }
 }
 
 onMounted(() => {
-  tokens = fetchTokens(account);
   checkIfWalletIsConnected();
 });
 </script>
@@ -139,13 +146,14 @@ onMounted(() => {
 section#content {
   position: relative;
   height: 100%;
+  overflow: scroll;
 
   .main {
     width: 100%;
     height: 100%;
     margin: 0 auto;
     padding: 0 0 10px 0;
-    overflow: hidden;
+    overflow: scroll;
 
     @include breakpoint($medium) {
       height: 99%;
@@ -186,6 +194,73 @@ section#content {
         }
       }
 
+      .token-list {
+        width: 100%;
+        max-width: 960px;
+        display: inline-block;
+        margin: 0 auto;
+
+        .token-card {
+          display: block;
+          box-sizing: border-box;
+          position: relative;
+          width: 150px;
+          height: 170px;
+          background: #f4f4f4;
+          border: 2px solid #f4f4f4;
+          border-radius: 6px;
+          overflow: hidden;
+          float: center;
+          margin: 0 auto 20px;
+          @include breakpoint($breakpoint-sm) {
+            float: left;
+            margin: 0 10px 20px 10px;
+          }
+          @include breakpoint($breakpoint-md) {
+            float: left;
+            margin: 0 10px 20px 10px;
+          }
+          @include breakpoint($breakpoint-xl) {
+            float: left;
+            margin: 0 20px 20px 0;
+          }
+
+          &:hover {
+            border: 2px solid #8d50f5;
+          }
+        }
+
+        .token-title {
+          color: #1a1a1a;
+          width: 100%;
+          font-size: 14px;
+          font-weight: normal;
+          text-transform: uppercase;
+          text-align: center;
+          margin: 20px 0;
+        }
+
+        .token-image {
+          width: 98%;
+          margin: 0 auto;
+          padding: 1%;
+          overflow: hidden;
+
+          @include breakpoint($medium) {
+            width: 96%;
+            padding: 2%;
+          }
+
+          img,
+          svg {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            overflow: hidden;
+          }
+        }
+      }
+
       h2 {
         font-size: 1.8rem;
         text-align: center;
@@ -197,6 +272,27 @@ section#content {
           margin-block-start: 0.3em;
           margin-block-end: 0.2em;
         }
+      }
+
+      .mint-button {
+        color: #fff;
+        background-color: #08d0a5;
+        font-size: 18px;
+        font-weight: bold;
+        width: 100%;
+        max-width: 360px;
+        height: 55px;
+        border: 0;
+        padding-left: 87px;
+        padding-right: 87px;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+
+      .mint-button:disabled {
+        background: #c6c6c6;
+        color: #101010;
+        cursor: not-allowed;
       }
 
       a {

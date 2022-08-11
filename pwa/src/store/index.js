@@ -21,6 +21,7 @@ export const useStore = defineStore({
       walletAddress: "",
       account: null,
       balance: null,
+      tokens: [],
       trackList: [],
       newArrivals: [],
       counter: 0,
@@ -37,6 +38,9 @@ export const useStore = defineStore({
     },
     getAccountBalance(state) {
       return state.balance;
+    },
+    getTokens(state) {
+      return state.tokens;
     },
     getTrackList(state) {
       return state.trackList;
@@ -64,10 +68,13 @@ export const useStore = defineStore({
     updateBalance(balance) {
       this.balance = balance;
     },
-    addTracks(...tracks) {
+    addTokens(tokens) {
+      this.tokens.push(...tokens);
+    },
+    addTracks(tracks) {
       this.trackList.push(...tracks);
     },
-    addNewArrivals(...tracks) {
+    addNewArrivals(tracks) {
       this.newArrivals.push(...tracks);
     },
     addToCount(amount) {
@@ -77,10 +84,10 @@ export const useStore = defineStore({
     resetNftFiles() {
       this.filesNft = [];
     },
-    addNftFiles(...files) {
+    addNftFiles(files) {
       this.filesNft.push(...files);
     },
-    addNftResults(...files) {
+    addNftResults(files) {
       this.nftResults.push(...files);
       this.nftResults = this.nftResults.filter(function (cid) {
         return !!cid;
@@ -92,10 +99,10 @@ export const useStore = defineStore({
     resetFiles() {
       this.files = [];
     },
-    addFiles(...files) {
+    addFiles(files) {
       this.files.push(...files);
     },
-    addResults(...files) {
+    addResults(files) {
       this.results.push(...files);
       this.results = this.results.filter(function (cid) {
         return !!cid;
