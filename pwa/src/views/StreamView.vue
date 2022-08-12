@@ -128,14 +128,19 @@ function selectCategory(category) {
   console.log("categorySelectedId:", categorySelectedId.value);
 }
 /**
- * Fetch NFT Audio/Media data
- * @dev WIP: This will change to pull our NFTs and their metadata from Tableland
+ * Fetch NFT Audio/Media category data from Tableland
  */
-// async function fetchData() {
-//   categoryTracks.value = null;
-//   const res = await fetch(`./tracks/6.json`);
-//   console.log("Tracks Loaded:", res);
-//   categoryTracks.value = await res.json();
+// async function fetchCategories() {
+//   categories.value = null;
+//   try {
+//     const res = await fetch(
+//       `https://testnet.tableland.network/query?mode=list&s=SELECT%20*%20FROM%20mojo_80001_554`
+//     );
+//     console.log("Categories Loaded:", res);
+//     categoryTracks.value = await res.json();
+//   } catch (error) {
+//     console.log(error);
+//   }
 // }
 
 /* Fetch new NFT audio/media by Category or Name */
@@ -144,34 +149,22 @@ async function fetchData() {
     await store.searchNfts(categorySelectedId.value, "");
     /* Console log with some style */
     const stylesTracks = ["color: black", "background: yellow"].join(";");
-    console.log("%c📻 NFT Audio/Media fetched : %s 📻", stylesTracks, JSON.stringify(trackList));
+    console.log(
+      "%c📻 NFT Audio/Media fetched : %s 📻",
+      stylesTracks,
+      JSON.stringify(trackList.value)
+    );
   } catch (error) {
     console.log(error);
   }
 }
-
-/**
- * Fetch NFT Audio/Media data
- * @dev WIP: This will change to pull our NFTs and their metadata from Tableland
- */
-// async function fetchData() {
-//   categoryTracks.value = null;
-//   try {
-//     const res = await fetch(
-//       `https://testnet.tableland.network/query?mode=list&s=SELECT%20*%20FROM%20mojo_80001_554`
-//     );
-//     console.log("Tracks Loaded:", res);
-//     categoryTracks.value = await res.json();
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
 
 /* Watch for Category Changes */
 watch(categorySelectedId, fetchData);
 
 onMounted(() => {
   fetchData();
+  // fetchCategories();
   checkIfWalletIsConnected();
 });
 </script>

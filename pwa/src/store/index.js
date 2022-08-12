@@ -71,10 +71,10 @@ export const useStore = defineStore({
     addTokens(tokens) {
       this.tokens.push(...tokens);
     },
-    addTracks(tracks) {
+    addTracks(...tracks) {
       this.trackList.push(...tracks);
     },
-    addNewArrivals(tracks) {
+    addNewArrivals(...tracks) {
       this.newArrivals.push(...tracks);
     },
     addToCount(amount) {
