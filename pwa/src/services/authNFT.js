@@ -78,14 +78,170 @@ export default class authNFT {
   }
 
   /**
-   * @param {String} accountAddress
+   * https://docs.api.infura.io/nft/
+   * Gets NFT collection metadata
+   * @param {String} chainId
+   * @param {String} tokenAddress
    * @returns {Promise<Array|Error>}
+   * {
+   *  "contract": "0xa9cb55d05d3351dcd02dd5dc4614e764ce3e1d6e",
+   *  "name": "My Crypto NFT Project",
+   *  "symbol": "CNSYS",
+   *  "tokenType": "ERC-721"
+   * }
    */
-  async fetchAccountNfts(accountAddress) {
-    if (accountAddress) {
+  async fetchNftCollection(chainId, tokenAddress) {
+    if (chainId && tokenAddress) {
       try {
         const response = await axios.get(
-          `https://nft.api.infura.io/networks/1/accounts/${accountAddress}/assets/nfts`,
+          `https://nft.api.infura.io/networks/${chainId}/nfts/${tokenAddress}`,
+          {
+            headers: {},
+            auth: {
+              username: infuraKey,
+              password: infuraSecret,
+            },
+          }
+        );
+        const data = response.data;
+        return data.assets;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    }
+  }
+
+  /**
+   * https://docs.api.infura.io/nft/
+   * Gets all NFTs with metadata currently owned by a given address
+   * @param {String} chainId
+   * @param {String} accountAddress
+   * @returns {Promise<Array|Error>}
+   * {
+   *  "pageNumber": 1,
+   *  "network": "ETHEREUM",
+   *  "total": 1,
+   *  "account": "0x0a267cf51ef038fc00e71801f5a524aec06e4f07",
+   *  "type": "NFT",
+   *  "assets": [
+   *    {
+   *      "contract": "0x8e04b34166612e73e8f8b7d7a5ddb6ea2895b4b5",
+   *      "tokenId": "3545",
+   *      "supply": "1",
+   *      "type": "ERC721",
+   *      "metadata": {
+   *        "description": "Hello world.",
+   *        "image": "https://ipfs.io/ipfs/QmbxwZsUSBT3sGUuWCMLeuMzHcgq5eK2zjxFrYnUcoV1Du",
+   *        "name": "Hello world.",
+   *        "attributes": [
+   *          {
+   *            "trait_type": "Background",
+   *            "value": "White"
+   *          }
+   *        ]
+   *      }
+   *    }
+   *  ]
+   * }
+   */
+  async fetchAccountNfts(chainId, accountAddress) {
+    if (chainId && accountAddress) {
+      try {
+        const response = await axios.get(
+          `https://nft.api.infura.io/networks/${chainId}/accounts/${accountAddress}/assets/nfts`,
+          {
+            headers: {},
+            auth: {
+              username: infuraKey,
+              password: infuraSecret,
+            },
+          }
+        );
+        const data = response.data;
+        return data.assets;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    }
+  }
+
+  /**
+   * https://docs.api.infura.io/nft/
+   * Gets NFT collection metadata
+   * @param {String} chainId
+   * @param {String} tokenAddress
+   * @param {String} tokenId
+   * @returns {Promise<Array|Error>}
+   * {
+   *  "contract": "0xa9cb55d05d3351dcd02dd5dc4614e764ce3e1d6e",
+   *  "tokenId": 1,
+   *  "name": "Washington #7421",
+   *  "description": "WeMint Cash First Edition: Washington #7421",
+   *  "image": "https://ipfs.io/ipfs/Qmdibwx2MmendzExWgsGsyiGodMJ8hvAkLHcAVbMbpK2rG/7421.png"
+   *  }
+   */
+  async fetchNftMetadata(chainId, tokenAddress, tokenId) {
+    if (chainId && tokenAddress && tokenId) {
+      try {
+        const response = await axios.get(
+          `https://nft.api.infura.io/networks/${chainId}/nfts/${tokenAddress}/tokens/${tokenId}`,
+          {
+            headers: {},
+            auth: {
+              username: infuraKey,
+              password: infuraSecret,
+            },
+          }
+        );
+        const data = response.data;
+        return data.assets;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    }
+  }
+
+  /**
+   * https://docs.api.infura.io/nft/
+   * Gets NFT collection metadata
+   * @param {String} chainId
+   * @param {String} contractAddress
+   * @returns {Promise<Array|Error>}
+   * {
+   *  "pageNumber": 1,
+   *  "network": "ETHEREUM",
+   *  "total": 1,
+   *  "account": "0x0a267cf51ef038fc00e71801f5a524aec06e4f07",
+   *  "type": "NFT",
+   *  "assets": [
+   *    {
+   *      "contract": "0x8e04b34166612e73e8f8b7d7a5ddb6ea2895b4b5",
+   *      "tokenId": "3545",
+   *      "supply": "1",
+   *      "type": "ERC721",
+   *      "metadata": {
+   *        "description": "Hello world.",
+   *        "image": "https://ipfs.io/ipfs/QmbxwZsUSBT3sGUuWCMLeuMzHcgq5eK2zjxFrYnUcoV1Du",
+   *        "name": "Hello world.",
+   *        "attributes": [
+   *          {
+   *            "trait_type": "Background",
+   *            "value": "White"
+   *          }
+   *        ]
+   *      }
+   *    }
+   *  ]
+   *}
+   */
+  async fetchCollectionNfts(chainId, contractAddress) {
+    if (chainId && contractAddress) {
+      try {
+        const response = await axios.get(
+          `https://nft.api.infura.io/networks/${chainId}/nfts/${contractAddress}/tokens}`,
           {
             headers: {},
             auth: {

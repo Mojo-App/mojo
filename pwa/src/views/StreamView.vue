@@ -182,6 +182,7 @@ onMounted(() => {
 section#content {
   position: relative;
   height: 100%;
+  overflow: scroll;
 
   .main {
     width: 100%;

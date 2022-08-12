@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-const baseURL = import.meta.env.VITE_BASE_URL;
+const baseURL = "";
 // Async Components
 const HomeView = () => import("../views/HomeView.vue");
 const CollectionView = () => import("../views/CollectionView.vue");

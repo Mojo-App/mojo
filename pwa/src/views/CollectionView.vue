@@ -27,7 +27,7 @@
           <p>Thank you for authenticating with a Mojo NFT. Browse your NFT Collection below!</p>
         </div>
 
-        <div class="token-list">
+        <div v-if="tokens.length > 0" class="row token-list">
           <div v-for="(token, key) in tokens" :key="key" class="token-card">
             <div class="token-image">
               <img :src="`${token.metadata.image}`" :alt="`${token.metadata.name}`" />
@@ -125,8 +125,13 @@ async function checkIfWalletIsConnected() {
 async function fetchTokens() {
   if (account.value) {
     try {
+      /**
+       * @dev Must add the chain id we want or all of them even
+       */
+      let chainId = 1;
+
       const authAccount = new authNFT();
-      let allTokens = await authAccount.fetchAccountNfts(account.value);
+      let allTokens = await authAccount.fetchAccountNfts(chainId, account.value);
       store.addTokens(allTokens);
     } catch (error) {
       store.setErrorMessage("Error getting tokens:", error);
@@ -152,15 +157,9 @@ section#content {
     width: 100%;
     height: 100%;
     margin: 0 auto;
-    padding: 0 0 10px 0;
-    overflow: scroll;
-
-    @include breakpoint($medium) {
-      height: 99%;
-    }
+    padding: 0;
 
     section#collection {
-      height: 100%;
       color: #212121;
       background: #fff;
       display: flex;
@@ -185,6 +184,7 @@ section#content {
         align-content: center;
         justify-content: center;
         align-items: center;
+        padding: 0;
 
         @include breakpoint($medium) {
           flex-direction: column;
@@ -204,8 +204,8 @@ section#content {
           display: block;
           box-sizing: border-box;
           position: relative;
-          width: 150px;
-          height: 170px;
+          width: 170px;
+          height: 194px;
           background: #f4f4f4;
           border: 2px solid #f4f4f4;
           border-radius: 6px;
