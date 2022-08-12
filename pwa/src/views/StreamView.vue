@@ -22,11 +22,11 @@
           <div class="track-list">
             <TrackPlayer v-for="track in trackList" :track="track" :key="track.id"></TrackPlayer>
           </div>
-          <div v-if="!categoryTracks">
-            <!-- <h2>Please be patient while we spin another mix...</h2>
+          <div v-if="!trackList">
+            <h2>Please be patient while we spin another mix...</h2>
             <div class="dj-graphic">
               <img src="../assets/images/DJ.png" alt="DJ Saved my Life" />
-            </div> -->
+            </div>
             <p>Account: {{ account }}</p>
             <p>Tracks: {{ categoryTracks }}</p>
           </div>
@@ -90,7 +90,6 @@ const store = useStore();
 const { account, trackList } = storeToRefs(store);
 // Local Vars
 const categorySelectedId = ref(1);
-const categoryTracks = ref();
 /**
  * Check if our Wallet is Connected to 🦊 Metamask
  */
@@ -137,7 +136,7 @@ function selectCategory(category) {
 //       `https://testnet.tableland.network/query?mode=list&s=SELECT%20*%20FROM%20mojo_80001_554`
 //     );
 //     console.log("Categories Loaded:", res);
-//     categoryTracks.value = await res.json();
+//     categories.value = await res.json();
 //   } catch (error) {
 //     console.log(error);
 //   }
@@ -184,7 +183,6 @@ section#content {
     padding: 0;
 
     section#stream {
-      height: 100%;
       color: #212121;
       background: #1c8bfe;
       display: flex;

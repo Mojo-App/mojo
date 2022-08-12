@@ -71,6 +71,9 @@ export const useStore = defineStore({
     addTokens(tokens) {
       this.tokens.push(...tokens);
     },
+    resetTracks() {
+      this.trackList = [];
+    },
     addTracks(...tracks) {
       this.trackList.push(...tracks);
     },
@@ -345,6 +348,7 @@ export const useStore = defineStore({
             })
             .then((data) => {
               // Format and store our data in the tracks[] array
+              this.resetTracks();
               for (const { id, external_link } of data) {
                 console.log(`${id}: ${external_link}`);
                 this.addTracks({id, external_link});
