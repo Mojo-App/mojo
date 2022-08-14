@@ -31,6 +31,7 @@ declare module '@vue/runtime-core' {
     RouterView: typeof import('vue-router')['RouterView']
     SearchResult: typeof import('./src/components/VUpload/SearchResult.vue')['default']
     StopButton: typeof import('./src/components/icons/StopButton.vue')['default']
+    TokenCard: typeof import('./src/components/TokenCard.vue')['default']
     TokenView: typeof import('./src/components/TokenView.vue')['default']
     TrackPlayer: typeof import('./src/components/TrackPlayer.vue')['default']
   }

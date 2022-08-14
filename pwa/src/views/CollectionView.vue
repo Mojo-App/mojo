@@ -2,39 +2,74 @@
   <section id="content">
     <div class="main">
       <section id="collection">
-        <h2>Collection</h2>
+        <h2 v-if="ethereumTokens.length > 0">Ethereum NFT Tokens</h2>
+        <div v-if="ethereumTokens.length > 0" class="row token-list">
+          <div v-for="(token, key) in ethereumTokens" :key="key" class="token-card">
+            <div v-if="token.metadata.image" class="token-image">
+              <img :src="`${token.metadata.image}`" :alt="`${token.metadata.name}`" />
+            </div>
+            <div class="token-title">{{ token.metadata.name }}</div>
+            <div class="token-description">{{ token.metadata.description }}</div>
+          </div>
+        </div>
 
+        <h2 v-if="polygonTokens.length > 0">Polygon NFT Tokens</h2>
+        <div v-if="polygonTokens.length > 0" class="row token-list">
+          <div v-for="(token, key) in polygonTokens" :key="key" class="token-card">
+            <div v-if="token.metadata.image" class="token-image">
+              <img :src="`${token.metadata.image}`" :alt="`${token.metadata.name}`" />
+            </div>
+            <div class="token-title">{{ token.metadata.name }}</div>
+            <div class="token-description">{{ token.metadata.description }}</div>
+          </div>
+        </div>
+
+        <h2 v-if="optimismTokens.length > 0">Optimism NFT Tokens</h2>
+        <div v-if="optimismTokens.length > 0" class="row token-list">
+          <div v-for="(token, key) in optimismTokens" :key="key" class="token-card">
+            <div v-if="token.metadata.image" class="token-image">
+              <img :src="`${token.metadata.image}`" :alt="`${token.metadata.name}`" />
+            </div>
+            <div class="token-title">{{ token.metadata.name }}</div>
+            <div class="token-description">{{ token.metadata.description }}</div>
+          </div>
+        </div>
+        <h2 v-if="arbitrumTokens.length > 0">Ethereum NFT Tokens</h2>
+        <div v-if="arbitrumTokens.length > 0" class="row token-list">
+          <div v-for="(token, key) in arbitrumTokens" :key="key" class="token-card">
+            <div v-if="token.metadata.image" class="token-image">
+              <img :src="`${token.metadata.image}`" :alt="`${token.metadata.name}`" />
+            </div>
+            <div class="token-title">{{ token.metadata.name }}</div>
+            <div class="token-description">{{ token.metadata.description }}</div>
+          </div>
+        </div>
+
+        <h2>Mojo Collection</h2>
         <div v-if="!account" class="row">
           <p>Welcome to Mojo, please connect your account to access your NFT Collection</p>
           <p>
             <ConnectWalletButton v-model="account" v-if="!account" btnSize="large" />
           </p>
         </div>
-
         <div v-if="account && !isAuthenticated" class="row">
           <p>
-            You don't have the authorized Mojo NFT in your MetaMask Wallet to enable entry.
+            You don't have an authorized Mojo NFT in your wallet to gain access.
             <br />Please check your account for an NFT with the following contract address:
             <br />
             <a :href="`https://etherscan.io/address/${mojoContractAddress}`" target="blank">
               {{ mojoContractAddress }}
             </a>
           </p>
-          <p><button class="mint-button" @click="mintNFT()">Mint NFT</button></p>
+          <p>
+            <button class="mint-button" @click="$router.push('mint')">Mint NFT</button>
+            <br />
+          </p>
         </div>
-
         <div v-if="account && isAuthenticated" class="row">
-          <p>Thank you for authenticating with a Mojo NFT. Browse your NFT Collection below!</p>
-        </div>
-
-        <div v-if="tokens.length > 0" class="row token-list">
-          <div v-for="(token, key) in tokens" :key="key" class="token-card">
-            <div class="token-image">
-              <img :src="`${token.metadata.image}`" :alt="`${token.metadata.name}`" />
-            </div>
-            <!-- <div class="token-title">{{ token.metadata.name }}</div> -->
-            <!-- <div class="token-description">{{ token.metadata.description }}</div> -->
-          </div>
+          <p>
+            Thank you for authenticating with a Mojo NFT. Browse your Music NFT Collection below!
+          </p>
         </div>
       </section>
     </div>
@@ -93,7 +128,8 @@ var notyf = new Notyf({
 // Init Store
 const store = useStore();
 // Store Values and Methods
-const { account, tokens, isAuthenticated } = storeToRefs(store);
+const { account, isAuthenticated, ethereumTokens, polygonTokens, optimismTokens, arbitrumTokens } =
+  storeToRefs(store);
 const mojoContractAddress = import.meta.env.VITE_MOJO_CORE_CONTRACT;
 
 /**
@@ -125,14 +161,27 @@ async function checkIfWalletIsConnected() {
 async function fetchTokens() {
   if (account.value) {
     try {
-      /**
-       * @dev Must add the chain id we want or all of them even
-       */
-      let chainId = 1;
-
       const authAccount = new authNFT();
-      let allTokens = await authAccount.fetchAccountNfts(chainId, account.value);
-      store.addTokens(allTokens);
+      /* Ethereum */
+      let ethereumTokens = await authAccount.fetchAccountNfts(1, account.value);
+      store.addEthereumTokens(...ethereumTokens);
+      let ethereumTestnetTokens = await authAccount.fetchAccountNfts(5, account.value);
+      store.addEthereumTokens(...ethereumTestnetTokens);
+      /* Polygon */
+      let polygonTokens = await authAccount.fetchAccountNfts(137, account.value);
+      store.addPolygonTokens(...polygonTokens);
+      let polygonTestnetTokens = await authAccount.fetchAccountNfts(80001, account.value);
+      store.addPolygonTokens(...polygonTestnetTokens);
+      /* Optimism */
+      let optimismTokens = await authAccount.fetchAccountNfts(10, account.value);
+      store.addOptimismTokens(...optimismTokens);
+      let optimismTestnetTokens = await authAccount.fetchAccountNfts(69, account.value);
+      store.addOptimismTokens(...optimismTestnetTokens);
+      /* Arbitrum */
+      let arbitrumTokens = await authAccount.fetchAccountNfts(42161, account.value);
+      store.addArbitrumTokens(...arbitrumTokens);
+      let arbitrumTestnetTokens = await authAccount.fetchAccountNfts(42161, account.value);
+      store.addArbitrumTokens(...arbitrumTestnetTokens);
     } catch (error) {
       store.setErrorMessage("Error getting tokens:", error);
       notyf.error(`Error fetching tokens, please refresh to try again!`);
@@ -212,14 +261,17 @@ section#content {
           overflow: hidden;
           float: center;
           margin: 0 auto 20px;
+
           @include breakpoint($breakpoint-sm) {
             float: left;
             margin: 0 10px 20px 10px;
           }
+
           @include breakpoint($breakpoint-md) {
             float: left;
             margin: 0 10px 20px 10px;
           }
+
           @include breakpoint($breakpoint-xl) {
             float: left;
             margin: 0 20px 20px 0;

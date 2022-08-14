@@ -21,7 +21,10 @@ export const useStore = defineStore({
       walletAddress: "",
       account: null,
       balance: null,
-      tokens: [],
+      ethereumTokens: [],
+      polygonTokens: [],
+      optimismTokens: [],
+      arbitrumTokens: [],
       trackList: [],
       newArrivals: [],
       counter: 0,
@@ -39,8 +42,17 @@ export const useStore = defineStore({
     getAccountBalance(state) {
       return state.balance;
     },
-    getTokens(state) {
-      return state.tokens;
+    getEthereumTokens(state) {
+      return state.ethereumTokens;
+    },
+    getPolygonTokens(state) {
+      return state.polygonTokens;
+    },
+    getOptimismTokens(state) {
+      return state.optimismTokens;
+    },
+    getArbitrumTokens(state) {
+      return state.arbitrumTokens;
     },
     getTrackList(state) {
       return state.trackList;
@@ -68,8 +80,17 @@ export const useStore = defineStore({
     updateBalance(balance) {
       this.balance = balance;
     },
-    addTokens(tokens) {
-      this.tokens.push(...tokens);
+    addEthereumTokens(...tokens) {
+      this.ethereumTokens.push(...tokens);
+    },
+    addPolygonTokens(...tokens) {
+      this.polygonTokens.push(...tokens);
+    },
+    addOptimismTokens(...tokens) {
+      this.optimismTokens.push(...tokens);
+    },
+    addArbitrumTokens(...tokens) {
+      this.arbitrumTokens.push(...tokens);
     },
     resetTracks() {
       this.trackList = [];
@@ -351,7 +372,7 @@ export const useStore = defineStore({
               this.resetTracks();
               for (const { id, external_link } of data) {
                 console.log(`${id}: ${external_link}`);
-                this.addTracks({id, external_link});
+                this.addTracks({ id, external_link });
               }
             });
         }

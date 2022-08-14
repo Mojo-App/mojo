@@ -54,7 +54,7 @@
               IPFS Upload
             </button>
             <button @click="$router.push('mint')" v-if="account" className="mint-media-button">
-              Get Minty
+              Mint Tea
             </button>
           </div>
         </div>
