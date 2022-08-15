@@ -17,6 +17,7 @@ declare module '@vue/runtime-core' {
     IRiClipboardLine: typeof import('~icons/ri/clipboard-line')['default']
     IRiExternalLinkFill: typeof import('~icons/ri/external-link-fill')['default']
     IRiFileList3Line: typeof import('~icons/ri/file-list3-line')['default']
+    NftCard: typeof import('./src/components/NftCard.vue')['default']
     PanelResult: typeof import('./src/components/VUpload/PanelResult.vue')['default']
     PanelUpload: typeof import('./src/components/VUpload/PanelUpload.vue')['default']
     PauseButton: typeof import('./src/components/icons/PauseButton.vue')['default']

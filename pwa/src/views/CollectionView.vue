@@ -2,49 +2,36 @@
   <section id="content">
     <div class="main">
       <section id="collection">
+        <!-- Ethereum -->
         <h2 v-if="ethereumTokens.length > 0">Ethereum NFT Tokens</h2>
         <div v-if="ethereumTokens.length > 0" class="row token-list">
-          <div v-for="(token, key) in ethereumTokens" :key="key" class="token-card">
-            <div v-if="token.metadata.image" class="token-image">
-              <img :src="`${token.metadata.image}`" :alt="`${token.metadata.name}`" />
-            </div>
-            <div class="token-title">{{ token.metadata.name }}</div>
-            <div class="token-description">{{ token.metadata.description }}</div>
-          </div>
+          <template v-for="token in ethereumTokens" :key="token.tokenId">
+            {{ token }}
+            <NftCard v-if="token.metadata" :token="token" />
+          </template>
         </div>
-
+        <!-- Polygon -->
         <h2 v-if="polygonTokens.length > 0">Polygon NFT Tokens</h2>
         <div v-if="polygonTokens.length > 0" class="row token-list">
-          <div v-for="(token, key) in polygonTokens" :key="key" class="token-card">
-            <div v-if="token.metadata.image" class="token-image">
-              <img :src="`${token.metadata.image}`" :alt="`${token.metadata.name}`" />
-            </div>
-            <div class="token-title">{{ token.metadata.name }}</div>
-            <div class="token-description">{{ token.metadata.description }}</div>
-          </div>
+          <template v-for="token in polygonTokens" :key="token.tokenId">
+            <NftCard v-if="token.metadata" :token="token" />
+          </template>
         </div>
-
+        <!-- Optimism -->
         <h2 v-if="optimismTokens.length > 0">Optimism NFT Tokens</h2>
         <div v-if="optimismTokens.length > 0" class="row token-list">
-          <div v-for="(token, key) in optimismTokens" :key="key" class="token-card">
-            <div v-if="token.metadata.image" class="token-image">
-              <img :src="`${token.metadata.image}`" :alt="`${token.metadata.name}`" />
-            </div>
-            <div class="token-title">{{ token.metadata.name }}</div>
-            <div class="token-description">{{ token.metadata.description }}</div>
-          </div>
+          <template v-for="token in optimismTokens" :key="token.tokenId">
+            <NftCard v-if="token.metadata" :token="token" />
+          </template>
         </div>
-        <h2 v-if="arbitrumTokens.length > 0">Ethereum NFT Tokens</h2>
+        <!-- Arbitrum -->
+        <h2 v-if="arbitrumTokens.length > 0">Arbitrum NFT Tokens</h2>
         <div v-if="arbitrumTokens.length > 0" class="row token-list">
-          <div v-for="(token, key) in arbitrumTokens" :key="key" class="token-card">
-            <div v-if="token.metadata.image" class="token-image">
-              <img :src="`${token.metadata.image}`" :alt="`${token.metadata.name}`" />
-            </div>
-            <div class="token-title">{{ token.metadata.name }}</div>
-            <div class="token-description">{{ token.metadata.description }}</div>
-          </div>
+          <template v-for="token in arbitrumTokens" :key="token.tokenId">
+            <NftCard v-if="token.metadata" :token="token" />
+          </template>
         </div>
-
+        <!-- Mojo Nfts -->
         <h2>Mojo Collection</h2>
         <div v-if="!account" class="row">
           <p>Welcome to Mojo, please connect your account to access your NFT Collection</p>
@@ -85,6 +72,7 @@ import { useStore } from "../store";
 import authNFT from "../services/authNFT.js";
 /* Components */
 import ConnectWalletButton from "../components/ConnectWalletButton.vue";
+import NftCard from "../components/NftCard.vue";
 /* Create an instance of Notyf with settings */
 var notyf = new Notyf({
   duration: 5000,
@@ -173,15 +161,15 @@ async function fetchTokens() {
       let polygonTestnetTokens = await authAccount.fetchAccountNfts(80001, account.value);
       store.addPolygonTokens(...polygonTestnetTokens);
       /* Optimism */
-      let optimismTokens = await authAccount.fetchAccountNfts(10, account.value);
-      store.addOptimismTokens(...optimismTokens);
-      let optimismTestnetTokens = await authAccount.fetchAccountNfts(69, account.value);
-      store.addOptimismTokens(...optimismTestnetTokens);
+      // let optimismTokens = await authAccount.fetchAccountNfts(10, account.value);
+      // store.addOptimismTokens(...optimismTokens);
+      // let optimismTestnetTokens = await authAccount.fetchAccountNfts(69, account.value);
+      // store.addOptimismTokens(...optimismTestnetTokens);
       /* Arbitrum */
-      let arbitrumTokens = await authAccount.fetchAccountNfts(42161, account.value);
-      store.addArbitrumTokens(...arbitrumTokens);
-      let arbitrumTestnetTokens = await authAccount.fetchAccountNfts(42161, account.value);
-      store.addArbitrumTokens(...arbitrumTestnetTokens);
+      // let arbitrumTokens = await authAccount.fetchAccountNfts(42161, account.value);
+      // store.addArbitrumTokens(...arbitrumTokens);
+      // let arbitrumTestnetTokens = await authAccount.fetchAccountNfts(42161, account.value);
+      // store.addArbitrumTokens(...arbitrumTestnetTokens);
     } catch (error) {
       store.setErrorMessage("Error getting tokens:", error);
       notyf.error(`Error fetching tokens, please refresh to try again!`);
@@ -189,8 +177,8 @@ async function fetchTokens() {
   }
 }
 
-onMounted(() => {
-  checkIfWalletIsConnected();
+onMounted(async () => {
+  await checkIfWalletIsConnected();
 });
 </script>
 <style lang="scss" scoped>
@@ -254,7 +242,7 @@ section#content {
           box-sizing: border-box;
           position: relative;
           width: 170px;
-          height: 194px;
+          height: auto;
           background: #f4f4f4;
           border: 2px solid #f4f4f4;
           border-radius: 6px;
