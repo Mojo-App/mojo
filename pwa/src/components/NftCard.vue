@@ -1,7 +1,14 @@
 <template>
   <div class="nft">
-    <div v-if="token.metadata && token.metadata.image" class="nft-image">
-      {{ getUrlProtocol(token.metadata.image) }}
+    <div v-if="getUrlProtocol(token.metadata.image) === 'mp4'" class="nft-video">
+      <video width="320" height="240" controls>
+        <source :src="`${token.metadata.image}`" type="video/mp4" />
+        <!-- <source :src="`${token.metadata.image}`" type="video/ogg" /> -->
+        Your browser does not support the video tag.
+      </video>
+    </div>
+    <div v-else-if="token.metadata && token.metadata.image" class="nft-image">
+      <!-- {{ getUrlProtocol(token.metadata.image) }} -->
       <img
         v-if="token.metadata.image"
         :src="`${token.metadata.image}`"
@@ -11,9 +18,9 @@
     <div v-if="token.metadata && token.metadata.name" class="nft-title">
       {{ token.metadata.name }}
     </div>
-    <div v-if="token.metadata && token.metadata.description" class="nft-time">
+    <!-- <div v-if="token.metadata && token.metadata.description" class="nft-time">
       {{ token.metadata.description }}
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
@@ -34,7 +41,8 @@ export default {
   },
   methods: {
     getUrlProtocol(url) {
-      let protocol = url.startsWith("http://") ? 1 : 0;
+      let protocol = url.endsWith("mp4") ? 5 : 0;
+      if (protocol == 0) protocol = url.startsWith("http://") ? 1 : 0;
       if (protocol == 0) protocol = url.startsWith("https://") ? 2 : 0;
       if (protocol == 0) protocol = url.startsWith("ipfs://") ? 3 : 0;
       if (protocol == 0) protocol = url !== "" ? 4 : 0;
@@ -47,6 +55,8 @@ export default {
           return "https://ipfs.io/ipfs/" + url;
         case 4:
           return generateLink(url);
+        case 5:
+          return "mp4";
         case 0:
           return "Not http or https";
       }
@@ -61,15 +71,16 @@ export default {
 .nft {
   display: block;
   box-sizing: border-box;
-  position: relative;
-  width: 100%;
+  width: 320px;
   height: auto;
+  min-height: 435px;
   background: #f4f4f4;
   border: 2px solid #f4f4f4;
   border-radius: 6px;
   overflow: hidden;
-  float: center;
-  margin: 0 auto 20px;
+  margin: 0 20px;
+  padding: 0;
+  float: left;
 
   @include breakpoint($breakpoint-sm) {
     float: left;
@@ -90,23 +101,51 @@ export default {
     border: 2px solid #8d50f5;
   }
 
-  .nft-image {
-    display: flex;
-    align-content: center;
-    justify-content: center;
-    align-items: center;
+  .nft-video {
     width: 100%;
-    height: 118px;
+    margin: 0 auto;
+    padding: 0;
+    overflow: hidden;
     background: #f4f4f4;
+  }
+
+  // .nft-image {
+  //   display: flex;
+  //   align-content: center;
+  //   justify-content: center;
+  //   align-items: center;
+  //   width: 100%;
+  //   height: 118px;
+  //   background: #f4f4f4;
+  // }
+  .nft-image {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+    overflow: hidden;
+
+    @include breakpoint($medium) {
+      width: 96%;
+      padding: 2%;
+    }
+
+    img,
+    svg {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      overflow: hidden;
+    }
   }
 
   .nft-title {
     color: #1a1a1a;
     width: 100%;
-    font-size: 11px;
+    font-size: 14px;
     font-weight: normal;
     text-transform: uppercase;
     text-align: center;
+    margin: 20px 0;
   }
 }
 

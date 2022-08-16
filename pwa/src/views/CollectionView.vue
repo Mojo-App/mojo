@@ -6,7 +6,6 @@
         <h2 v-if="ethereumTokens.length > 0">Ethereum NFT Tokens</h2>
         <div v-if="ethereumTokens.length > 0" class="row token-list">
           <template v-for="token in ethereumTokens" :key="token.tokenId">
-            {{ token }}
             <NftCard v-if="token.metadata" :token="token" />
           </template>
         </div>
@@ -50,6 +49,7 @@
           </p>
           <p>
             <button class="mint-button" @click="$router.push('mint')">Mint NFT</button>
+            <br />
             <br />
           </p>
         </div>
@@ -233,72 +233,9 @@ section#content {
 
       .token-list {
         width: 100%;
-        max-width: 960px;
+        max-width: 1029px;
         display: inline-block;
         margin: 0 auto;
-
-        .token-card {
-          display: block;
-          box-sizing: border-box;
-          position: relative;
-          width: 170px;
-          height: auto;
-          background: #f4f4f4;
-          border: 2px solid #f4f4f4;
-          border-radius: 6px;
-          overflow: hidden;
-          float: center;
-          margin: 0 auto 20px;
-
-          @include breakpoint($breakpoint-sm) {
-            float: left;
-            margin: 0 10px 20px 10px;
-          }
-
-          @include breakpoint($breakpoint-md) {
-            float: left;
-            margin: 0 10px 20px 10px;
-          }
-
-          @include breakpoint($breakpoint-xl) {
-            float: left;
-            margin: 0 20px 20px 0;
-          }
-
-          &:hover {
-            border: 2px solid #8d50f5;
-          }
-        }
-
-        .token-title {
-          color: #1a1a1a;
-          width: 100%;
-          font-size: 14px;
-          font-weight: normal;
-          text-transform: uppercase;
-          text-align: center;
-          margin: 20px 0;
-        }
-
-        .token-image {
-          width: 98%;
-          margin: 0 auto;
-          padding: 1%;
-          overflow: hidden;
-
-          @include breakpoint($medium) {
-            width: 96%;
-            padding: 2%;
-          }
-
-          img,
-          svg {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            overflow: hidden;
-          }
-        }
       }
 
       h2 {

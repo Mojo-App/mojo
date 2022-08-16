@@ -1,7 +1,7 @@
 <template>
   <header id="header">
     <div class="header-title">
-      <h1><span class="emoji">🎧</span> Mojo</h1>
+      <h1><span class="emoji">🎧</span> mojo</h1>
     </div>
     <div class="header-menu">
       <nav class="header-navbar">
