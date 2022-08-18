@@ -1,11 +1,11 @@
 <script>
 /* Main Components */
-import AppHeader from './components/AppHeader.vue';
-import AppFooter from './components/AppFooter.vue';
-import ReloadPrompt from './components/ReloadPrompt.vue';
+import AppHeader from "./components/AppHeader.vue";
+import AppFooter from "./components/AppFooter.vue";
+import ReloadPrompt from "./components/ReloadPrompt.vue";
 /* LFG */
 export default {
-  name: 'App',
+  name: "App",
   components: [AppHeader, AppFooter, ReloadPrompt],
 };
 </script>

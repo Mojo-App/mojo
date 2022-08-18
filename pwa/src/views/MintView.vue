@@ -203,10 +203,12 @@ import { uploadBlob } from "../services/ipfs.js";
 import { fileSize, generateLink } from "../services/helpers";
 import { nftStorage } from "../services/nftStorage.js";
 
+import JSConfetti from "js-confetti";
+
 /* Import Smart Contract ABI */
 import contractAbi from "../../../artifacts/contracts/MojoCore.sol/MojoCore.json";
 /* Manually set our Contract Address */
-const contractAddress = "0xe72190E01EbF16FcD1CF91e761Ee5BA98Ba6d251";
+const contractAddress = "0x644dF475343FD2cD3928bCdF1B0A3823d8B7D85a";
 
 /* Console log with some style */
 const stylesContract = ["color: black", "background: #e9429b"].join(";");
@@ -264,10 +266,8 @@ export default {
     });
     // Init Store
     const store = useStore();
-
     // 🦊 Metamask Account
     const { account } = storeToRefs(store);
-
     // Set Form Tab
     const formTab = ref("one");
 
@@ -306,6 +306,16 @@ export default {
     const youtubeURL = ref("");
     const resolution = ref("");
     const duration = ref("");
+
+    const jsConfettiSuccess = (emojis) => {
+      const jsConfetti = new JSConfetti();
+      jsConfetti.addConfetti({
+        emojis: emojis,
+        emojiSize: 100,
+        confettiRadius: 6,
+        // confettiNumber: 100,
+      });
+    };
 
     /**
      * Check if our Wallet is Connected to 🦊 Metamask
@@ -475,6 +485,7 @@ export default {
           }
           /* Set to NFT Main Attributes Tab */
           switchToTab("two");
+          jsConfettiSuccess(["🚀", "🔥", "🏴‍☠️", "🌈", "⚡️", "💥", "✨", "💫", "🌸", "🦄"]);
           return;
         } else {
           notyf.dismiss(loadingIndicator);
@@ -862,6 +873,7 @@ export default {
       openSelectFile,
       onFileChangedHandler,
       checkIfWalletIsConnected,
+      jsConfettiSuccess,
     };
   },
 };
@@ -897,7 +909,7 @@ section#content {
       align-content: center;
       justify-content: center;
       padding: 10px;
-      // overflow: hidden;
+      overflow: scroll;
 
       @include breakpoint($medium) {
         padding: 0 60px 20px;

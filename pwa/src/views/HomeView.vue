@@ -11,8 +11,8 @@
           <h1>Hear it, See it, Live it.</h1>
           <p>
             Stream audio, video &amp; media directly from your favorite artists and musicians on the
-            blockchain. Subscribe, watch and follow digital content creators for rewards, or
-            purchase a custom NFT unlocking additional content and so much more.
+            blockchain. Subscribe, watch and follow digital content creators for rewards. Purchase a
+            creators custom NFT to unlock additional content and so much more...
             <strong>Get your Mojo on today!</strong>
           </p>
         </div>
@@ -54,7 +54,7 @@
               IPFS Upload
             </button>
             <button @click="$router.push('mint')" v-if="account" className="mint-media-button">
-              Get Minty
+              Mint Tea
             </button>
           </div>
         </div>

@@ -1,16 +1,22 @@
 <template>
   <header id="header">
     <div class="header-title">
-      <h1><span class="emoji">🎧</span> Mojo</h1>
+      <router-link :to="{ name: 'home' }" active-class="active" exact
+        ><img class="header-logo" alt="Mojo" src="@/assets/images/MojoLogo.png" height="70"
+      /></router-link>
+      <!-- <h1><span class="emoji">🎧</span> mojo</h1> -->
     </div>
     <div class="header-menu">
       <nav class="header-navbar">
         <router-link :to="{ name: 'home' }" active-class="active" exact>Home</router-link>
         <router-link :to="{ name: 'stream' }" active-class="active" exact>Stream</router-link>
-        <router-link :to="{ name: 'upload' }" active-class="active" exact>Upload</router-link>
+        <router-link v-if="account" :to="{ name: 'collection' }" active-class="active" exact
+          >Collection</router-link
+        >
         <router-link v-if="account" :to="{ name: 'mint' }" active-class="active" exact
           >Mint</router-link
         >
+        <router-link :to="{ name: 'upload' }" active-class="active" exact>Upload</router-link>
         <div v-if="!account" class="right">
           <ConnectWalletButton v-model="account" v-if="!account" btnSize="small" />
         </div>
@@ -24,8 +30,8 @@
 </template>
 <script>
 import { ref, onMounted } from "vue";
+/* Import our Pinia Store & Refs */
 import { storeToRefs } from "pinia";
-/* Import Store */
 import { useStore } from "../store";
 /* Components */
 import ConnectWalletButton from "../components/ConnectWalletButton.vue";
@@ -98,7 +104,7 @@ export default {
   align-items: center;
   transition: border-bottom 0.5s ease;
   border-bottom: 1px solid #1a1a1a;
-  padding: 1em 64px 0.8em 64px;
+  padding: 0 64px 0 64px;
 
   .header-title {
     h1 {
@@ -111,6 +117,11 @@ export default {
       span.emoji {
         font-size: 1.8rem;
       }
+    }
+    .header-logo {
+      border: 1px solid #000000;
+      margin: 10px auto 2px;
+      border-radius: 50%;
     }
   }
 
@@ -152,6 +163,9 @@ body.dark-theme {
 
     .header-title h1 {
       color: #ffffff;
+    }
+    .header-logo {
+      border: 1px solid #ffffff;
     }
   }
 }

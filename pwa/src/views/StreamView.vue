@@ -22,11 +22,11 @@
           <div class="track-list">
             <TrackPlayer v-for="track in trackList" :track="track" :key="track.id"></TrackPlayer>
           </div>
-          <div v-if="!categoryTracks">
-            <!-- <h2>Please be patient while we spin another mix...</h2>
+          <div v-if="!trackList">
+            <h2>Please be patient while we spin another mix...</h2>
             <div class="dj-graphic">
               <img src="../assets/images/DJ.png" alt="DJ Saved my Life" />
-            </div> -->
+            </div>
             <p>Account: {{ account }}</p>
             <p>Tracks: {{ categoryTracks }}</p>
           </div>
@@ -90,7 +90,6 @@ const store = useStore();
 const { account, trackList } = storeToRefs(store);
 // Local Vars
 const categorySelectedId = ref(1);
-const categoryTracks = ref();
 /**
  * Check if our Wallet is Connected to 🦊 Metamask
  */
@@ -128,14 +127,19 @@ function selectCategory(category) {
   console.log("categorySelectedId:", categorySelectedId.value);
 }
 /**
- * Fetch NFT Audio/Media data
- * @dev WIP: This will change to pull our NFTs and their metadata from Tableland
+ * Fetch NFT Audio/Media category data from Tableland
  */
-// async function fetchData() {
-//   categoryTracks.value = null;
-//   const res = await fetch(`./tracks/6.json`);
-//   console.log("Tracks Loaded:", res);
-//   categoryTracks.value = await res.json();
+// async function fetchCategories() {
+//   categories.value = null;
+//   try {
+//     const res = await fetch(
+//       `https://testnet.tableland.network/query?mode=list&s=SELECT%20*%20FROM%20mojo_80001_554`
+//     );
+//     console.log("Categories Loaded:", res);
+//     categories.value = await res.json();
+//   } catch (error) {
+//     console.log(error);
+//   }
 // }
 
 /* Fetch new NFT audio/media by Category or Name */
@@ -144,34 +148,22 @@ async function fetchData() {
     await store.searchNfts(categorySelectedId.value, "");
     /* Console log with some style */
     const stylesTracks = ["color: black", "background: yellow"].join(";");
-    console.log("%c📻 NFT Audio/Media fetched : %s 📻", stylesTracks, JSON.stringify(trackList));
+    console.log(
+      "%c📻 NFT Audio/Media fetched : %s 📻",
+      stylesTracks,
+      JSON.stringify(trackList.value)
+    );
   } catch (error) {
     console.log(error);
   }
 }
-
-/**
- * Fetch NFT Audio/Media data
- * @dev WIP: This will change to pull our NFTs and their metadata from Tableland
- */
-// async function fetchData() {
-//   categoryTracks.value = null;
-//   try {
-//     const res = await fetch(
-//       `https://testnet.tableland.network/query?mode=list&s=SELECT%20*%20FROM%20mojo_80001_554`
-//     );
-//     console.log("Tracks Loaded:", res);
-//     categoryTracks.value = await res.json();
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
 
 /* Watch for Category Changes */
 watch(categorySelectedId, fetchData);
 
 onMounted(() => {
   fetchData();
+  // fetchCategories();
   checkIfWalletIsConnected();
 });
 </script>
@@ -182,6 +174,7 @@ onMounted(() => {
 section#content {
   position: relative;
   height: 100%;
+  overflow: scroll;
 
   .main {
     width: 100%;
@@ -190,7 +183,6 @@ section#content {
     padding: 0;
 
     section#stream {
-      height: 100%;
       color: #212121;
       background: #1c8bfe;
       display: flex;

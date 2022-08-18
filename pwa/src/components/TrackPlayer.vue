@@ -27,12 +27,12 @@
 </template>
 <script>
 /* Components */
-import PlayButton from './icons/PlayButton.vue';
-import PauseButton from './icons/PauseButton.vue';
+import PlayButton from "./icons/PlayButton.vue";
+import PauseButton from "./icons/PauseButton.vue";
 /* LFG */
 export default {
-  name: 'TrackPlayer',
-  props: ['track'],
+  name: "TrackPlayer",
+  props: ["track"],
   /**
    * playbackTime = local var that syncs to audio.currentTime
    * audioDuration = duration of audio file in seconds
@@ -54,7 +54,7 @@ export default {
   },
   methods: {
     toggleAudioPlay(track) {
-      var audios = document.getElementsByTagName('audio');
+      var audios = document.getElementsByTagName("audio");
       for (var i = 0, len = audios.length; i < len; i++) {
         if (audios[i] != track.id) {
           audios[i].pause();
@@ -91,7 +91,7 @@ export default {
       const format = (val) => `0${Math.floor(val)}`.slice(-2);
       // var hours = seconds / 3600;
       var minutes = (seconds % 3600) / 60;
-      return [minutes, seconds % 60].map(format).join(':');
+      return [minutes, seconds % 60].map(format).join(":");
     },
     // Show the total duration of audio file
     totalTime() {
@@ -100,7 +100,7 @@ export default {
         var seconds = audio.duration;
         return this.convertTime(seconds);
       } else {
-        return '00:00';
+        return "00:00";
       }
     },
     // Display the audio time elapsed so far
@@ -110,7 +110,7 @@ export default {
         var seconds = audio.currentTime;
         return this.convertTime(seconds);
       } else {
-        return '00:00';
+        return "00:00";
       }
     },
     // Playback listener function runs every 100ms while audio is playing
@@ -119,8 +119,8 @@ export default {
       // Sync local 'playbackTime' var to audio.currentTime and update global state
       this.playbackTime = audio.currentTime;
       // Add listeners for audio pause and audio end events
-      audio.addEventListener('ended', this.endListener);
-      audio.addEventListener('pause', this.pauseListener);
+      audio.addEventListener("ended", this.endListener);
+      audio.addEventListener("pause", this.pauseListener);
     },
     // Function to run when audio is paused by user
     pauseListener() {
@@ -137,9 +137,9 @@ export default {
     // Remove listeners after audio play stops
     cleanupListeners() {
       var audio = this.$refs.player;
-      audio.removeEventListener('timeupdate', this.playbackListener);
-      audio.removeEventListener('ended', this.endListener);
-      audio.removeEventListener('pause', this.pauseListener);
+      audio.removeEventListener("timeupdate", this.playbackListener);
+      audio.removeEventListener("ended", this.endListener);
+      audio.removeEventListener("pause", this.pauseListener);
     },
   },
   mounted: function () {
@@ -149,7 +149,7 @@ export default {
       // Wait for audio to load, then run initSlider() to get audio duration and set the max value of our slider
       // "loademetadata" Event https://www.w3schools.com/tags/av_event_loadedmetadata.asp
       audio.addEventListener(
-        'loadedmetadata',
+        "loadedmetadata",
         function () {
           this.initSlider();
         }.bind(this)
@@ -157,14 +157,14 @@ export default {
 
       // "canplay" HTML Event lets us know audio is ready for play https://www.w3schools.com/tags/av_event_canplay.asp
       audio.addEventListener(
-        'canplay',
+        "canplay",
         function () {
           this.audioLoaded = true;
         }.bind(this)
       );
 
       // Wait for audio to begin play, then start playback listener function
-      this.$watch('isPlaying', function () {
+      this.$watch("isPlaying", function () {
         if (this.isPlaying) {
           var audio = this.$refs.player;
           this.initSlider();
@@ -172,13 +172,13 @@ export default {
           if (!this.listenerActive) {
             this.listenerActive = true;
             // for a more consistent timeupdate, include freqtimeupdate.js and replace both instances of 'timeupdate' with 'freqtimeupdate'
-            audio.addEventListener('timeupdate', this.playbackListener);
+            audio.addEventListener("timeupdate", this.playbackListener);
           }
         }
       });
 
       // Update current audio position when user drags progress slider
-      this.$watch('playbackTime', function () {
+      this.$watch("playbackTime", function () {
         // var audio = this.$refs.player;
         var diff = Math.abs(this.playbackTime - this.$refs.player.currentTime);
         // Throttle synchronization to prevent infinite loop between playback listener and this watcher
@@ -191,8 +191,8 @@ export default {
 };
 </script>
 <style lang="scss">
-@import '../assets/styles/variables.scss';
-@import '../assets/styles/mixins.scss';
+@import "../assets/styles/variables.scss";
+@import "../assets/styles/mixins.scss";
 
 .track {
   display: block;
@@ -284,7 +284,7 @@ export default {
 //   }
 // }
 
-input[type='range'] {
+input[type="range"] {
   margin: auto;
   -webkit-appearance: none;
   position: relative;
@@ -295,7 +295,7 @@ input[type='range'] {
   background: transparent;
 }
 
-input[type='range']:focus {
+input[type="range"]:focus {
   outline: none;
 }
 

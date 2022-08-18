@@ -4,8 +4,8 @@ import { connect, resultsToObjects, SUPPORTED_CHAINS } from "@tableland/sdk";
 import Storage from "../services/storage";
 /* Import Smart Contract ABI */
 import contractAbi from "../../../artifacts/contracts/MojoCore.sol/MojoCore.json";
-/* Manually set our Contract Address */
-const contractAddress = "0xe72190E01EbF16FcD1CF91e761Ee5BA98Ba6d251";
+/* Get our Mojo Contract Address */
+const mojoContractAddress = import.meta.env.VITE_MOJO_CORE_CONTRACT;
 /* Setup Offline Storage */
 const db = new Storage("app");
 db.read();
@@ -15,8 +15,16 @@ export const useStore = defineStore({
   id: "store",
   state() {
     return {
+      walletConnectionAttempted: false,
+      isAuthenticated: false,
+      errorMessage: false,
+      walletAddress: "",
       account: null,
       balance: null,
+      ethereumTokens: [],
+      polygonTokens: [],
+      optimismTokens: [],
+      arbitrumTokens: [],
       trackList: [],
       newArrivals: [],
       counter: 0,
@@ -33,6 +41,18 @@ export const useStore = defineStore({
     },
     getAccountBalance(state) {
       return state.balance;
+    },
+    getEthereumTokens(state) {
+      return state.ethereumTokens;
+    },
+    getPolygonTokens(state) {
+      return state.polygonTokens;
+    },
+    getOptimismTokens(state) {
+      return state.optimismTokens;
+    },
+    getArbitrumTokens(state) {
+      return state.arbitrumTokens;
     },
     getTrackList(state) {
       return state.trackList;
@@ -60,6 +80,21 @@ export const useStore = defineStore({
     updateBalance(balance) {
       this.balance = balance;
     },
+    addEthereumTokens(...tokens) {
+      this.ethereumTokens.push(...tokens);
+    },
+    addPolygonTokens(...tokens) {
+      this.polygonTokens.push(...tokens);
+    },
+    addOptimismTokens(...tokens) {
+      this.optimismTokens.push(...tokens);
+    },
+    addArbitrumTokens(...tokens) {
+      this.arbitrumTokens.push(...tokens);
+    },
+    resetTracks() {
+      this.trackList = [];
+    },
     addTracks(...tracks) {
       this.trackList.push(...tracks);
     },
@@ -73,10 +108,10 @@ export const useStore = defineStore({
     resetNftFiles() {
       this.filesNft = [];
     },
-    addNftFiles(...files) {
+    addNftFiles(files) {
       this.filesNft.push(...files);
     },
-    addNftResults(...files) {
+    addNftResults(files) {
       this.nftResults.push(...files);
       this.nftResults = this.nftResults.filter(function (cid) {
         return !!cid;
@@ -88,10 +123,10 @@ export const useStore = defineStore({
     resetFiles() {
       this.files = [];
     },
-    addFiles(...files) {
+    addFiles(files) {
       this.files.push(...files);
     },
-    addResults(...files) {
+    addResults(files) {
       this.results.push(...files);
       this.results = this.results.filter(function (cid) {
         return !!cid;
@@ -100,16 +135,34 @@ export const useStore = defineStore({
       db.write();
     },
     /**
+     * Set walletConnectionAttempted value in store
+     */
+    setWalletConnectionAttempted(value) {
+      this.walletConnectionAttempted = value;
+    },
+    /**
+     * Set isAuthenticated value in store
+     */
+    setIsAuthenticated(value) {
+      this.isAuthenticated = value;
+    },
+    /**
+     * Set errorMessage value in store
+     */
+    setErrorMessage(value) {
+      this.errorMessage = value;
+    },
+    /**
      * Set loader value in store
      */
-    setLoader(value) {
+    setLoading(value) {
       this.loading = value;
     },
     /**
      * Get User 🦊 Metamask Account Balance
      */
     async getBalance() {
-      this.setLoader(true);
+      this.setLoading(true);
       try {
         /*
          * First make sure we have access to window.ethereum
@@ -118,17 +171,17 @@ export const useStore = defineStore({
         if (ethereum) {
           const provider = new ethers.providers.Web3Provider(ethereum);
           const signer = provider.getSigner();
-          const contract = new ethers.Contract(contractAddress, contractAbi.abi, signer);
+          const contract = new ethers.Contract(mojoContractAddress, contractAbi.abi, signer);
           const count = await contract.getBalance();
           const amount = ethers.utils.formatEther(count);
           /* Console log with some style */
           const stylesAmount = ["color: black", "background: green"].join(";");
           console.log("%c💰 Get Balance Amount %s 💰", stylesAmount, amount);
           this.balance = amount;
-          setLoader(false);
+          setLoading(false);
         }
       } catch (error) {
-        this.setLoader(false);
+        this.setLoading(false);
         console.log("getBalance Error:", error);
       }
     },
@@ -185,7 +238,7 @@ export const useStore = defineStore({
       console.log("youtubeURL :", youtubeURL);
       console.log("resolution :", resolution);
       console.log("duration :", duration);
-      this.setLoader(true);
+      this.setLoading(true);
       // Run a SQL SELECT query
       try {
         /*
@@ -240,7 +293,7 @@ export const useStore = defineStore({
         console.error("Error loading Tracks:", err);
         return err;
       }
-      this.setLoader(false);
+      this.setLoading(false);
     },
 
     /**
@@ -252,7 +305,7 @@ export const useStore = defineStore({
       console.log("Search by ID:", id);
       console.log("Search by Name:", name);
 
-      this.setLoader(true);
+      this.setLoading(true);
       // Run a SQL SELECT query
       try {
         /*
@@ -316,9 +369,10 @@ export const useStore = defineStore({
             })
             .then((data) => {
               // Format and store our data in the tracks[] array
+              this.resetTracks();
               for (const { id, external_link } of data) {
                 console.log(`${id}: ${external_link}`);
-                this.addTracks({id, external_link});
+                this.addTracks({ id, external_link });
               }
             });
         }
@@ -326,7 +380,7 @@ export const useStore = defineStore({
         console.error("Error loading Tracks:", err);
         return err;
       }
-      this.setLoader(false);
+      this.setLoading(false);
     },
     /**
      * Update Shorten Link for File

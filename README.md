@@ -42,11 +42,11 @@ Tableland - Tableland was used to create a SQL table on contract creation which 
 Tableland Examples
 
 ```shell
-https://testnet.tableland.network/query?mode=list&s=SELECT%20*%20FROM%20mojo_80001_554
+https://testnet.tableland.network/query?mode=list&s=SELECT%20*%20FROM%20mojo_80001_937
 ```
 
 ```shell
-https://testnet.tableland.network/query?s=SELECT%20%27id%27,id,%27external_link%27,external_link%20FROM%20mojo_80001_554%20WHERE%20id%3D1
+https://testnet.tableland.network/query?s=SELECT%20%27id%27,id,%27external_link%27,external_link%20FROM%20mojo_80001_937%20WHERE%20id%3D1
 ```
 
 Polygon - Mojo is deployed to the Polygon Mumbai network and uses Matic for payments and minting, Mumbai Testnet for demo purposes only please!
@@ -84,12 +84,12 @@ GAS_REPORT=true npx hardhat test
 
 This project will only deploy to Polygon's 'Mumbai Testnet due to the address registry passed to the contract constructor function
 
-Mojo NFT Core smart contract deployed to: 0xe72190E01EbF16FcD1CF91e761Ee5BA98Ba6d251
+Mojo NFT Core smart contract deployed to: 0x644dF475343FD2cD3928bCdF1B0A3823d8B7D85a
 
 Mojo Token smart contract deployed to: 0x424B6A8beF4c0807c1db53f21ea8bB8217B3AC7e
 
 ```shell
-npx hardhat run scripts/deploy.js --network alchemy
+npx hardhat run scripts/deploy.ts --network polygon-mumbai
 ```
 
 ## Basic Vue 3 Project using Vite and Pinia
