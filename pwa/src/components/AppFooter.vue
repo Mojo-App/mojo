@@ -20,15 +20,8 @@
           >HackFS</a
         >
         <a href="https://github.com/Mojo-App" alt="GitHub" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://twitter.com/webmoss" alt="Twitter" target="_blank" rel="noopener"
+        <a href="https://twitter.com/MojoMusicNFT" alt="Twitter" target="_blank" rel="noopener"
           >Twitter</a
-        >
-        <a
-          href="https://www.linkedin.com/in/craig-moss-21822628/"
-          alt="LinkedIn"
-          target="_blank"
-          rel="noopener"
-          >LinkedIn</a
         >
       </nav>
     </div>

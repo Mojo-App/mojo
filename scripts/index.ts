@@ -23,7 +23,16 @@ describe("MojoCore", function () {
   it("Should allow minting", async function () {
     const tx = await mojoCore
       .connect(accounts[0])
-      .safeMint(accounts[0].address);
+      .safeMint(accounts[0].address, {
+        name:"Test NFT Mint No 1",
+        decimals: 0,
+        description: "Test NFT description no 1",
+        image: "",
+        properties: {
+          type: "mNFT",
+          authors: [{ name: "Mojo NFT" }]
+        }
+      });
 
     const receipt = await tx.wait();
     const [, transferEvent] = receipt.events ?? [];
@@ -31,7 +40,16 @@ describe("MojoCore", function () {
 
     const tx2 = await mojoCore
       .connect(accounts[1])
-      .safeMint(accounts[1].address);
+      .safeMint(accounts[1].address, {
+        name:"Test NFT Mint No 2",
+        decimals: 0,
+        description: "Test NFT description no 2",
+        image: "",
+        properties: {
+          type: "mNFT",
+          authors: [{ name: "Mojo NFT" }]
+        }
+      });
 
     const receipt2 = await tx2.wait();
     const [, transferEvent2] = receipt2.events ?? [];
@@ -47,18 +65,27 @@ describe("MojoCore", function () {
     await expect(owner).to.equal(mojoCore.address);
   });
 
-  it("Should allow making a move", async function () {
+  it("Should allow updating aid and gid", async function () {
     // mint the token
     const tx = await mojoCore
       .connect(accounts[1])
-      .safeMint(accounts[1].address);
+      .safeMint(accounts[1].address, {
+        name:"Test NFT Mint",
+        decimals: 0,
+        description: "Test NFT description",
+        image: "",
+        properties: {
+          type: "mNFT",
+          authors: [{ name: "Mojo NFT" }]
+        }
+      });
 
     const receipt = await tx.wait();
     const [, transferEvent] = receipt.events ?? [];
     const tokenId = transferEvent.args!.tokenId;
 
     const statement =
-      "UPDATE canvas_31337_1 SET x = 10 AND y = 10 WHERE id = 0;";
+      "UPDATE mojo_80001_1 SET x = 10 AND y = 10 WHERE id = 0;";
 
     // TODO: this fails with `expected [] to equal []` because Array literals aren't equal
     //       I can't find a way to change the comparison logic for emit tests

@@ -208,7 +208,7 @@ import JSConfetti from "js-confetti";
 /* Import Smart Contract ABI */
 import contractAbi from "../../../artifacts/contracts/MojoCore.sol/MojoCore.json";
 /* Manually set our Contract Address */
-const contractAddress = "0xe72190E01EbF16FcD1CF91e761Ee5BA98Ba6d251";
+const contractAddress = "0x644dF475343FD2cD3928bCdF1B0A3823d8B7D85a";
 
 /* Console log with some style */
 const stylesContract = ["color: black", "background: #e9429b"].join(";");
