@@ -108,7 +108,7 @@ export const useStore = defineStore({
     resetNftFiles() {
       this.filesNft = [];
     },
-    addNftFiles(files) {
+    addNftFiles(...files) {
       this.filesNft.push(...files);
     },
     addNftResults(files) {
@@ -123,10 +123,10 @@ export const useStore = defineStore({
     resetFiles() {
       this.files = [];
     },
-    addFiles(files) {
+    addFiles(...files) {
       this.files.push(...files);
     },
-    addResults(files) {
+    addResults(...files) {
       this.results.push(...files);
       this.results = this.results.filter(function (cid) {
         return !!cid;
@@ -363,7 +363,8 @@ export const useStore = defineStore({
           })
             .then(async (connection) => {
               // Run a SQL select on our Mojo table
-              const results = await connection.read(`SELECT * FROM mojo_80001_554`);
+              // const results = await connection.read(`SELECT * FROM mojo_80001_554`);
+              const results = await connection.read(`SELECT * FROM mojo_80001_937`);
               const entries = resultsToObjects(results);
               return entries;
             })

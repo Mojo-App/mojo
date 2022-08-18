@@ -22,13 +22,13 @@
           <div class="track-list">
             <TrackPlayer v-for="track in trackList" :track="track" :key="track.id"></TrackPlayer>
           </div>
-          <div v-if="!trackList">
+          <div v-if="trackList.length === 0">
             <h2>Please be patient while we spin another mix...</h2>
             <div class="dj-graphic">
               <img src="../assets/images/DJ.png" alt="DJ Saved my Life" />
             </div>
-            <p>Account: {{ account }}</p>
-            <p>Tracks: {{ categoryTracks }}</p>
+            <!-- <p>Account: {{ account }}</p> -->
+            <!-- <p>Tracks: {{ categoryTracks }}</p> -->
           </div>
         </div>
       </section>

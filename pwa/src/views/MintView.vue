@@ -760,7 +760,11 @@ export default {
      * @returns {Object}
      */
     const uploadFileHandler = async (file) => {
+      /**
+       * @dev Can try NFT.Storage here instead
+       */
       const uploadResult = await uploadBlob(file);
+
       finished.value++;
       const { error } = uploadResult;
       if (error && error instanceof Error) {
