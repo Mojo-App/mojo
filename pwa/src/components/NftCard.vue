@@ -71,9 +71,9 @@ export default {
 .nft {
   display: block;
   box-sizing: border-box;
-  width: 320px;
+  width: 230px;
   height: auto;
-  min-height: 435px;
+  min-height: 350px;
   background: #f4f4f4;
   border: 2px solid #f4f4f4;
   border-radius: 6px;

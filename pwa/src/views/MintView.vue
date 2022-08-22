@@ -449,7 +449,9 @@ export default {
           if (!nftStorageTMetadataURI) return;
 
           /* Mint our NFT using complex Struct */
-          let nftTxn = await contract.safeMint(signer.getAddress(), nftStorageTMetadataURI);
+          // let nftTxn = await contract.safeMint(signer.getAddress(), nftStorageTMetadataURI);
+          let nftTxn = await contract.safeMint(signer.getAddress());
+
           /* Console log with some style */
           const stylesMining = ["color: black", "background: yellow"].join(";");
           console.log("%c⛏ Mining...please wait!  %s ⛏", stylesMining, nftTxn.hash);
@@ -780,12 +782,14 @@ export default {
       );
       /* Generate and IPFS URI for NFT's */
       imageUrl.value = generateLink(uploadResult.data);
+
       /* Set details from file upload */
       audioVideoType.value = uploadResult.data.file.type;
       size.value = fileSize(uploadResult.data.file.size);
       createdAt.value = uploadResult.data.file.created_at;
       return uploadResult;
     };
+
     /*
      * On file change will update our NFT Metadata
      */
@@ -807,8 +811,7 @@ export default {
         store.resetNftFiles();
         fileRef.value.value = null;
       } catch (error) {
-        // notyf.error(`Oops! an error while processing your files.`);
-        console.log(error);
+        notyf.error(`Oops! an error while processing your files.`, error.message);
         finished.value = 0;
         isUploading.value = false;
       } finally {
@@ -817,10 +820,12 @@ export default {
         isUploading.value = false;
       }
     };
+
     /* Computed values for our uploader */
     const fileCount = computed(() => {
       return store.filesNft.length;
     });
+
     const result = computed(() => {
       return {
         count: store.nftResults.length,
@@ -829,6 +834,7 @@ export default {
         }, 0),
       };
     });
+
     onMounted(() => {
       checkIfWalletIsConnected();
     });

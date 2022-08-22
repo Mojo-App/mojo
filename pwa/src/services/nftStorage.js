@@ -1,8 +1,7 @@
+// Import the NFTStorage class and File constructor from the 'nft.storage' package
 import { NFTStorage } from "nft.storage";
 
-const NFT_STORAGE_API_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEFmN2EzNkNmY0M2MzNjMDgwQTQ1NkNiNzVDOWI5Njc1NzM2Njk0ZmIiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY1NzMwNDE5NjI2MywibmFtZSI6Ik1vam8ifQ.te79AsUXEjsR_CJQ2NTYHbLbhY4_kJqpDJ0juZWFBu4";
-
+const NFT_STORAGE_KEY = import.meta.env.VITE_NFT_STORAGE_KEY;
 /**
  * Store NFT Metadata in custom Attribute structure
  * @returns {MetadataURL}
@@ -30,7 +29,10 @@ export const nftStorage = async (
    * Create a blob to validate TypeError: property `image` must be a Blob or File
    * object at validateERC1155
    */
-  let blob = new Blob([imageUrl], { type: "text/plain" });
+  console.log("imageUrl", imageUrl);
+  console.log("audioVideoType", audioVideoType);
+
+  let blob = new Blob([imageUrl], { type: audioVideoType });
 
   const nft = {
     name,
@@ -101,8 +103,19 @@ export const nftStorage = async (
     ],
   };
 
-  const client = new NFTStorage({ token: NFT_STORAGE_API_KEY });
+  const client = new NFTStorage({ token: NFT_STORAGE_KEY });
   const metadata = await client.store(nft);
 
   return metadata.url;
+};
+
+export const storeBlob = async (file) => {
+  console.log("storeBlob File: ", file);
+  if (file.size === 0) {
+    throw new Error("Content size is 0, make sure to provide some content");
+  }
+  // const content = new Blob(file);
+  const client = new NFTStorage({ token: NFT_STORAGE_KEY });
+  const cid = await client.storeBlob(file);
+  return cid;
 };
