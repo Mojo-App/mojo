@@ -11,7 +11,7 @@
       <!-- {{ getUrlProtocol(token.metadata.image) }} -->
       <img
         v-if="token.metadata.image"
-        :src="`${token.metadata.image}`"
+        :src="`${getUrlProtocol(token.metadata.image)}`"
         :alt="`${token.metadata.name}`"
       />
     </div>
@@ -52,7 +52,7 @@ export default {
         case 2:
           return url;
         case 3:
-          return "https://ipfs.io/ipfs/" + url;
+          return "https://ipfs.io/ipfs/" + url.substring(7);
         case 4:
           return generateLink(url);
         case 5:

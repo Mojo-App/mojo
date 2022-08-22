@@ -183,6 +183,7 @@ section#content {
     padding: 0;
 
     section#stream {
+      height: 100%;
       color: #212121;
       background: #1c8bfe;
       display: flex;
