@@ -111,7 +111,7 @@ export const useStore = defineStore({
     addNftFiles(...files) {
       this.filesNft.push(...files);
     },
-    addNftResults(files) {
+    addNftResults(...files) {
       this.nftResults.push(...files);
       this.nftResults = this.nftResults.filter(function (cid) {
         return !!cid;

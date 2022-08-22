@@ -11,6 +11,7 @@
   "dependencies": {
     "@tableland/sdk": "^2.0.2",
     "axios": "^0.27.2",
+    "base-64": "^1.0.0",
     "ethers": "^5.6.8",
     "notyf": "^3.10.0",
     "pinia": "^2.0.17",

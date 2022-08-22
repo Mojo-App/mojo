@@ -96,7 +96,7 @@ export default {
         store.resetFiles();
         fileRef.value.value = null;
       } catch (error) {
-        // notyf.error(`Oops! an error while processing your files.`);
+        notyf.error(`Oops! an error while processing your files.`);
         console.log(error);
         finished.value = 0;
         isUploading.value = false;
