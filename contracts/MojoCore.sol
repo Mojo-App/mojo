@@ -28,8 +28,9 @@ contract MojoCore is
     uint256 private _metadataTableId;
     string private _tablePrefix;
     string private _externalURL;
+    string private _category;
 
-    /* Event */
+    /* Events */
     event NewNftMinted(
       address indexed from,
       uint256 timestamp,
@@ -43,21 +44,31 @@ contract MojoCore is
       string metadataTable
     );
 
+    event SetNftCategory(
+      address indexed from,
+      uint256 timestamp,
+      uint256 metadataTableId,
+      uint256 tokenId
+    );
+
     event SetNftAID(
       address indexed from,
       uint256 timestamp,
-      uint256 aid,
+      uint256 metadataTableId,
       uint256 tokenId
     );
 
     event SetNftGID(
       address indexed from,
       uint256 timestamp,
-      uint256 gid,
+      uint256 metadataTableId,
       uint256 tokenId
     );
 
-    function initialize(string memory baseURI, string memory externalURL) public initializer {
+    function initialize(string memory baseURI, string memory externalURL, string memory category)
+      public
+      initializer
+    {
         __ERC721URIStorage_init();
         __ERC721Holder_init();
         __Ownable_init();
@@ -67,9 +78,15 @@ contract MojoCore is
         _baseURIString = baseURI;
         _tablePrefix = "mojo";
         _externalURL = externalURL;
+        _category = category;
     }
 
-    function createMetadataTable(address registry) external payable onlyOwner returns (uint256) {
+    function createMetadataTable(address registry)
+      external
+      payable
+      onlyOwner()
+      returns (uint256)
+    {
         /*
          * registry if the address of the Tableland registry. You can always find those
          * here https://github.com/tablelandnetwork/evm-tableland#currently-supported-chains
@@ -93,8 +110,16 @@ contract MojoCore is
                 _tablePrefix,
                 "_",
                 Strings.toString(block.chainid),
-                " (id int, external_link text, aid int, gid int);"
+                " (id int, external_link text, category text, aid int, gid int);"
             )
+        );
+
+        _metadataTable = string.concat(
+          _tablePrefix,
+          "_",
+          Strings.toString(block.chainid),
+          "_",
+          Strings.toString(_metadataTableId)
         );
 
         return _metadataTableId;
@@ -105,7 +130,7 @@ contract MojoCore is
      * Any time a token is minted, a new row of metadata will be
      * dynamically insterted into the metadata table.
      */
-    function safeMint(address to) public returns (uint256) {
+    function safeMint(address to, string calldata newTokenURI, string calldata category) public returns (uint256) {
         uint256 newItemId = _tokenIds.current();
         _tableland.runSQL(
             address(this),
@@ -113,30 +138,85 @@ contract MojoCore is
             string.concat(
                 "INSERT INTO ",
                 _metadataTable,
-                " (id, external_link, aid, gid) VALUES (",
+                " (id, external_link, category, aid, gid) VALUES (",
                 Strings.toString(newItemId),
                 ", '",
                 _externalURL,
+                ", '",
+                category,
                 "', 0, 0)"
             )
         );
         _safeMint(to, newItemId, "");
-        // _setTokenURI(newItemId, newTokenURI);
+        _setTokenURI(newItemId, newTokenURI);
         _tokenIds.increment();
         emit NewNftMinted(msg.sender, block.timestamp, newItemId);
         return newItemId;
     }
 
     /*
-     * updateAID is an Attributes Table
+     * setExternalURL provides an example of how to update a field for every
+     * row in an table.
+     */
+    function setExternalURL(string calldata externalURL) external onlyOwner {
+        _externalURL = externalURL;
+        _tableland.runSQL(
+            address(this),
+            _metadataTableId,
+            string.concat(
+                "UPDATE ",
+                _metadataTable,
+                " SET external_link = ",
+                externalURL,
+                "||'?tokenId='||id", // Turns every row's URL into a URL including get param for tokenId
+                ";"
+            )
+        );
+        /* Emit Event */
+        emit SetNftExternalUrl(msg.sender, block.timestamp, _metadataTableId, _metadataTable);
+    }
+
+    /*
+     * updateCategoryprovides a method to update the category in a row
+     */
+    function updateCategory(
+        uint256 tokenId,
+        string calldata category
+    ) public {
+        /* Check Ownership */
+        require(this.ownerOf(tokenId) == msg.sender, "Invalid owner");
+
+        _category = category;
+
+        /* Update the row in tableland */
+        _tableland.runSQL(
+            address(this),
+            _metadataTableId,
+            string.concat(
+                "UPDATE ",
+                _metadataTable,
+                " SET category = ",
+                category,
+                " WHERE id = ",
+                Strings.toString(tokenId),
+                ";"
+            )
+        );
+        /* Emit Event */
+        emit SetNftCategory(msg.sender, block.timestamp, _metadataTableId, tokenId);
+    }
+
+    /*
+     * updateAID is an Attributes Table Id
      */
     function updateAID(
         uint256 tokenId,
         uint256 aid
     ) public {
-        // check token ownership
+        /* Check Ownership */
         require(this.ownerOf(tokenId) == msg.sender, "Invalid owner");
-        // Update the row in tableland
+
+        /* Update the row in tableland */
         _tableland.runSQL(
             address(this),
             _metadataTableId,
@@ -150,19 +230,20 @@ contract MojoCore is
                 ";"
             )
         );
+        /* Emit Event */
         emit SetNftAID(msg.sender, block.timestamp, _metadataTableId, tokenId);
     }
 
     /*
-     * updateGID is an Attributes Table
+     * updateGID is an Attributes Table Id
      */
     function updateGID(
         uint256 tokenId,
         uint256 gid
     ) public {
-        // check token ownership
+        /* Check Ownership */
         require(this.ownerOf(tokenId) == msg.sender, "Invalid owner");
-        // Update the row in tableland
+        /* Update the row in tableland */
         _tableland.runSQL(
             address(this),
             _metadataTableId,
@@ -176,6 +257,7 @@ contract MojoCore is
                 ";"
             )
         );
+        /* Emit Event */
         emit SetNftGID(msg.sender, block.timestamp, _metadataTableId, tokenId);
     }
 
@@ -188,18 +270,30 @@ contract MojoCore is
      * erc721 compliant metadata JSON. here, we do a simple SELECT statement
      * with function that converts the result into json.
      */
-    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+    function tokenURI(uint256 tokenId)
+      public
+      view
+      virtual
+      override
+      returns (string memory)
+    {
         require(_exists(tokenId), "ERC721URIStorage: URI query for nonexistent token");
 
         string memory base = _baseURI();
 
         string memory json_group = "";
-        string[4] memory cols = ["id", "external_link", "aid", "gid"];
+        string[5] memory cols = ["id", "external_link", "category", "aid", "gid"];
         for (uint256 i; i < cols.length; i++) {
-            if (i > 0) {
-                json_group = string.concat(json_group, ",");
-            }
-            json_group = string.concat(json_group, "'", cols[i], "',", cols[i]);
+          if (i > 0) {
+              json_group = string.concat(json_group, ",");
+          }
+          json_group = string.concat(
+            json_group,
+            "'",
+            cols[i],
+            "',",
+            cols[i]
+          );
         }
 
         return
@@ -213,27 +307,6 @@ contract MojoCore is
                 Strings.toString(tokenId),
                 "&mode=list"
             );
-    }
-
-    /*
-     * setExternalURL provides an example of how to update a field for every
-     * row in an table.
-     */
-    function setExternalURL(string calldata externalURL) external onlyOwner {
-        _externalURL = externalURL;
-        _tableland.runSQL(
-            address(this),
-            _metadataTableId,
-            string.concat(
-                "update ",
-                _metadataTable,
-                " set external_link = ",
-                externalURL,
-                "||'?tokenId='||id", // Turns every row's URL into a URL including get param for tokenId
-                ";"
-            )
-        );
-        emit SetNftExternalUrl(msg.sender, block.timestamp, _metadataTableId, _metadataTable);
     }
 
     function _addressToString(address x) internal pure returns (string memory) {

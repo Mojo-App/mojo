@@ -121,10 +121,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MojoCore__factory>;
     getContractFactory(
-      name: "MojoCore",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.MojoCore__factory>;
-    getContractFactory(
       name: "MojoERC20Token",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MojoERC20Token__factory>;
@@ -279,11 +275,6 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.TablelandTables>;
-    getContractAt(
-      name: "MojoCore",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.MojoCore>;
     getContractAt(
       name: "MojoCore",
       address: string,

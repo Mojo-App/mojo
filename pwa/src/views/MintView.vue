@@ -74,6 +74,14 @@
               <div class="input-row">
                 <input type="text" placeholder="Enter a description" v-model="description" />
               </div>
+              <div class="select-row">
+                <select v-model="category">
+                  <option value="" class="grey">Select a Category</option>
+                  <option v-for="cat in categories" :key="cat.id" :value="cat.value">
+                    {{ cat.label }}
+                  </option>
+                </select>
+              </div>
               <div class="input-row">
                 <input type="text" placeholder="Image Url" v-model="imageUrl" readonly />
               </div>
@@ -91,7 +99,7 @@
               <div class="input-row hidden">
                 <input type="text" placeholder="Created" v-model="createdAt" readonly />
               </div>
-              <div class="input-row">
+              <div class="input-row hidden">
                 <input type="text" placeholder="Add an external link" v-model="externalUrl" />
               </div>
               <!-- Button Row -->
@@ -116,9 +124,6 @@
               <h2>2. Add Details</h2>
               <div class="input-row">
                 <input type="text" placeholder="Title" v-model="title" />
-              </div>
-              <div class="input-row">
-                <input type="text" placeholder="Category" v-model="category" />
               </div>
               <div class="input-row">
                 <input type="text" placeholder="Website" v-model="website" />
@@ -307,6 +312,17 @@ export default {
     const resolution = ref("");
     const duration = ref("");
 
+    /* Track Player */
+    const categories = ref([
+      { id: 1, label: "Fresh Jams", value: "Fresh Jams" },
+      { id: 2, label: "Dance & Electronica", value: "Dance & Electronica" },
+      { id: 3, label: "Pop", value: "Pop" },
+      { id: 4, label: "Jazz & Classical", value: "Jazz & Classical" },
+      { id: 5, label: "World & Ethnic", value: "World & Ethnic" },
+      { id: 6, label: "Cinematic & Soundscapes", value: "Cinematic & Soundscapes" },
+      { id: 7, label: "More", value: "More" },
+    ]);
+
     const jsConfettiSuccess = (emojis) => {
       const jsConfetti = new JSConfetti();
       jsConfetti.addConfetti({
@@ -449,8 +465,12 @@ export default {
           if (!nftStorageTMetadataURI) return;
 
           /* Mint our NFT using complex Struct */
-          // let nftTxn = await contract.safeMint(signer.getAddress(), nftStorageTMetadataURI);
-          let nftTxn = await contract.safeMint(signer.getAddress());
+          let nftTxn = await contract.safeMint(
+            signer.getAddress(),
+            nftStorageTMetadataURI,
+            category.value
+          );
+          // let nftTxn = await contract.safeMint(signer.getAddress());
 
           /* Console log with some style */
           const stylesMining = ["color: black", "background: yellow"].join(";");
@@ -869,6 +889,7 @@ export default {
       youtubeURL,
       resolution,
       duration,
+      categories,
       size,
       createdAt,
       switchToTab,
@@ -1192,6 +1213,80 @@ section#content {
         input:focus {
           border: 2px solid #2bb5f0;
           outline: none;
+        }
+
+        .select-row {
+          position: relative;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 15px;
+        }
+
+        select {
+          display: inline-block;
+          color: #1a1a1a;
+          background-color: #fdfdfd;
+          border: 2px solid var(--gradient-100);
+          border-radius: 10px;
+          letter-spacing: 1px;
+          font-size: 14px;
+          width: 265px;
+          margin-bottom: 10px;
+          padding: 10px;
+          text-align: center;
+
+          /* reset */
+          margin: 0;
+          -webkit-box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          box-sizing: border-box;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+
+          background-image: linear-gradient(45deg, transparent 50%, gray 50%),
+            linear-gradient(135deg, gray 50%, transparent 50%),
+            linear-gradient(to right, #ccc, #ccc);
+          background-position: calc(100% - 20px) calc(1em + 2px), calc(100% - 15px) calc(1em + 2px),
+            calc(100% - 2.5em) 0.5em;
+          background-size: 5px 5px, 5px 5px, 1px 1.5em;
+          background-repeat: no-repeat;
+
+          @include breakpoint($breakpoint-sm) {
+            width: 325px;
+          }
+
+          @include breakpoint($breakpoint-md) {
+            width: 325px;
+          }
+
+          @include breakpoint($breakpoint-xl) {
+            width: 325px;
+          }
+        }
+
+        select:focus {
+          border: 2px solid #2bb5f0;
+          background-image: linear-gradient(45deg, green 50%, transparent 50%),
+            linear-gradient(135deg, transparent 50%, green 50%),
+            linear-gradient(to right, #ccc, #ccc);
+          background-position: calc(100% - 15px) 1em, calc(100% - 20px) 1em,
+            calc(100% - 2.5em) 0.5em;
+          background-size: 5px 5px, 5px 5px, 1px 1.5em;
+          background-repeat: no-repeat;
+          outline: none;
+          cursor: pointer;
+        }
+
+        select:-moz-focusring {
+          color: transparent;
+          text-shadow: 0 0 0 #000;
+        }
+
+        .grey {
+          color: #a8a8a8 !important;
+          letter-spacing: 1px;
         }
 
         textarea {

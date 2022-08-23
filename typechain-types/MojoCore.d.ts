@@ -26,7 +26,7 @@ interface MojoCoreInterface extends ethers.utils.Interface {
     "balanceOf(address)": FunctionFragment;
     "createMetadataTable(address)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
-    "initialize(string,string)": FunctionFragment;
+    "initialize(string,string,string)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "name()": FunctionFragment;
     "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
@@ -35,7 +35,7 @@ interface MojoCoreInterface extends ethers.utils.Interface {
     "paused()": FunctionFragment;
     "proxiableUUID()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "safeMint(address)": FunctionFragment;
+    "safeMint(address,string,string)": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setExternalURL(string)": FunctionFragment;
@@ -45,6 +45,7 @@ interface MojoCoreInterface extends ethers.utils.Interface {
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "updateAID(uint256,uint256)": FunctionFragment;
+    "updateCategory(uint256,string)": FunctionFragment;
     "updateGID(uint256,uint256)": FunctionFragment;
     "upgradeTo(address)": FunctionFragment;
     "upgradeToAndCall(address,bytes)": FunctionFragment;
@@ -65,7 +66,7 @@ interface MojoCoreInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [string, string]
+    values: [string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
@@ -90,7 +91,10 @@ interface MojoCoreInterface extends ethers.utils.Interface {
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "safeMint", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "safeMint",
+    values: [string, string, string]
+  ): string;
   encodeFunctionData(
     functionFragment: "safeTransferFrom",
     values: [string, string, BigNumberish]
@@ -123,6 +127,10 @@ interface MojoCoreInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "updateAID",
     values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateCategory",
+    values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "updateGID",
@@ -193,6 +201,10 @@ interface MojoCoreInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "updateAID", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "updateCategory",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "updateGID", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "upgradeTo", data: BytesLike): Result;
   decodeFunctionResult(
@@ -210,6 +222,7 @@ interface MojoCoreInterface extends ethers.utils.Interface {
     "OwnershipTransferred(address,address)": EventFragment;
     "Paused(address)": EventFragment;
     "SetNftAID(address,uint256,uint256,uint256)": EventFragment;
+    "SetNftCategory(address,uint256,uint256,uint256)": EventFragment;
     "SetNftExternalUrl(address,uint256,uint256,string)": EventFragment;
     "SetNftGID(address,uint256,uint256,uint256)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
@@ -226,6 +239,7 @@ interface MojoCoreInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetNftAID"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetNftCategory"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetNftExternalUrl"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetNftGID"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
@@ -275,7 +289,16 @@ export type SetNftAIDEvent = TypedEvent<
   [string, BigNumber, BigNumber, BigNumber] & {
     from: string;
     timestamp: BigNumber;
-    aid: BigNumber;
+    metadataTableId: BigNumber;
+    tokenId: BigNumber;
+  }
+>;
+
+export type SetNftCategoryEvent = TypedEvent<
+  [string, BigNumber, BigNumber, BigNumber] & {
+    from: string;
+    timestamp: BigNumber;
+    metadataTableId: BigNumber;
     tokenId: BigNumber;
   }
 >;
@@ -293,7 +316,7 @@ export type SetNftGIDEvent = TypedEvent<
   [string, BigNumber, BigNumber, BigNumber] & {
     from: string;
     timestamp: BigNumber;
-    gid: BigNumber;
+    metadataTableId: BigNumber;
     tokenId: BigNumber;
   }
 >;
@@ -371,6 +394,7 @@ export class MojoCore extends BaseContract {
     initialize(
       baseURI: string,
       externalURL: string,
+      category: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -407,6 +431,8 @@ export class MojoCore extends BaseContract {
 
     safeMint(
       to: string,
+      newTokenURI: string,
+      category: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -466,6 +492,12 @@ export class MojoCore extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    updateCategory(
+      tokenId: BigNumberish,
+      category: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     updateGID(
       tokenId: BigNumberish,
       gid: BigNumberish,
@@ -505,6 +537,7 @@ export class MojoCore extends BaseContract {
   initialize(
     baseURI: string,
     externalURL: string,
+    category: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -538,6 +571,8 @@ export class MojoCore extends BaseContract {
 
   safeMint(
     to: string,
+    newTokenURI: string,
+    category: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -594,6 +629,12 @@ export class MojoCore extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  updateCategory(
+    tokenId: BigNumberish,
+    category: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   updateGID(
     tokenId: BigNumberish,
     gid: BigNumberish,
@@ -633,6 +674,7 @@ export class MojoCore extends BaseContract {
     initialize(
       baseURI: string,
       externalURL: string,
+      category: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -662,7 +704,12 @@ export class MojoCore extends BaseContract {
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
-    safeMint(to: string, overrides?: CallOverrides): Promise<BigNumber>;
+    safeMint(
+      to: string,
+      newTokenURI: string,
+      category: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -714,6 +761,12 @@ export class MojoCore extends BaseContract {
     updateAID(
       tokenId: BigNumberish,
       aid: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    updateCategory(
+      tokenId: BigNumberish,
+      category: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -847,21 +900,61 @@ export class MojoCore extends BaseContract {
     "SetNftAID(address,uint256,uint256,uint256)"(
       from?: string | null,
       timestamp?: null,
-      aid?: null,
+      metadataTableId?: null,
       tokenId?: null
     ): TypedEventFilter<
       [string, BigNumber, BigNumber, BigNumber],
-      { from: string; timestamp: BigNumber; aid: BigNumber; tokenId: BigNumber }
+      {
+        from: string;
+        timestamp: BigNumber;
+        metadataTableId: BigNumber;
+        tokenId: BigNumber;
+      }
     >;
 
     SetNftAID(
       from?: string | null,
       timestamp?: null,
-      aid?: null,
+      metadataTableId?: null,
       tokenId?: null
     ): TypedEventFilter<
       [string, BigNumber, BigNumber, BigNumber],
-      { from: string; timestamp: BigNumber; aid: BigNumber; tokenId: BigNumber }
+      {
+        from: string;
+        timestamp: BigNumber;
+        metadataTableId: BigNumber;
+        tokenId: BigNumber;
+      }
+    >;
+
+    "SetNftCategory(address,uint256,uint256,uint256)"(
+      from?: string | null,
+      timestamp?: null,
+      metadataTableId?: null,
+      tokenId?: null
+    ): TypedEventFilter<
+      [string, BigNumber, BigNumber, BigNumber],
+      {
+        from: string;
+        timestamp: BigNumber;
+        metadataTableId: BigNumber;
+        tokenId: BigNumber;
+      }
+    >;
+
+    SetNftCategory(
+      from?: string | null,
+      timestamp?: null,
+      metadataTableId?: null,
+      tokenId?: null
+    ): TypedEventFilter<
+      [string, BigNumber, BigNumber, BigNumber],
+      {
+        from: string;
+        timestamp: BigNumber;
+        metadataTableId: BigNumber;
+        tokenId: BigNumber;
+      }
     >;
 
     "SetNftExternalUrl(address,uint256,uint256,string)"(
@@ -897,21 +990,31 @@ export class MojoCore extends BaseContract {
     "SetNftGID(address,uint256,uint256,uint256)"(
       from?: string | null,
       timestamp?: null,
-      gid?: null,
+      metadataTableId?: null,
       tokenId?: null
     ): TypedEventFilter<
       [string, BigNumber, BigNumber, BigNumber],
-      { from: string; timestamp: BigNumber; gid: BigNumber; tokenId: BigNumber }
+      {
+        from: string;
+        timestamp: BigNumber;
+        metadataTableId: BigNumber;
+        tokenId: BigNumber;
+      }
     >;
 
     SetNftGID(
       from?: string | null,
       timestamp?: null,
-      gid?: null,
+      metadataTableId?: null,
       tokenId?: null
     ): TypedEventFilter<
       [string, BigNumber, BigNumber, BigNumber],
-      { from: string; timestamp: BigNumber; gid: BigNumber; tokenId: BigNumber }
+      {
+        from: string;
+        timestamp: BigNumber;
+        metadataTableId: BigNumber;
+        tokenId: BigNumber;
+      }
     >;
 
     "Transfer(address,address,uint256)"(
@@ -969,6 +1072,7 @@ export class MojoCore extends BaseContract {
     initialize(
       baseURI: string,
       externalURL: string,
+      category: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1005,6 +1109,8 @@ export class MojoCore extends BaseContract {
 
     safeMint(
       to: string,
+      newTokenURI: string,
+      category: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1064,6 +1170,12 @@ export class MojoCore extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    updateCategory(
+      tokenId: BigNumberish,
+      category: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     updateGID(
       tokenId: BigNumberish,
       gid: BigNumberish,
@@ -1107,6 +1219,7 @@ export class MojoCore extends BaseContract {
     initialize(
       baseURI: string,
       externalURL: string,
+      category: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1143,6 +1256,8 @@ export class MojoCore extends BaseContract {
 
     safeMint(
       to: string,
+      newTokenURI: string,
+      category: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1199,6 +1314,12 @@ export class MojoCore extends BaseContract {
     updateAID(
       tokenId: BigNumberish,
       aid: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateCategory(
+      tokenId: BigNumberish,
+      category: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
