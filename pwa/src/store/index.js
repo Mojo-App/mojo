@@ -364,7 +364,7 @@ export const useStore = defineStore({
             .then(async (connection) => {
               // Run a SQL select on our Mojo table
               // const results = await connection.read(`SELECT * FROM mojo_80001_554`);
-              const results = await connection.read(`SELECT * FROM mojo_80001_937`);
+              const results = await connection.read(`SELECT * FROM mojo_80001_1199`);
               const entries = resultsToObjects(results);
               return entries;
             })
