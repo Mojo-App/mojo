@@ -1,6 +1,6 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
-import { ethers } from "hardhat";
+import { ethers, upgrades } from "hardhat";
 
 describe("MojoCore", function () {
   let accounts: SignerWithAddress[];
@@ -16,8 +16,16 @@ describe("MojoCore", function () {
     await registry.connect(accounts[0]).initialize("http://localhost:8080/");
 
     const MojoCore = await ethers.getContractFactory("MojoCore");
-    mojoCore = await MojoCore.deploy(registry.address);
+    mojoCore = await upgrades.deployProxy(MojoCore, [
+      "https://testnet.tableland.network/query?s=",
+      "not.implemented.com",
+      "Fresh Jams"
+    ], {
+      kind: "uups",
+    });
+
     await mojoCore.deployed();
+    await mojoCore.connect(accounts[0]).createMetadataTable(registry.address);
   });
 
   it("Should allow minting", async function () {
@@ -27,12 +35,9 @@ describe("MojoCore", function () {
         name:"Test NFT Mint No 1",
         decimals: 0,
         description: "Test NFT description no 1",
-        image: "",
-        properties: {
-          type: "mNFT",
-          authors: [{ name: "Mojo NFT" }]
-        }
-      });
+        image: ""
+      },
+      "Fresh Jams");
 
     const receipt = await tx.wait();
     const [, transferEvent] = receipt.events ?? [];
@@ -44,12 +49,8 @@ describe("MojoCore", function () {
         name:"Test NFT Mint No 2",
         decimals: 0,
         description: "Test NFT description no 2",
-        image: "",
-        properties: {
-          type: "mNFT",
-          authors: [{ name: "Mojo NFT" }]
-        }
-      });
+        image: ""
+      }, "Fresh Jams");
 
     const receipt2 = await tx2.wait();
     const [, transferEvent2] = receipt2.events ?? [];
@@ -65,7 +66,7 @@ describe("MojoCore", function () {
     await expect(owner).to.equal(mojoCore.address);
   });
 
-  it("Should allow updating aid and gid", async function () {
+  it("Should allow updating category", async function () {
     // mint the token
     const tx = await mojoCore
       .connect(accounts[1])
@@ -73,23 +74,85 @@ describe("MojoCore", function () {
         name:"Test NFT Mint",
         decimals: 0,
         description: "Test NFT description",
-        image: "",
-        properties: {
-          type: "mNFT",
-          authors: [{ name: "Mojo NFT" }]
-        }
-      });
+        image: ""
+      }, "Fresh Jams");
 
     const receipt = await tx.wait();
     const [, transferEvent] = receipt.events ?? [];
     const tokenId = transferEvent.args!.tokenId;
 
     const statement =
-      "UPDATE mojo_80001_1 SET aid = 10 AND gid = 10 WHERE id = 0;";
+      "UPDATE mojo_80001_1199 SET category = 'Best Beats' WHERE id = 0;";
 
     // TODO: this fails with `expected [] to equal []` because Array literals aren't equal
     //       I can't find a way to change the comparison logic for emit tests
-    await expect(mojoCore.connect(accounts[1]).updateAID(tokenId, 10, 10))
+    await expect(mojoCore.connect(accounts[1]).updateAID(tokenId, "Best Beats"))
+      .to.emit(registry, "RunSQL")
+      .withArgs(mojoCore.address, true, 1, statement, [
+        true,
+        true,
+        true,
+        "",
+        "",
+        [],
+        [],
+      ]);
+  });
+
+  it("Should allow updating aid", async function () {
+    // mint the token
+    const tx = await mojoCore
+      .connect(accounts[1])
+      .safeMint(accounts[1].address, {
+        name:"Test NFT Mint",
+        decimals: 0,
+        description: "Test NFT description",
+        image: ""
+      }, "Fresh Jams");
+
+    const receipt = await tx.wait();
+    const [, transferEvent] = receipt.events ?? [];
+    const tokenId = transferEvent.args!.tokenId;
+
+    const statement =
+      "UPDATE mojo_80001_1199 SET aid = 10 WHERE id = 0;";
+
+    // TODO: this fails with `expected [] to equal []` because Array literals aren't equal
+    //       I can't find a way to change the comparison logic for emit tests
+    await expect(mojoCore.connect(accounts[1]).updateAID(tokenId, 10))
+      .to.emit(registry, "RunSQL")
+      .withArgs(mojoCore.address, true, 1, statement, [
+        true,
+        true,
+        true,
+        "",
+        "",
+        [],
+        [],
+      ]);
+  });
+
+  it("Should allow updating gid", async function () {
+    // mint the token
+    const tx = await mojoCore
+      .connect(accounts[1])
+      .safeMint(accounts[1].address, {
+        name:"Test NFT Mint",
+        decimals: 0,
+        description: "Test NFT description",
+        image: ""
+      }, "Fresh Jams");
+
+    const receipt = await tx.wait();
+    const [, transferEvent] = receipt.events ?? [];
+    const tokenId = transferEvent.args!.tokenId;
+
+    const statement =
+      "UPDATE mojo_80001_1199 SET gid = 10 WHERE id = 0;";
+
+    // TODO: this fails with `expected [] to equal []` because Array literals aren't equal
+    //       I can't find a way to change the comparison logic for emit tests
+    await expect(mojoCore.connect(accounts[1]).updateAID(tokenId, 10))
       .to.emit(registry, "RunSQL")
       .withArgs(mojoCore.address, true, 1, statement, [
         true,

@@ -32,7 +32,7 @@ describe("MojoCore", function () {
           type: "mNFT",
           authors: [{ name: "Mojo NFT" }]
         }
-      });
+      }, "Fresh Jams");
 
     const receipt = await tx.wait();
     const [, transferEvent] = receipt.events ?? [];
@@ -49,7 +49,7 @@ describe("MojoCore", function () {
           type: "mNFT",
           authors: [{ name: "Mojo NFT" }]
         }
-      });
+      }, "Fresh Jams");
 
     const receipt2 = await tx2.wait();
     const [, transferEvent2] = receipt2.events ?? [];
@@ -78,7 +78,7 @@ describe("MojoCore", function () {
           type: "mNFT",
           authors: [{ name: "Mojo NFT" }]
         }
-      });
+      }, "Fresh Jams");
 
     const receipt = await tx.wait();
     const [, transferEvent] = receipt.events ?? [];

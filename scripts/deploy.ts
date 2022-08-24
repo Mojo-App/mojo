@@ -24,16 +24,17 @@ async function main() {
   const MojoCore = await ethers.getContractFactory("MojoCore");
   const mojoCore = await upgrades.deployProxy(MojoCore, [
     "https://testnet.tableland.network/query?s=",
-    "set.external.url"
+    "set.external.url",
+    "Fresh Jams"
   ], {
     kind: "uups",
   });
   await mojoCore.deployed();
-  console.log("Proxy deployed to:", mojoCore.address, "on", network.name);
+  console.log("Proxy deployed to Contract: ", mojoCore.address, "on Network: ", network.name);
 
   const impl = await upgrades.erc1967.getImplementationAddress(mojoCore.address);
   console.log("New implementation address:", impl);
-  console.log("Running post deploy")
+  console.log("Running post deploy now!!!")
 
   const tx = await mojoCore.createMetadataTable(registryAddress);
   const receipt = await tx.wait();
