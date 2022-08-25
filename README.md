@@ -86,11 +86,25 @@ This project will only deploy to Polygon's 'Mumbai Testnet due to the address re
 
 Mojo NFT Core smart contract deployed to: 0x6b9482bD2EEd7814EE5a88Cc93f687a3961D27Fb
 
-Mojo Token smart contract deployed to: 0x424B6A8beF4c0807c1db53f21ea8bB8217B3AC7e
-
 ```shell
 npx hardhat run scripts/deploy.ts --network polygon-mumbai
 ```
+
+## Verify Contracts Note
+
+You will need to verify your contracts as below, replace the first address with your new contract address
+
+```shell
+npx hardhat verify --network polygon-mumbai "0x6b9482bD2EEd7814EE5a88Cc93f687a3961D27Fb"
+npx hardhat --network polygon-mumbai verify "0x6b9482bD2EEd7814EE5a88Cc93f687a3961D27Fb" "0x4b48841d4b32C4650E4ABc117A03FE8B51f38F68"
+npx hardhat --network ethereum-goerli verify "0x4035ce0Df8440bd07BEf39306e4a8D785C0e13a1" "0xDA8EA22d092307874f30A1F277D1388dca0BA97a"
+```
+
+## Mojo ERC-20 Token
+
+Mojo aims to launch a token using the ERC-20 smart contract, a dummy version has been created on Polygon to test with
+
+Mojo Token smart contract deployed to: 0x424B6A8beF4c0807c1db53f21ea8bB8217B3AC7e
 
 ## Basic Vue 3 Project using Vite and Pinia
 
