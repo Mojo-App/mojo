@@ -5,7 +5,8 @@ import Storage from "../services/storage";
 /* Import Smart Contract ABI */
 import contractAbi from "../../../artifacts/contracts/MojoCore.sol/MojoCore.json";
 /* Get our Mojo Contract Address */
-const mojoContractAddress = import.meta.env.VITE_MOJO_CORE_CONTRACT;
+// const mojoContractAddress = import.meta.env.VITE_MOJO_CORE_CONTRACT;
+const mojoContractAddress = "0x6b9482bD2EEd7814EE5a88Cc93f687a3961D27Fb";
 /* Setup Offline Storage */
 const db = new Storage("app");
 db.read();

@@ -87,7 +87,7 @@ This project will only deploy to Polygon's 'Mumbai Testnet due to the address re
 Mojo NFT Core smart contract deployed to: 0x6b9482bD2EEd7814EE5a88Cc93f687a3961D27Fb
 
 ```shell
-npx hardhat run scripts/deploy.ts --network polygon-mumbai
+npx hardhat run scripts/deploy.js --network polygon-mumbai
 ```
 
 ## Verify Contracts Note

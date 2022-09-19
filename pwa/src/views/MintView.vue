@@ -494,7 +494,7 @@ export default {
             /* Console log with some style */
             const stylesPolygon = ["color: white", "background: #7e44df"].join(";");
             console.log(
-              `%c🧬 NFT Minted on Polygon, see transaction:<br /> https://mumbai.polygonscan.com/tx/${nftTxn.hash} %s`,
+              `%c🧬 NFT Minted on Polygon, see transaction: https://mumbai.polygonscan.com/tx/${nftTxn.hash} %s`,
               stylesPolygon,
               nftTxn.hash
             );
@@ -502,7 +502,7 @@ export default {
             notyf.dismiss(loadingIndicator);
             notyf.open({
               type: "success",
-              message: `🧬 NFT has been minted successfully, see transaction<br />https://mumbai.polygonscan.com/tx/${nftTxn.hash}`,
+              message: `🧬 NFT has been minted successfully, see transaction: https://mumbai.polygonscan.com/tx/${nftTxn.hash}`,
             });
           }
           /* Set to NFT Main Attributes Tab */
