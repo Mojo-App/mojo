@@ -192,14 +192,15 @@ async function fetchData() {
   console.log("Tracks Loaded:", res);
   categoryTracks.value = await res.json();
 }
-fetchData();
+
 onMounted(() => {
-  checkIfWalletIsConnected();
   window.scrollTo({
     top: 0,
     left: 0,
     behavior: "smooth",
   });
+  checkIfWalletIsConnected();
+  fetchData();
 });
 </script>
 <style lang="scss" scoped>
