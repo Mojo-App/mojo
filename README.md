@@ -1,4 +1,4 @@
-# Mojo
+# Mojo Music NFTs
 
 Mojo is an audio/media streaming platform that empowers content creators through IPFS and blockchain technologies.
 
@@ -127,3 +127,7 @@ sudo rm -rf package-lock.json
 npm install
 npm run dev
 ```
+
+### DEV NOTE
+
+How this trait will be displayed (options are number, boost_percentage, boost_number, and date

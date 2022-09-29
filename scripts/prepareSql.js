@@ -1,6 +1,6 @@
 // The `prepareMetadata` script is required for IPFS image uploading
 // and preparing the metadata as JS objects.
-const prepareMetadata = require("./metadataProcessing")
+const prepareMetadata = require("../pwa/src/services/metadataProcessing")
 const dotenv = require("dotenv")
 dotenv.config()
 

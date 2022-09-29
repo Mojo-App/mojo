@@ -4,7 +4,9 @@ import { HardhatUserConfig, extendEnvironment, task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import "@openzeppelin/hardhat-upgrades";
 import "@nomicfoundation/hardhat-toolbox";
+import "@nomicfoundation/hardhat-chai-matchers";
 import "@nomiclabs/hardhat-etherscan";
+import "@nomiclabs/hardhat-ethers";
 import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
@@ -50,7 +52,7 @@ const config: HardhatUserConfig = {
       polygonMumbai: process.env.POLYSCAN_API_KEY || "",
     },
   },
-  defaultNetwork: 'ethereum-goerli',
+  defaultNetwork: 'polygon-mumbai',
   networks: {
     /* Main Networks */
     ethereum: {
