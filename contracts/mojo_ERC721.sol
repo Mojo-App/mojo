@@ -21,13 +21,17 @@ contract MOJO is ERC721, AccessControl {
     uint256 private _attributesTableId;
     string public mainTable;
     string public attributesTable;
-    string private _tablePrefix = "Mojo";
+    string private _tablePrefix = "Mojo_Music_NFTs";
 
     /* Map of tokenid to the numbers of trait_id  */
     mapping(uint256 => uint256) private nb_of_attributes;
 
     /* Events */
-    event NewNftMinted(address indexed from, uint256 timestamp, uint256 tokenId);
+    event NewNftMinted(
+      address indexed from,
+      uint256 timestamp,
+      uint256 tokenId
+    );
 
     /* The NFT Category is updated */
     event categoryUpdated(
@@ -38,12 +42,48 @@ contract MOJO is ERC721, AccessControl {
         uint256 tokenId
     );
 
+    /* The NFT Image Data is updated */
+    event imageDataUpdated(
+        address indexed from,
+        uint256 timestamp,
+        uint256 _metadataTableId,
+        string _image_data,
+        uint256 tokenId
+    );
+
     /* The NFT External Url is updated */
     event externalUrlUpdated(
         address indexed from,
         uint256 timestamp,
         uint256 _metadataTableId,
         string _external_url,
+        uint256 tokenId
+    );
+
+    /* The NFT Background Color is updated */
+    event backgroundColorUpdated(
+        address indexed from,
+        uint256 timestamp,
+        uint256 _metadataTableId,
+        string _background_color,
+        uint256 tokenId
+    );
+
+    /* The NFT Animation Url is updated */
+    event animationUrlUpdated(
+        address indexed from,
+        uint256 timestamp,
+        uint256 _metadataTableId,
+        string _animation_url,
+        uint256 tokenId
+    );
+
+    /* The NFT Youtube Url is updated */
+    event youtubeUrlUpdated(
+        address indexed from,
+        uint256 timestamp,
+        uint256 _metadataTableId,
+        string _youtube_url,
         uint256 tokenId
     );
 
@@ -95,7 +135,7 @@ contract MOJO is ERC721, AccessControl {
         uint256 _trait_id
     );
 
-    constructor(address registry) ERC721("Mint Tea", "mNFT") {
+    constructor(address registry) ERC721("Mojo Music", "mNFT") {
         /*
          * Assign role to Tableland table
          */
@@ -116,7 +156,7 @@ contract MOJO is ERC721, AccessControl {
                 _tablePrefix,
                 "_",
                 Strings.toString(block.chainid),
-                " (tokenid int, name text, description text, image text, category text, external_url text);"
+                " (tokenid int, name text, description text, image text, image_data text, category text, external_url text, background_color text, animation_url text, youtube_url text);"
             )
         );
 
@@ -155,13 +195,18 @@ contract MOJO is ERC721, AccessControl {
     }
 
     /* ========== PUBLIC METHODS ========== */
+    /* Mint NFT
+     * We only mint the basics due to contract overloading, so only the image, name and description are used for a very basic NFT template
+     * The category is a custom attribute that will be used in Mojo Music to filter and search by category, this will be a separate table in Tableland
+     * We'll use the category label as the saved value for readability, but the category table will be indexed accordingly
+     * The first trait added at index 0 is the minting date, this enable further traits to be added in a numerical fashion starting at #1
+     */
     function safeMint(
         address to,
         string memory _name,
         string memory _description,
         string memory _image_url,
         string memory _category,
-        string memory _external_url,
         string memory _icon,
         string memory _display_type,
         string memory _trait_type,
@@ -175,7 +220,7 @@ contract MOJO is ERC721, AccessControl {
             string.concat(
                 "INSERT INTO ",
                 mainTable,
-                " (tokenid, name, description, image, category, external_url) VALUES ('",
+                " (tokenid, name, description, image, category) VALUES ('",
                 Strings.toString(tokenId),
                 "', '",
                 _name,
@@ -185,8 +230,6 @@ contract MOJO is ERC721, AccessControl {
                 _image_url,
                 "', '",
                 _category,
-                "', '",
-                _external_url,
                 "')"
             )
         );
@@ -215,6 +258,7 @@ contract MOJO is ERC721, AccessControl {
         _safeMint(to, tokenId);
         nb_of_attributes[tokenId] = 1;
         _tokenIdCounter.increment();
+        /* Emit Event */
         emit NewNftMinted(msg.sender, block.timestamp, tokenId);
         return tokenId;
     }
@@ -245,7 +289,32 @@ contract MOJO is ERC721, AccessControl {
     }
 
     /*
-     * Update external url
+     * Update NFT Image Data
+     */
+    function update_image_data(uint256 tokenId, string memory _image_data) public {
+        /* Check Ownership */
+        require(this.ownerOf(tokenId) == msg.sender, "Invalid owner");
+
+        /* Update the row in tableland */
+        _tableland.runSQL(
+            address(this),
+            _metadataTableId,
+            string.concat(
+                "UPDATE ",
+                mainTable,
+                " SET image_data = '",
+                _image_data,
+                "' WHERE tokenid = ",
+                Strings.toString(tokenId),
+                ";"
+            )
+        );
+        /* Emit Event */
+        emit imageDataUpdated(msg.sender, block.timestamp, _metadataTableId, _image_data, tokenId);
+    }
+
+    /*
+     * Update NFT External Url
      */
     function update_external_url(uint256 tokenId, string memory _external_url) public {
         /* Check Ownership */
@@ -276,7 +345,100 @@ contract MOJO is ERC721, AccessControl {
     }
 
     /*
-     * Add a new attribute to a Tableland NFT
+     * Update NFT Background Color
+     */
+    function update_background_color(uint256 tokenId, string memory _background_color) public {
+        /* Check Ownership */
+        require(this.ownerOf(tokenId) == msg.sender, "Invalid owner");
+
+        /* Update the row in tableland */
+        _tableland.runSQL(
+            address(this),
+            _metadataTableId,
+            string.concat(
+                "UPDATE ",
+                mainTable,
+                " SET background_color = '",
+                _background_color,
+                "' WHERE tokenid = ",
+                Strings.toString(tokenId),
+                ";"
+            )
+        );
+        /* Emit Event */
+        emit backgroundColorUpdated(
+            msg.sender,
+            block.timestamp,
+            _metadataTableId,
+            _background_color,
+            tokenId
+        );
+    }
+
+    /*
+     * Update NFT Animation Url
+     */
+    function update_animation_url(uint256 tokenId, string memory _animation_url) public {
+        /* Check Ownership */
+        require(this.ownerOf(tokenId) == msg.sender, "Invalid owner");
+
+        /* Update the row in tableland */
+        _tableland.runSQL(
+            address(this),
+            _metadataTableId,
+            string.concat(
+                "UPDATE ",
+                mainTable,
+                " SET animation_url = '",
+                _animation_url,
+                "' WHERE tokenid = ",
+                Strings.toString(tokenId),
+                ";"
+            )
+        );
+        /* Emit Event */
+        emit animationUrlUpdated(
+            msg.sender,
+            block.timestamp,
+            _metadataTableId,
+            _animation_url,
+            tokenId
+        );
+    }
+
+    /*
+     * Update NFT Youtube Url
+     */
+    function update_youtube_url(uint256 tokenId, string memory _youtube_url) public {
+        /* Check Ownership */
+        require(this.ownerOf(tokenId) == msg.sender, "Invalid owner");
+
+        /* Update the row in tableland */
+        _tableland.runSQL(
+            address(this),
+            _metadataTableId,
+            string.concat(
+                "UPDATE ",
+                mainTable,
+                " SET youtube_url = '",
+                _youtube_url,
+                "' WHERE tokenid = ",
+                Strings.toString(tokenId),
+                ";"
+            )
+        );
+        /* Emit Event */
+        emit youtubeUrlUpdated(
+            msg.sender,
+            block.timestamp,
+            _metadataTableId,
+            _youtube_url,
+            tokenId
+        );
+    }
+
+    /*
+     * Add a new Metadata Attribute to the Tableland NFT
      */
     function add_new_attribute(
         uint256 _tokenId,
@@ -321,7 +483,7 @@ contract MOJO is ERC721, AccessControl {
     }
 
     /*
-     * Update an attribute icon
+     * Update Metadata attribute icon
      */
     function update_icon(
         uint256 tokenId,
@@ -360,7 +522,16 @@ contract MOJO is ERC721, AccessControl {
     }
 
     /*
-     * Update an attribute display_type
+     * Update Metadata attribute display_type
+     * For numeric traits, OpenSea currently supports three different options,
+     * number (lower right in the image below),
+     * boost_percentage (lower left in the image above),
+     * boost_number (similar to boost_percentage but doesn't show a percent sign).
+     * If you pass in a value that's a number and you don't set a display_type, the trait will appear in the Rankings section (top right in the image above).
+     * Adding an optional max_value sets a ceiling for a numerical trait's possible values.
+     * It defaults to the maximum that OpenSea has seen so far on the assets on your contract.
+     * If you set a max_value, make sure not to pass in a higher value
+     * https://docs.opensea.io/docs/metadata-standards
      */
     function update_display_type(
         uint256 tokenId,
@@ -400,7 +571,7 @@ contract MOJO is ERC721, AccessControl {
     }
 
     /*
-     * Update an attribute trait_type
+     * Update Metadata attribute trait_type
      */
     function update_trait_type(
         uint256 tokenId,
@@ -440,7 +611,8 @@ contract MOJO is ERC721, AccessControl {
     }
 
     /*
-     * update an attribute value
+     * update Metadata attribute value
+     * We use a string to accomodate most types, we can then cast to an Integer on front-end
      */
     function update_value(
         uint256 tokenId,
@@ -480,7 +652,7 @@ contract MOJO is ERC721, AccessControl {
     }
 
     /**
-     * @dev View the contract’s main metadata table
+     * @dev View the contract’s Main Metadata table
      */
     function main_metadataURI() public view returns (string memory) {
         string memory base = _baseURI();
@@ -489,7 +661,7 @@ contract MOJO is ERC721, AccessControl {
     }
 
     /**
-     * @dev View the contract’s attributes metadata table
+     * @dev View the contract’s Attributes Metadata table
      */
     function attributes_metadataURI() public view returns (string memory) {
         string memory base = _baseURI();
@@ -523,7 +695,7 @@ contract MOJO is ERC721, AccessControl {
          */
         string memory query = string(
             abi.encodePacked(
-                "SELECT%20json_object%28%27id%27%2Ctokenid%2C%27name%27%2Cname%2C%27description%27%2Cdescription%2C%27image%27%2Cimage%2C%27category%27%2Cexternal_url%2C%27category%27%2Cexternal_url%2C%27attributes%27%2Cjson_group_array%28json_object%28%27icon%27%2Cicon%2C%27display_type%27%2Cdisplay_type%2C%27trait_type%27%2Ctrait_type%2C%27value%27%2Cvalue%29%29%29%20FROM%20",
+                "SELECT%20json_object%28%27id%27%2Ctokenid%2C%27name%27%2Cname%2C%27description%27%2Cdescription%2C%27image%27%2Cimage%2C%27image_data%27%2Cimage_data%2C%27category%27%2Ccategory%2C%27external_url%27%2Cexternal_url%2C%27background_color%27%2Cbackground_color%2C%27animation_url%27%2Canimation_url%2C%27youtube_url%27%2Cyoutube_url%2C%27attributes%27%2Cjson_group_array%28json_object%28%27icon%27%2Cicon%2C%27display_type%27%2Cdisplay_type%2C%27trait_type%27%2Ctrait_type%2C%27value%27%2Cvalue%29%29%29%20FROM%20",
                 mainTable,
                 "%20JOIN%20",
                 attributesTable,

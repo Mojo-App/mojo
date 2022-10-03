@@ -1,10 +1,59 @@
+<template>
+  <div class="connect-wallet-container">
+    <button
+      v-if="!walletConnectionAttempted && btnSize === 'large'"
+      @click="connectWallet()"
+      class="connect-wallet-button"
+    >
+      🎧 Connect Wallet
+    </button>
+    <button
+      v-if="!walletConnectionAttempted && btnSize === 'small'"
+      @click="connectWallet()"
+      class="connect-wallet-small-button"
+    >
+      🎧 Connect
+    </button>
+
+    <button
+      v-if="walletConnectionAttempted && isAuthenticated && btnSize === 'large'"
+      @click="handleSuccessButtonClick()"
+      class="connect-wallet-button"
+    >
+      🎧 Collection
+    </button>
+    <button
+      v-if="walletConnectionAttempted && isAuthenticated && btnSize === 'small'"
+      @click="handleSuccessButtonClick()"
+      class="connect-wallet-small-button"
+    >
+      🎧 Collection
+    </button>
+
+    <button
+      v-if="walletConnectionAttempted && !isAuthenticated && btnSize === 'large'"
+      @click="handleBackButtonClick()"
+      class="connect-wallet-button"
+    >
+      🎧 Go Back
+    </button>
+    <button
+      v-if="walletConnectionAttempted && !isAuthenticated && btnSize === 'small'"
+      @click="handleBackButtonClick()"
+      class="connect-wallet-small-button"
+    >
+      🎧 Go Back
+    </button>
+  </div>
+</template>
 <script setup>
 /* Import our Pinia Store & Refs */
 import { storeToRefs } from "pinia";
 import { useStore } from "../store";
-import JSConfetti from "js-confetti";
 /* Import our IPFS and NftStorage Services */
 import authNFT from "../services/authNFT.js";
+
+import JSConfetti from "js-confetti";
 
 defineProps({
   currentAccount: String,
@@ -13,9 +62,11 @@ defineProps({
     required: false,
   },
 });
+
 /* Define Emits */
 const emit = defineEmits(["update:modelValue"]);
-// Init Store & Refs
+
+/* Init Store & Refs */
 const store = useStore();
 const { isAuthenticated, walletConnectionAttempted } = storeToRefs(store);
 
@@ -48,7 +99,7 @@ async function connectWallet() {
     } catch (error) {
       console.log("Error", error);
       store.setIsAuthenticated(false);
-      store.setWalletConnectionAttempted(true);
+      store.setWalletConnectionAttempted(false);
       store.setLoading(false);
     }
   } else {
@@ -56,10 +107,14 @@ async function connectWallet() {
   }
   store.setLoading(false);
 }
+
+/* Go Back */
 function handleBackButtonClick() {
   store.setIsAuthenticated(false);
   store.setWalletConnectionAttempted(false);
 }
+
+/* Success, Lets celebrate */
 function handleSuccessButtonClick() {
   const jsConfetti = new JSConfetti();
   jsConfetti.addConfetti({
@@ -70,51 +125,37 @@ function handleSuccessButtonClick() {
   });
 }
 </script>
-<template>
-  <div class="connect-wallet-container">
-    <button
-      v-if="!walletConnectionAttempted && btnSize === 'large'"
-      @click="connectWallet"
-      class="connect-wallet-button"
-    >
-      🎧 Connect Wallet
-    </button>
-    <button
-      v-if="!walletConnectionAttempted && btnSize === 'small'"
-      @click="connectWallet"
-      class="connect-wallet-small-button"
-    >
-      🎧 Connect
-    </button>
 
-    <button
-      v-if="walletConnectionAttempted && isAuthenticated && btnSize === 'large'"
-      @click="handleSuccessButtonClick"
-      class="connect-wallet-button"
-    >
-      🎧 Collection
-    </button>
-    <button
-      v-if="walletConnectionAttempted && isAuthenticated && btnSize === 'small'"
-      @click="handleSuccessButtonClick"
-      class="connect-wallet-small-button"
-    >
-      🎧 Collection
-    </button>
+<style lang="scss" scoped>
+@import "../assets/styles/variables.scss";
+@import "../assets/styles/mixins.scss";
 
-    <button
-      v-if="walletConnectionAttempted && !isAuthenticated && btnSize === 'large'"
-      @click="handleBackButtonClick"
-      class="connect-wallet-button"
-    >
-      🎧 Go Back
-    </button>
-    <button
-      v-if="walletConnectionAttempted && !isAuthenticated && btnSize === 'small'"
-      @click="handleBackButtonClick"
-      class="connect-wallet-small-button"
-    >
-      🎧 Go Back
-    </button>
-  </div>
-</template>
+.connect-wallet-button {
+  color: white;
+  background-color: $mojo-blue;
+  font-size: 18px;
+  font-weight: bold;
+  width: auto;
+  height: 55px;
+  border: 0;
+  padding-left: 60px;
+  padding-right: 60px;
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+.connect-wallet-small-button {
+  color: white;
+  background-color: $mojo-blue;
+  font-size: 14px;
+  font-weight: bold;
+  width: auto;
+  height: 35px;
+  border: 0;
+  padding-left: 20px;
+  padding-right: 20px;
+  border-radius: 30px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+</style>

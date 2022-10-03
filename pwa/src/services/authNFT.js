@@ -1,11 +1,13 @@
 import axios from "axios";
-/* Get our Mojo Contract Address */
-// const mojoContractAddress = import.meta.env.VITE_MOJO_CORE_CONTRACT;
-const mojoContractAddress = "0x6b9482bD2EEd7814EE5a88Cc93f687a3961D27Fb";
+
+/* Services api keys */
 const etherScapAPI = import.meta.env.VITE_ETHERSCAN_API_KEY;
 const polygonScapAPI = import.meta.env.VITE_POLYSCAN_API_KEY;
 const infuraKey = import.meta.env.VITE_INFURA_API_KEY;
 const infuraSecret = import.meta.env.VITE_INFURA_API_SECRET;
+
+/* Get our Mojo Contract Address */
+const mojoContractAddress = "0x6b9482bD2EEd7814EE5a88Cc93f687a3961D27Fb";
 
 export default class authNFT {
   constructor() {

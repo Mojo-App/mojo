@@ -4,8 +4,10 @@ const baseURL = "";
 const HomeView = () => import("../views/HomeView.vue");
 const CollectionView = () => import("../views/CollectionView.vue");
 const StreamView = () => import("../views/StreamView.vue");
+const ExploreView = () => import("../views/ExploreView.vue");
 const MintView = () => import("../views/MintView.vue");
 const UploadView = () => import("../views/UploadView.vue");
+const ProfileView = () => import("../views/ProfileView.vue");
 
 const router = createRouter({
   scrollBehavior(to, from, savedPosition) {
@@ -36,9 +38,19 @@ const router = createRouter({
       component: StreamView,
     },
     {
+      path: "/explore",
+      name: "explore",
+      component: ExploreView,
+    },
+    {
       path: "/mint",
       name: "mint",
       component: MintView,
+    },
+    {
+      path: "/profile",
+      name: "profile",
+      component: ProfileView,
     },
     {
       path: "/upload",

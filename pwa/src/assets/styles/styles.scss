@@ -3,7 +3,7 @@
 @import './fonts.scss';
 
 * {
-  font-family: 'TWKEverett', inter, -apple-system, system-ui, 'Segoe UI', Helvetica,
+  font-family: 'PPNeueMachina', inter, -apple-system, system-ui, 'Segoe UI', Helvetica,
     'Apple Color Emoji', Arial, sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
   letter-spacing: 0.05786em;
 }
@@ -113,34 +113,7 @@ code {
   background-color: #a200d6;
 }
 
-.connect-wallet-button {
-  color: white;
-  background-color: #a200d6;
-  font-size: 18px;
-  font-weight: bold;
-  width: auto;
-  height: 55px;
-  border: 0;
-  padding-left: 60px;
-  padding-right: 60px;
-  border-radius: 10px;
-  cursor: pointer;
-}
 
-.connect-wallet-small-button {
-  color: white;
-  background-color: #a200d6;
-  font-size: 14px;
-  font-weight: bold;
-  width: auto;
-  height: 35px;
-  border: 0;
-  padding-left: 20px;
-  padding-right: 20px;
-  border-radius: 10px;
-  margin-right: 10px;
-  cursor: pointer;
-}
 
 .stream-button {
   min-width: 320px;

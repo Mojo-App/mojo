@@ -118,7 +118,7 @@ const store = useStore();
 // Store Values and Methods
 const { account, isAuthenticated, ethereumTokens, polygonTokens, optimismTokens, arbitrumTokens } =
   storeToRefs(store);
-// const mojoContractAddress = import.meta.env.VITE_MOJO_CORE_CONTRACT;
+
 const mojoContractAddress = "0x6b9482bD2EEd7814EE5a88Cc93f687a3961D27Fb";
 
 /**

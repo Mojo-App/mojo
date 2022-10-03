@@ -5,16 +5,10 @@
         <div class="left">
           <h2>Find your groove</h2>
           <ul class="category-list">
-            <li
-              v-for="category of categories"
-              :key="category"
-              @click="selectCategory(category)"
-              :class="categorySelectedId === category.id ? 'li-active' : ''"
-            >
-              <PlayButtonWhite
-                v-if="categorySelectedId === category.id"
-                class="category-list-play-button"
-              />{{ category.label }}
+            <li v-for="category of categories" :key="category" @click="selectCategory(category)"
+              :class="categorySelectedId === category.id ? 'li-active' : ''">
+              <PlayButtonWhite v-if="categorySelectedId === category.id" class="category-list-play-button" />{{
+              category.label }}
             </li>
           </ul>
         </div>
@@ -90,6 +84,7 @@ const store = useStore();
 const { account, trackList } = storeToRefs(store);
 // Local Vars
 const categorySelectedId = ref(1);
+
 /**
  * Check if our Wallet is Connected to 🦊 Metamask
  */
@@ -145,7 +140,7 @@ function selectCategory(category) {
 /* Fetch new NFT audio/media by Category or Name */
 async function fetchData() {
   try {
-    await store.searchNfts(categorySelectedId.value, "");
+    await store.searchMojoNfts(categorySelectedId.value, "");
     /* Console log with some style */
     const stylesTracks = ["color: black", "background: yellow"].join(";");
     console.log(

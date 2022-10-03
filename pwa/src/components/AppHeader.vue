@@ -2,21 +2,26 @@
   <header id="header">
     <div class="header-title">
       <router-link :to="{ name: 'home' }" active-class="active" exact
-        ><img class="header-logo" alt="Mojo" src="@/assets/images/MojoLogo.png" height="70"
+        ><img class="header-logo" alt="Mojo" src="@/assets/images/MojoLogo.png" height="60"
       /></router-link>
-      <!-- <h1><span class="emoji">🎧</span> mojo</h1> -->
+      <h1>beats on blocks</h1>
     </div>
     <div class="header-menu">
       <nav class="header-navbar">
-        <router-link :to="{ name: 'home' }" active-class="active" exact>Home</router-link>
-        <router-link :to="{ name: 'stream' }" active-class="active" exact>Stream</router-link>
+        <router-link :to="{ name: 'home' }" active-class="active" exact>home</router-link>
+        <router-link :to="{ name: 'explore' }" active-class="active" exact>explore</router-link>
+        <router-link :to="{ name: 'stream' }" active-class="active" exact>stream</router-link>
+
+        <!-- NFT Holders / Members Only -->
         <router-link v-if="account" :to="{ name: 'collection' }" active-class="active" exact
-          >Collection</router-link
+          >collection</router-link
         >
         <router-link v-if="account" :to="{ name: 'mint' }" active-class="active" exact
-          >Mint</router-link
+          >mint</router-link
         >
-        <router-link :to="{ name: 'upload' }" active-class="active" exact>Upload</router-link>
+        <router-link :to="{ name: 'upload' }" active-class="active" exact>upload</router-link>
+        <router-link :to="{ name: 'profile' }" active-class="active" exact>profile</router-link>
+        <!-- NFT Holders / Members Only -->
         <div v-if="!account" class="right">
           <ConnectWalletButton v-model="account" v-if="!account" btnSize="small" />
         </div>
@@ -30,22 +35,27 @@
 </template>
 <script>
 import { ref, onMounted } from "vue";
+
 /* Import our Pinia Store & Refs */
 import { storeToRefs } from "pinia";
 import { useStore } from "../store";
+
 /* Components */
 import ConnectWalletButton from "../components/ConnectWalletButton.vue";
+
 /* LFG */
 export default {
   name: "AppHeader",
   components: [ConnectWalletButton],
   setup() {
-    // Init Store
+    /* Init Store */
     const store = useStore();
     const { account } = storeToRefs(store);
-    // Darth Vader Mode
+
+    /* Darth Vader Mode */
     const isDarkClassAvailable = document.body.classList.contains("dark-theme");
     const isDark = ref(isDarkClassAvailable);
+
     /**
      * Get our current 🦊 Metamask account details
      */
@@ -70,8 +80,9 @@ export default {
         console.log(error);
       }
     };
+
     /**
-     * Toggle our theme colors and Animations
+     * Toggle our theme colors and animations
      */
     const toggleTheme = () => {
       document.body.classList.toggle("dark-theme");
@@ -107,21 +118,20 @@ export default {
   padding: 0 64px 0 64px;
 
   .header-title {
-    h1 {
-      font-family: "Ubuntu Mono", Roboto, Ubuntu, "Open Sans", "Helvetica Neue", sans-serif;
-      font-size: 2.3rem;
-      font-weight: 700;
-      margin: 0 0 8px 0;
-      color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
 
-      span.emoji {
-        font-size: 1.8rem;
-      }
-    }
     .header-logo {
       border: 1px solid #000000;
-      margin: 10px auto 2px;
+      margin: 10px 10px 5px 0;
       border-radius: 50%;
+    }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin: 0 0 8px 0;
+      color: #333;
     }
   }
 
@@ -164,6 +174,7 @@ body.dark-theme {
     .header-title h1 {
       color: #ffffff;
     }
+
     .header-logo {
       border: 1px solid #ffffff;
     }

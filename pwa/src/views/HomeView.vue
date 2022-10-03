@@ -48,13 +48,16 @@
           <div class="right">
             <ConnectWalletButton v-model="account" v-if="!account" btnSize="large" />
             <button @click="$router.push('stream')" v-if="account" className="stream-button">
-              Let's Stream
+              Stream
             </button>
             <button @click="$router.push('upload')" v-if="account" className="upload-button">
-              IPFS Upload
+              Upload
+            </button>
+            <button @click="$router.push('stream')" v-if="account" className="stream-button">
+              Collection
             </button>
             <button @click="$router.push('mint')" v-if="account" className="mint-media-button">
-              Mint Tea
+              Mint
             </button>
           </div>
         </div>
@@ -107,15 +110,20 @@
 import { ref, onMounted } from "vue";
 import { Notyf } from "notyf";
 import { storeToRefs } from "pinia";
+
 /* Import our Pinia Store */
 import { useStore } from "../store";
+
 /* Components */
 import ConnectWalletButton from "../components/ConnectWalletButton.vue";
+
 import TrackPlayer from "../components/TrackPlayer.vue";
+/* Logos */
 import Tableland from "../assets/svgs/TableLand.vue";
 import SpheronLogo from "../assets/svgs/SpheronLogo.vue";
 import PolygonLogo from "../assets/svgs/PolygonLogo.vue";
 import NFTStorage from "../assets/svgs/NFTStorage.vue";
+
 /* Create an instance of Notyf with settings */
 var notyf = new Notyf({
   duration: 5000,
