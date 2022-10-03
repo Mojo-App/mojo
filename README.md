@@ -6,7 +6,7 @@ The Mojo web3 application allows users to upload their valuable digital assets e
 
 Creators can finally mint NFTs for music and sound tracks and customize the metadata attributes based on the media type. Creators will be able to manage their Mojo Music NFTs using Tableland's relational metadata protocol for EVM chains. This freedom allows you to update non-essential data, yet keeping the true values of the non-fungible token in tack and aligned with core NFT values and standards.
 
-Music platforms and streaming is not new technology. However, IPFS is still new enough that streaming is not yet native to its content delivery. IPFS is a wonderful technology as it allows for content ownership, portability, and verifiability. It powers NFT marketplaces, individual websites, file-sharing platforms, and so much more. 
+Music platforms and streaming is not new technology. However, IPFS is still new enough that streaming is not yet native to its content delivery. IPFS is a wonderful technology as it allows for content ownership, portability, and verifiability. It powers NFT marketplaces, individual websites, file-sharing platforms, and so much more.
 
 However, IPFS, the protocol, does not have a responsibility to match the experience of traditional cloud file services. Instead, that responsibility falls onto the shoulders of the IPFS adopters.
 

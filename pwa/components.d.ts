@@ -7,6 +7,7 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AppFooter: typeof import('./src/components/AppFooter.vue')['default']
     AppHeader: typeof import('./src/components/AppHeader.vue')['default']
+    ArbitrumNftCard: typeof import('./src/components/ArbitrumNftCard.vue')['default']
     ArrowUp: typeof import('./src/components/icons/ArrowUp.vue')['default']
     ConnectWalletButton: typeof import('./src/components/ConnectWalletButton.vue')['default']
     IMdiBrightness4: typeof import('~icons/mdi/brightness4')['default']

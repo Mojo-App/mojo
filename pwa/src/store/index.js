@@ -26,7 +26,6 @@ export const useStore = defineStore({
       isAuthenticated: false,
       errorMessage: false,
       walletAddress: "",
-
       errorCode: null,
       errorStatus: null,
       errorMessage: "",

@@ -5,10 +5,16 @@
         <div class="left">
           <h2>Find your groove</h2>
           <ul class="category-list">
-            <li v-for="category of categories" :key="category" @click="selectCategory(category)"
-              :class="categorySelectedId === category.id ? 'li-active' : ''">
-              <PlayButtonWhite v-if="categorySelectedId === category.id" class="category-list-play-button" />{{
-              category.label }}
+            <li
+              v-for="category of categories"
+              :key="category"
+              @click="selectCategory(category)"
+              :class="categorySelectedId === category.id ? 'li-active' : ''"
+            >
+              <PlayButtonWhite
+                v-if="categorySelectedId === category.id"
+                class="category-list-play-button"
+              />{{ category.label }}
             </li>
           </ul>
         </div>
@@ -157,6 +163,11 @@ async function fetchData() {
 watch(categorySelectedId, fetchData);
 
 onMounted(() => {
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: "smooth",
+  });
   fetchData();
   // fetchCategories();
   checkIfWalletIsConnected();

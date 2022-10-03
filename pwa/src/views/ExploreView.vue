@@ -163,6 +163,11 @@ async function fetchData() {
 watch(categorySelectedId, fetchData);
 
 onMounted(() => {
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: "smooth",
+  });
   fetchData();
   // fetchCategories();
   checkIfWalletIsConnected();

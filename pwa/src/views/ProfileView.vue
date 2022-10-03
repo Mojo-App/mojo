@@ -37,13 +37,17 @@
 <script setup>
 import { onMounted } from "vue";
 import { Notyf } from "notyf";
+
 /* Import our Pinia Store */
 import { storeToRefs } from "pinia";
 import { useStore } from "../store";
+
 /* Import our IPFS and NftStorage Services */
 import authNFT from "../services/authNFT.js";
+
 /* Components */
 import ConnectWalletButton from "../components/ConnectWalletButton.vue";
+
 /* Create an instance of Notyf with settings */
 var notyf = new Notyf({
   duration: 5000,
@@ -84,9 +88,9 @@ var notyf = new Notyf({
     },
   ],
 });
-// Init Store
+
+/* Init Store and Refs */
 const store = useStore();
-// Store Values and Methods
 const { account, isAuthenticated } = storeToRefs(store);
 
 const mojoContractAddress = "0x6b9482bD2EEd7814EE5a88Cc93f687a3961D27Fb";
@@ -139,6 +143,11 @@ async function fetchTokens() {
 }
 
 onMounted(async () => {
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: "smooth",
+  });
   await checkIfWalletIsConnected();
 });
 </script>

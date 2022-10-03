@@ -1,26 +1,36 @@
 <template>
   <div class="nft">
-    <div v-if="getUrlProtocol(token.metadata.image) === 'mp4'" class="nft-video">
+    <div v-if="getUrlProtocol(image) === 'mp4'" class="nft-video">
       <video width="320" height="240" controls>
-        <source :src="`${token.metadata.image}`" type="video/mp4" />
+        <source :src="`${image}`" type="video/mp4" />
         <!-- <source :src="`${token.metadata.image}`" type="video/ogg" /> -->
         Your browser does not support the video tag.
       </video>
     </div>
-    <div v-else-if="token.metadata && token.metadata.image" class="nft-image">
-      <!-- {{ getUrlProtocol(token.metadata.image) }} -->
-      <img
-        v-if="token.metadata.image"
-        :src="`${getUrlProtocol(token.metadata.image)}`"
-        :alt="`${token.metadata.name}`"
-      />
+    <div v-else-if="image" class="nft-image">
+      <img v-if="image" :src="`${getUrlProtocol(image)}`" :alt="`${name}`" />
     </div>
-    <div v-if="token.metadata && token.metadata.name" class="nft-title">
-      {{ token.metadata.name }}
+    <div v-if="name" class="nft-title">
+      {{ name }}
     </div>
-    <!-- <div v-if="token.metadata && token.metadata.description" class="nft-time">
-      {{ token.metadata.description }}
-    </div> -->
+    <div v-if="description" class="nft-description">
+      {{ description }}
+    </div>
+    <div v-if="external_url" class="nft-external-url">
+      {{ external_url }}
+    </div>
+    <div v-if="animation_url" class="nft-animation-url">
+      {{ animation_url }}
+    </div>
+    <div v-if="attributes" class="nft-attributes">
+      <template v-for="(key, attr) in attributes" :key="key">
+        <div v-if="attr.trait_value" class="nft-attribute-cards">
+          <div class="nft-attribute-card">
+            <div class="nft-attribute-card-trait">{{ attr.trait_type }} : {{ attr.value }}</div>
+          </div>
+        </div>
+      </template>
+    </div>
   </div>
 </template>
 <script>
@@ -29,7 +39,17 @@ import { generateLink } from "../services/helpers";
 /* LFG */
 export default {
   name: "NftCard",
-  props: ["token"],
+  props: [
+    "contract",
+    "tokenId",
+    "type",
+    "name",
+    "image",
+    "description",
+    "external_url",
+    "animation_url",
+    "attributes",
+  ],
   data() {
     return {
       playbackTime: 0,
@@ -71,31 +91,13 @@ export default {
 .nft {
   display: block;
   box-sizing: border-box;
-  width: 230px;
+  width: 100%;
+  max-width: 320px;
   height: auto;
   min-height: 350px;
   background: #f4f4f4;
   border: 2px solid #f4f4f4;
   border-radius: 6px;
-  overflow: hidden;
-  margin: 0 20px;
-  padding: 0;
-  float: left;
-
-  @include breakpoint($breakpoint-sm) {
-    float: left;
-    margin: 0 10px 20px 10px;
-  }
-
-  @include breakpoint($breakpoint-md) {
-    float: left;
-    margin: 0 10px 20px 10px;
-  }
-
-  @include breakpoint($breakpoint-xl) {
-    float: left;
-    margin: 0 20px 20px 0;
-  }
 
   &:hover {
     border: 2px solid #8d50f5;
@@ -109,15 +111,6 @@ export default {
     background: #f4f4f4;
   }
 
-  // .nft-image {
-  //   display: flex;
-  //   align-content: center;
-  //   justify-content: center;
-  //   align-items: center;
-  //   width: 100%;
-  //   height: 118px;
-  //   background: #f4f4f4;
-  // }
   .nft-image {
     width: 100%;
     margin: 0 auto;
@@ -147,20 +140,73 @@ export default {
     text-align: center;
     margin: 20px 0;
   }
+
+  .nft-description {
+    color: #1a1a1a;
+    width: 100%;
+    font-size: 14px;
+    font-weight: normal;
+    text-transform: uppercase;
+    text-align: center;
+    margin: 20px 0;
+  }
+
+  .nft-external-url {
+    color: #1a1a1a;
+    width: 100%;
+    font-size: 14px;
+    font-weight: normal;
+    text-transform: uppercase;
+    text-align: center;
+    margin: 20px 0;
+  }
+
+  .nft-animation-url {
+    color: #1a1a1a;
+    width: 100%;
+    font-size: 14px;
+    font-weight: normal;
+    text-transform: uppercase;
+    text-align: center;
+    margin: 20px 0;
+  }
+  .nft-attributes {
+    color: #1a1a1a;
+    width: 100%;
+    font-size: 14px;
+    font-weight: normal;
+    text-align: center;
+    margin: 10px auto 0;
+
+    .nft-attribute-cards {
+      display: flex;
+      flex-direction: row wrap;
+      align-content: flex-start;
+      justify-content: space-between;
+      align-items: flex-start;
+
+      .nft-attribute-card {
+        width: 49%;
+        color: $black;
+        background-color: #fff;
+        border: 1px solid $mojo-blue;
+        border-radius: 10px;
+        letter-spacing: 1px;
+        font-size: 12px;
+        line-height: 20px;
+        margin: 0 auto 5px;
+        padding: 10px;
+        text-align: left;
+
+        .nft-attribute-card-trait {
+          display: flex;
+          flex-direction: row wrap;
+          align-content: flex-start;
+          justify-content: space-between;
+          align-items: flex-start;
+        }
+      }
+    }
+  }
 }
-
-// .nft:nth-child(2n) {
-//   margin: 0 0 20px 0;
-//   @include breakpoint($medium) {
-//     margin: 0 20px 20px 0;
-//   }
-// }
-
-// .nft:nth-child(3n) {
-//   margin: 0 20px 20px 0;
-//   @include breakpoint($medium) {
-//     margin: 0 20px 20px 0;
-//     margin: 0 0 20px 0;
-//   }
-// }
 </style>
