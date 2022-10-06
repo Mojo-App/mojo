@@ -79,11 +79,17 @@ Mojo Music NFTs contract deployed on polygon-mumbai at addresss: 0x41B02B29CE0B8
 Main Table: Mojo_Music_80001_3314
 Attributes Table : Mojo_Music_80001_3315
 
+<https://testnets.opensea.io/assets/mumbai/0x4b48841d4b32c4650e4abc117a03fe8b51f38f68/3314>
+<https://testnets.opensea.io/assets/mumbai/0x4b48841d4b32c4650e4abc117a03fe8b51f38f68/3315>
+
 ```shell
 npx hardhat run scripts/deploy.js --network polygon-mumbai
 ```
 
 ## Verify Contracts Note
+
+Successfully verified contract MOJO on Etherscan.
+<https://mumbai.polygonscan.com/address/0x41B02B29CE0B8E2f13A3ff189D18E87f78d8E236#code>
 
 You will need to verify your contracts as below.
 

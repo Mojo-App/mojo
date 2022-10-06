@@ -8,10 +8,61 @@ const infuraSecret = import.meta.env.VITE_INFURA_API_SECRET;
 
 /* Get our Mojo Contract Address */
 const mojoContractAddress = "0x41B02B29CE0B8E2f13A3ff189D18E87f78d8E236";
+const tablelandRigsContractAddress = "0x8eaa9ae1ac89b1c8c8a8104d08c045f78aadb42d";
 
 export default class authNFT {
   constructor() {
     this.endpoint = new URL("https://ipfs.infura.io:5001");
+  }
+
+  /**
+   * @param {String} accountAddress
+   * @param {String} tokenId
+   * @returns {Promise<String|Error>}
+   */
+  async authTablelandContractAddress(accountAddress = "", tokenIds = null) {
+    // We need to specifically check for the OpenSea contract
+    // this contract doesn't show up on etherscan
+    // OpenSea used 1 contract for all NFTs minted on their site
+    // so we need to do an extra check for a specific token id as well
+    if (accountAddress === "0x495f947276749Ce646f68AC8c248420045cb7b5e" && tokenIds) {
+      const response = await axios.get("https://api.opensea.io/api/v1/assets", {
+        headers: {
+          "X-API-KEY": "",
+        },
+        params: {
+          owner: accountAddress,
+          asset_contract_address: tablelandRigsContractAddress,
+          token_ids: tokenIds,
+        },
+      });
+      const data = response.data;
+      console.log("Opensea Response Data: ", data);
+      console.log("Opensea Response Status: ", response.status(200));
+      return response.status(200).json({
+        isAuthenticated: data.assets && data.assets.length > 0,
+      });
+    } else {
+      /**
+       * Check if our user is a Tableland Rig holder, well let em in then, #LFG boyz
+       */
+      console.log("etherScapAPI", etherScapAPI);
+      const response = await axios.get("https://api.etherscan.io/api", {
+        params: {
+          module: "account",
+          action: "tokenbalance",
+          contractaddress: tablelandRigsContractAddress,
+          address: accountAddress,
+          tag: "latest",
+          apikey: etherScapAPI,
+        },
+      });
+      const data = response.data;
+      console.log("Etherscan Response Data: ", data);
+      console.log("Etherscan Response Data Result: ", data.result);
+
+      return data.result > 0 ? true : false;
+    }
   }
 
   /**

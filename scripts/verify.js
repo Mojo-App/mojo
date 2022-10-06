@@ -8,7 +8,7 @@ async function main() {
 	// Optionally, do the vefication as a separate script
 
 	await hre.run("verify:verify", {
-		address: "0xa4055C7A1f6e898BFA24fCdFac804598388C1f26", // Deployed contract address -- potentially, use `hre` to help here
+		address: "0x41B02B29CE0B8E2f13A3ff189D18E87f78d8E236", // Deployed contract address -- potentially, use `hre` to help here
 		constructorArguments: ['0x4b48841d4b32C4650E4ABc117A03FE8B51f38F68'], // Tableland address on Polygon mainnet
 	})
 }

@@ -63,11 +63,17 @@ async function connectWallet() {
       store.updateAccount(accountAddress);
       console.log("Account Address", accountAddress);
 
-      /* Authenticate user as Mojo or Tableland NFT holders */
+      /* Authenticate user */
       const authAccount = new authNFT();
+      /* Mojo Music NFT holder */
       const authed = await authAccount.authAccountAddress(accountAddress);
       if (authed) {
         store.setIsAuthenticated(authed);
+      }
+      /* or Tableland Rig NFT holders */
+      const rigRider = await authAccount.authTablelandContractAddress(accountAddress);
+      if (rigRider) {
+        store.setIsAuthenticated(rigRider);
       }
       /* Emit our account back to parent */
       emit("update:modelValue", accountAddress);
