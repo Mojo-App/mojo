@@ -74,7 +74,10 @@ LinkedIn: (<https://www.linkedin.com/in/craig-moss-21822628/>)
 
 This project is deployed to Polygon Mumbai Testnet.
 
-Mojo NFT Core smart contract deployed to: 0x6b9482bD2EEd7814EE5a88Cc93f687a3961D27Fb
+Tableland Address :  0x4b48841d4b32C4650E4ABc117A03FE8B51f38F68
+Mojo Music NFTs contract deployed on polygon-mumbai at addresss: 0x41B02B29CE0B8E2f13A3ff189D18E87f78d8E236
+Main Table: Mojo_Music_80001_3314
+Attributes Table : Mojo_Music_80001_3315
 
 ```shell
 npx hardhat run scripts/deploy.js --network polygon-mumbai

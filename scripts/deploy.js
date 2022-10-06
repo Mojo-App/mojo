@@ -22,8 +22,8 @@ async function main() {
   const Mojo_Core = await ethers.getContractFactory("MOJO");
 
   /* Connect to Tableland */
-  const tableland = await connect({ signer, chain: "polygon" });
-  console.log("tableland address", tableland.options.contract);
+  const tableland = await connect({ signer, chain: "polygon-mumbai" });
+  console.log("Tableland Address : ", tableland.options.contract);
 
   const mojo = await Mojo_Core.deploy(tableland.options.contract);
 

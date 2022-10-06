@@ -21,7 +21,7 @@ contract MOJO is ERC721, AccessControl {
     uint256 private _attributesTableId;
     string public mainTable;
     string public attributesTable;
-    string private _tablePrefix = "Mojo_Music_NFTs";
+    string private _tablePrefix = "Mojo_Music";
 
     /* Map of tokenid to the numbers of trait_id  */
     mapping(uint256 => uint256) private nb_of_attributes;
@@ -91,6 +91,16 @@ contract MOJO is ERC721, AccessControl {
     event newAttributeAdded(
         address indexed from,
         uint256 timestamp,
+        uint256 tokenId,
+        uint256 _trait_id
+    );
+
+    /* The NFTs locked attribute is updated */
+    event traitLockedUpdated(
+        address indexed from,
+        uint256 timestamp,
+        uint256 _attributesTableId,
+        string _locked,
         uint256 tokenId,
         uint256 _trait_id
     );
@@ -182,7 +192,7 @@ contract MOJO is ERC721, AccessControl {
                 _tablePrefix,
                 "_",
                 Strings.toString(block.chainid),
-                " (maintable_tokenid int, icon text, display_type text, trait_type text, value text, trait_id int);"
+                " (maintable_tokenid int, trait_id int, locked int, icon text, display_type text, trait_type text, value text);"
             )
         );
         attributesTable = string.concat(
@@ -240,8 +250,12 @@ contract MOJO is ERC721, AccessControl {
             string.concat(
                 "INSERT INTO ",
                 attributesTable,
-                " (maintable_tokenid, icon, display_type, trait_type, value, trait_id) VALUES ('",
+                " (maintable_tokenid, trait_id, locked, icon, display_type, trait_type, value) VALUES ('",
                 Strings.toString(tokenId),
+                "', '",
+                "0",
+                "', '",
+                "0",
                 "', '",
                 _icon,
                 "', '",
@@ -250,8 +264,6 @@ contract MOJO is ERC721, AccessControl {
                 _trait_type,
                 "', '",
                 _value,
-                "', '",
-                "0",
                 "')"
             )
         );
@@ -460,8 +472,12 @@ contract MOJO is ERC721, AccessControl {
             string.concat(
                 "INSERT INTO ",
                 attributesTable,
-                " (maintable_tokenid, icon, display_type, trait_type, value, trait_id) VALUES ('",
+                " (maintable_tokenid, trait_id, locked, icon, display_type, trait_type, value) VALUES ('",
                 Strings.toString(_tokenId),
+                "', '",
+                Strings.toString(counter_trait + 1),
+                "', '",
+                "0",
                 "', '",
                 _icon,
                 "', '",
@@ -470,8 +486,6 @@ contract MOJO is ERC721, AccessControl {
                 _trait_type,
                 "', '",
                 _value,
-                "', '",
-                Strings.toString(counter_trait + 1),
                 "')"
             )
         );
@@ -480,6 +494,45 @@ contract MOJO is ERC721, AccessControl {
         nb_of_attributes[_tokenId] = counter_trait + 1;
         emit newAttributeAdded(msg.sender, block.timestamp, _tokenId, counter_trait + 1);
         return counter_trait + 1;
+    }
+
+    /*
+     * Update Metadata locked attribute
+     */
+    function update_locked(
+        uint256 tokenId,
+        uint256 _trait_id,
+        string memory _locked
+    ) public {
+        /* Check Ownership */
+        require(this.ownerOf(tokenId) == msg.sender, "Invalid owner");
+        require(nb_of_attributes[tokenId] >= _trait_id && _trait_id > 0, "trait_id not found ");
+
+        /* Update the row in tableland */
+        _tableland.runSQL(
+            address(this),
+            _attributesTableId,
+            string.concat(
+                "UPDATE ",
+                attributesTable,
+                " SET locked = '",
+                _locked,
+                "' WHERE maintable_tokenid = ",
+                Strings.toString(tokenId),
+                " AND trait_id = ",
+                Strings.toString(_trait_id),
+                ";"
+            )
+        );
+        /* Emit Event */
+        emit traitLockedUpdated(
+            msg.sender,
+            block.timestamp,
+            _attributesTableId,
+            _locked,
+            tokenId,
+            _trait_id
+        );
     }
 
     /*
@@ -695,7 +748,7 @@ contract MOJO is ERC721, AccessControl {
          */
         string memory query = string(
             abi.encodePacked(
-                "SELECT%20json_object%28%27id%27%2Ctokenid%2C%27name%27%2Cname%2C%27description%27%2Cdescription%2C%27image%27%2Cimage%2C%27image_data%27%2Cimage_data%2C%27category%27%2Ccategory%2C%27external_url%27%2Cexternal_url%2C%27background_color%27%2Cbackground_color%2C%27animation_url%27%2Canimation_url%2C%27youtube_url%27%2Cyoutube_url%2C%27attributes%27%2Cjson_group_array%28json_object%28%27icon%27%2Cicon%2C%27display_type%27%2Cdisplay_type%2C%27trait_type%27%2Ctrait_type%2C%27value%27%2Cvalue%29%29%29%20FROM%20",
+                "SELECT%20json_object%28%27id%27%2Ctokenid%2C%27name%27%2Cname%2C%27description%27%2Cdescription%2C%27image%27%2Cimage%2C%27image_data%27%2Cimage_data%2C%27category%27%2Ccategory%2C%27external_url%27%2Cexternal_url%2C%27background_color%27%2Cbackground_color%2C%27animation_url%27%2Canimation_url%2C%27youtube_url%27%2Cyoutube_url%2C%27attributes%27%2Cjson_group_array%28json_object%28%27locked%27%2Clocked%2C%27icon%27%2Cicon%2C%27display_type%27%2Cdisplay_type%2C%27trait_type%27%2Ctrait_type%2C%27value%27%2Cvalue%29%29%29%20FROM%20",
                 mainTable,
                 "%20JOIN%20",
                 attributesTable,

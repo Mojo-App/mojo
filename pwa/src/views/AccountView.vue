@@ -84,7 +84,7 @@ var notyf = new Notyf({
 const store = useStore();
 const { account, isAuthenticated } = storeToRefs(store);
 
-const mojoContractAddress = "0x6b9482bD2EEd7814EE5a88Cc93f687a3961D27Fb";
+const mojoContractAddress = "0x41B02B29CE0B8E2f13A3ff189D18E87f78d8E236";
 
 /**
  * Check if our Wallet is Connected to 🦊 Metamask
