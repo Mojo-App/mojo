@@ -1,5 +1,5 @@
 <template>
-  <section id="content">
+  <section id="stream-content">
     <div class="main">
       <section id="stream">
         <div class="left">
@@ -23,12 +23,10 @@
             <TrackPlayer v-for="track in trackList" :track="track" :key="track.id"></TrackPlayer>
           </div>
           <div v-if="trackList.length === 0">
-            <h2>Please be patient while we spin another mix...</h2>
             <div class="dj-graphic">
               <img src="../assets/images/DJ.png" alt="DJ Saved my Life" />
             </div>
-            <!-- <p>Account: {{ account }}</p> -->
-            <!-- <p>Tracks: {{ categoryTracks }}</p> -->
+            <h2>Please be patient while we spin another mix...</h2>
           </div>
         </div>
       </section>
@@ -177,7 +175,7 @@ onMounted(() => {
 @import "../assets/styles/variables.scss";
 @import "../assets/styles/mixins.scss";
 
-section#content {
+section#stream-content {
   position: relative;
   height: 100%;
   overflow: scroll;
@@ -193,7 +191,7 @@ section#content {
       color: #212121;
       background: #1c8bfe;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       align-content: center;
       align-items: center;
       justify-content: center;
@@ -202,14 +200,14 @@ section#content {
 
       @include breakpoint($medium) {
         padding: 0;
-        flex-direction: row;
+        flex-direction: column;
         align-content: center;
         align-items: flex-start;
         justify-content: center;
       }
 
       .left {
-        width: 100%;
+        width: 30%;
         display: flex;
         flex-direction: column;
         align-content: center;
@@ -218,7 +216,81 @@ section#content {
         padding: 50px 20px 60px 60px;
 
         @include breakpoint($medium) {
-          width: 29%;
+          width: 100%;
+        }
+
+        h2 {
+          width: 100%;
+          color: $white;
+          font-size: 34px;
+          font-style: normal;
+          font-weight: 700;
+          line-height: 42px;
+          text-align: left;
+          margin: 0;
+        }
+
+        ul.category-list {
+          list-style-type: none;
+          list-style-position: outside;
+          margin-block-start: 1em;
+          margin-block-end: 1em;
+          margin-inline-start: 0px;
+          margin-inline-end: 0px;
+          padding-inline-start: 0;
+          border-top: 1px solid #1a1a1a;
+
+          li {
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1.75rem;
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            border-bottom: 1px solid #1a1a1a;
+
+            &:hover {
+              color: #fff;
+              cursor: pointer;
+            }
+
+            &:active {
+              color: #fff;
+              font-weight: 600;
+            }
+          }
+        }
+
+        .li-active {
+          color: #fff;
+          font-weight: 600;
+        }
+
+        .category-list-play-button {
+          margin: 0 5px -2px -15px;
+        }
+
+        a {
+          color: #1a1a1a;
+          font-weight: bold;
+          border-bottom: 1px solid var(--contrast-color);
+          text-decoration: none;
+
+          &.author {
+            padding: 6px 12px;
+            border-radius: 8px;
+            background-color: var(--gradient-100);
+            color: var(--icon-color);
+            font-size: 0.85rem;
+
+            border-bottom: none;
+          }
+        }
+
+        p {
+          line-height: 1.7;
+          margin-bottom: 20px;
         }
       }
 
@@ -262,6 +334,7 @@ section#content {
         }
 
         h2 {
+          color: $white;
           font-size: 2rem;
           margin: 0;
 
@@ -269,74 +342,6 @@ section#content {
             font-size: 2.45rem;
           }
         }
-      }
-
-      h2 {
-        font-size: 2.45rem;
-        margin: 0;
-      }
-
-      a {
-        color: #1a1a1a;
-        font-weight: bold;
-        border-bottom: 1px solid var(--contrast-color);
-        text-decoration: none;
-
-        &.author {
-          padding: 6px 12px;
-          border-radius: 8px;
-          background-color: var(--gradient-100);
-          color: var(--icon-color);
-          font-size: 0.85rem;
-
-          border-bottom: none;
-        }
-      }
-
-      p {
-        line-height: 1.7;
-        margin-bottom: 20px;
-      }
-
-      ul.category-list {
-        list-style-type: none;
-        list-style-position: outside;
-        margin-block-start: 1em;
-        margin-block-end: 1em;
-        margin-inline-start: 0px;
-        margin-inline-end: 0px;
-        padding-inline-start: 0;
-        border-top: 1px solid #1a1a1a;
-
-        li {
-          font-size: 22px;
-          font-weight: 700;
-          line-height: 1.75rem;
-          padding-top: 0.75rem;
-          padding-bottom: 0.75rem;
-          padding-left: 1rem;
-          padding-right: 1rem;
-          border-bottom: 1px solid #1a1a1a;
-
-          &:hover {
-            color: #fff;
-            cursor: pointer;
-          }
-
-          &:active {
-            color: #fff;
-            font-weight: 600;
-          }
-        }
-      }
-
-      .li-active {
-        color: #fff;
-        font-weight: 600;
-      }
-
-      .category-list-play-button {
-        margin: 0 5px 0 -15px;
       }
     }
   }

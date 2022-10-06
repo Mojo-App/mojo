@@ -31,6 +31,7 @@ declare module '@vue/runtime-core' {
     ReloadPrompt: typeof import('./src/components/ReloadPrompt.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SearchCard: typeof import('./src/components/SearchCard.vue')['default']
     SearchResult: typeof import('./src/components/VUpload/SearchResult.vue')['default']
     StopButton: typeof import('./src/components/icons/StopButton.vue')['default']
     TokenCard: typeof import('./src/components/TokenCard.vue')['default']

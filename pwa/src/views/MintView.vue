@@ -1,5 +1,5 @@
 <template>
-  <section id="content">
+  <section id="mint-content">
     <div class="main">
       <section id="mint">
         <h2>Mint an Audio/Media NFT</h2>
@@ -1924,7 +1924,7 @@ export default {
 @import "../assets/styles/variables.scss";
 @import "../assets/styles/mixins.scss";
 
-section#content {
+section#mint-content {
   display: flex;
   flex-direction: column;
   align-content: center;
@@ -1945,7 +1945,7 @@ section#content {
     section#mint {
       height: 100%;
       color: #1a1a1a;
-      background: #fff;
+      background: $white;
       display: flex;
       flex-direction: column;
       align-content: center;
@@ -1959,13 +1959,13 @@ section#content {
 
       .row {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-content: center;
         justify-content: center;
         align-items: center;
 
         @include breakpoint($medium) {
-          flex-direction: row;
+          flex-direction: column;
           align-content: center;
           justify-content: center;
           align-items: center;
@@ -2000,8 +2000,9 @@ section#content {
         section#panel-upload {
           background-color: var(--gradient-100);
           border-top-left-radius: 1rem;
-          border-top-right-radius: 1rem;
-          border-bottom-left-radius: 0;
+          border-bottom-left-radius: 1rem;
+          border-top-right-radius: 0;
+
           width: 100%;
           height: 100%;
 
@@ -2009,8 +2010,8 @@ section#content {
             margin-top: 0;
             padding-top: 0;
             border-top-left-radius: 1rem;
-            border-bottom-left-radius: 1rem;
-            border-top-right-radius: 0;
+            border-top-right-radius: 1rem;
+            border-bottom-left-radius: 0;
           }
 
           .panel-upload--content,
@@ -2126,9 +2127,10 @@ section#content {
         }
         section#nft-modal {
           background-color: var(--gradient-100);
-          border-top-left-radius: 1rem;
           border-top-right-radius: 1rem;
+          border-bottom-right-radius: 0;
           border-bottom-left-radius: 0;
+          border-top-right-radius: 1rem;
           width: 100%;
           height: 100%;
 
@@ -2136,8 +2138,8 @@ section#content {
             margin-top: 0;
             padding-top: 0;
             border-top-left-radius: 1rem;
-            border-bottom-left-radius: 1rem;
-            border-top-right-radius: 0;
+            border-top-right-radius: 1rem;
+            border-bottom-left-radius: 0;
           }
 
           min-height: 720px;
@@ -2910,10 +2912,11 @@ section#content {
           background-color: #08d0a5;
           font-size: 18px;
           font-weight: bold;
-          width: 48%;
           height: 55px;
           border: 0;
           border-radius: 30px;
+          padding-left: 57px;
+          padding-right: 57px;
           margin: 10px 1% 10px 0;
           transition: 0.4s;
           cursor: pointer;
@@ -2934,10 +2937,11 @@ section#content {
           background-color: $mojo-green;
           font-size: 18px;
           font-weight: bold;
-          width: 48%;
           height: 55px;
           border: 0;
           border-radius: 30px;
+          padding-left: 65px;
+          padding-right: 65px;
           margin: 10px 1% 10px 0;
           transition: 0.4s;
           cursor: pointer;
@@ -2952,10 +2956,11 @@ section#content {
           background-color: $mojo-blue;
           font-size: 18px;
           font-weight: bold;
-          width: 48%;
           height: 55px;
           border: 0;
           border-radius: 30px;
+          padding-left: 40px;
+          padding-right: 40px;
           margin: 10px 0 10px 1%;
           transition: 0.4s;
           cursor: pointer;
@@ -3038,7 +3043,7 @@ section#content {
 }
 
 body.dark-theme {
-  section#content .main section#mint .author {
+  section#mint-content .main section#mint .author {
     background-color: var(--gradient-800);
   }
 

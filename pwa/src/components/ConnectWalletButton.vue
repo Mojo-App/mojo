@@ -1,48 +1,20 @@
 <template>
   <div class="connect-wallet-container">
+    <!-- Metamask Not Connected -->
     <button
-      v-if="!walletConnectionAttempted && btnSize === 'large'"
+      v-if="!account"
       @click="connectWallet()"
-      class="connect-wallet-button"
+      :class="btnSize === 'large' ? 'connect-wallet-button' : 'connect-wallet-small-button'"
     >
-      🎧 Connect Wallet
+      connect
     </button>
+    <!-- Metamask Connected -->
     <button
-      v-if="!walletConnectionAttempted && btnSize === 'small'"
-      @click="connectWallet()"
-      class="connect-wallet-small-button"
+      v-if="account"
+      @click="$router.push('account')"
+      :class="btnSize === 'large' ? 'profile-wallet-button' : 'profile-wallet-small-button'"
     >
-      🎧 Connect
-    </button>
-
-    <button
-      v-if="walletConnectionAttempted && isAuthenticated && btnSize === 'large'"
-      @click="handleSuccessButtonClick()"
-      class="connect-wallet-button"
-    >
-      🎧 Collection
-    </button>
-    <button
-      v-if="walletConnectionAttempted && isAuthenticated && btnSize === 'small'"
-      @click="handleSuccessButtonClick()"
-      class="connect-wallet-small-button"
-    >
-      🎧 Collection
-    </button>
-
-    <button
-      v-if="walletConnectionAttempted && !isAuthenticated && btnSize === 'large'"
-      @click="handleBackButtonClick()"
-      class="connect-wallet-button"
-    >
-      🎧 Go Back
-    </button>
-    <button
-      v-if="walletConnectionAttempted && !isAuthenticated && btnSize === 'small'"
-      @click="handleBackButtonClick()"
-      class="connect-wallet-small-button"
-    >
-      🎧 Go Back
+      account
     </button>
   </div>
 </template>
@@ -50,11 +22,11 @@
 /* Import our Pinia Store & Refs */
 import { storeToRefs } from "pinia";
 import { useStore } from "../store";
+
 /* Import our IPFS and NftStorage Services */
 import authNFT from "../services/authNFT.js";
 
-import JSConfetti from "js-confetti";
-
+/* Set our Props */
 defineProps({
   currentAccount: String,
   btnSize: {
@@ -68,61 +40,44 @@ const emit = defineEmits(["update:modelValue"]);
 
 /* Init Store & Refs */
 const store = useStore();
-const { isAuthenticated, walletConnectionAttempted } = storeToRefs(store);
+const { account } = storeToRefs(store);
 
 /* Connect Wallet method */
 async function connectWallet() {
-  const { ethereum } = window;
   store.setLoading(true);
-  if (typeof ethereum !== "undefined") {
-    store.setErrorMessage(false);
-    try {
-      if (!ethereum) {
-        alert("Please connect 🦊 Metamask to continue!");
-        return;
-      }
-      const [accountAddress] = await ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      if (accountAddress) {
-        store.setWalletConnectionAttempted(true);
-        const authAccount = new authNFT();
-        const authed = await authAccount.authAccountAddress(accountAddress);
-        if (authed) {
-          store.setIsAuthenticated(authed);
-          store.updateAccount(accountAddress);
-        }
-        emit("update:modelValue", accountAddress);
-        store.setLoading(false);
-      }
+  try {
+    /*
+     * First make sure we have access to window.ethereum
+     */
+    const { ethereum } = window;
+    if (!ethereum) {
+      alert("Please connect 🦊 Metamask to continue!");
+      return;
+    }
+    /* Get our Current Account */
+    const [accountAddress] = await ethereum.request({
+      method: "eth_requestAccounts",
+    });
+    if (accountAddress) {
+      /* Update our Current Account in the Store */
+      store.updateAccount(accountAddress);
       console.log("Account Address", accountAddress);
-    } catch (error) {
-      console.log("Error", error);
-      store.setIsAuthenticated(false);
-      store.setWalletConnectionAttempted(false);
+
+      /* Authenticate user as Mojo or Tableland NFT holders */
+      const authAccount = new authNFT();
+      const authed = await authAccount.authAccountAddress(accountAddress);
+      if (authed) {
+        store.setIsAuthenticated(authed);
+      }
+      /* Emit our account back to parent */
+      emit("update:modelValue", accountAddress);
       store.setLoading(false);
     }
-  } else {
-    store.setErrorMessage(true);
+    store.setLoading(false);
+  } catch (error) {
+    console.log("Error", error);
+    store.setLoading(false);
   }
-  store.setLoading(false);
-}
-
-/* Go Back */
-function handleBackButtonClick() {
-  store.setIsAuthenticated(false);
-  store.setWalletConnectionAttempted(false);
-}
-
-/* Success, Lets celebrate */
-function handleSuccessButtonClick() {
-  const jsConfetti = new JSConfetti();
-  jsConfetti.addConfetti({
-    emojis: ["🌸", "🦄"],
-    emojiSize: 100,
-    confettiRadius: 10,
-    confettiNumber: 100,
-  });
 }
 </script>
 
@@ -131,31 +86,80 @@ function handleSuccessButtonClick() {
 @import "../assets/styles/mixins.scss";
 
 .connect-wallet-button {
-  color: white;
+  color: $white;
+  background-color: $mojo-green;
+  font-size: 18px;
+  font-weight: bold;
+  width: auto;
+  height: 55px;
+  border: 0;
+  border-radius: 30px;
+  padding-left: 60px;
+  padding-right: 60px;
+  transition: 0.4s;
+  cursor: pointer;
+
+  &:hover {
+    color: $black;
+  }
+}
+
+.connect-wallet-small-button {
+  color: $white;
+  background-color: $mojo-green;
+  font-size: 14px;
+  font-weight: bold;
+  width: auto;
+  height: 35px;
+  border: 0;
+  border-radius: 30px;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-right: 10px;
+  transition: 0.4s;
+  cursor: pointer;
+
+  &:hover {
+    color: $black;
+  }
+}
+
+.profile-wallet-button {
+  color: $white;
   background-color: $mojo-blue;
   font-size: 18px;
   font-weight: bold;
   width: auto;
   height: 55px;
   border: 0;
+  border-radius: 30px;
   padding-left: 60px;
   padding-right: 60px;
-  border-radius: 30px;
+  transition: 0.4s;
   cursor: pointer;
+
+  &:hover {
+    color: $black;
+  }
 }
 
-.connect-wallet-small-button {
-  color: white;
+.profile-wallet-small-button {
+  color: $white;
   background-color: $mojo-blue;
   font-size: 14px;
   font-weight: bold;
   width: auto;
   height: 35px;
   border: 0;
+  border-radius: 30px;
   padding-left: 20px;
   padding-right: 20px;
-  border-radius: 30px;
   margin-right: 10px;
+  transition: 0.4s;
   cursor: pointer;
+
+  &:hover {
+    color: $black;
+  }
 }
 </style>

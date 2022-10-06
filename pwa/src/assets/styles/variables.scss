@@ -2,7 +2,7 @@
 $mojo-red: #f23f3f;
 $mojo-pink: #e9429b;
 $mojo-yellow: #FFDB1E;
-$mojo-green: #32c33a;
+$mojo-green: #08d0a5;
 $mojo-blue: #2c67ff;
 $mojo-light-blue: #2bb5f0;
 $mojo-purple: #8d50f5;
@@ -39,6 +39,15 @@ $breakpoint-sm: 839px !default;
 $breakpoint-md: 959px !default;
 $breakpoint-lg: 1279px !default;
 $breakpoint-xl: 1439px !default;
+/* Responsive Breakpoints */
+$break-xs: 360px !default;
+$break-xs: 479px !default;
+$break-sm: 839px !default;
+$break-md: 959px !default;
+$break-lg: 1023px !default;
+$break-xl: 1279px !default;
+$break-xxl: 1439px !default;
+$break-xxxl: 2872px !default;
 
 /* OR */
 $mobileSmall: 18em;

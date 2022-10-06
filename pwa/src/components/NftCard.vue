@@ -1,35 +1,44 @@
 <template>
   <div class="nft">
-    <div v-if="getUrlProtocol(image) === 'mp4'" class="nft-video">
+    <div v-if="image && getUrlProtocol(image) === 'mp4'" class="nft-video">
       <video width="320" height="240" controls>
         <source :src="`${image}`" type="video/mp4" />
         <!-- <source :src="`${token.metadata.image}`" type="video/ogg" /> -->
         Your browser does not support the video tag.
       </video>
     </div>
-    <div v-else-if="image" class="nft-image">
-      <img v-if="image" :src="`${getUrlProtocol(image)}`" :alt="`${name}`" />
+    <div v-if="image && getUrlProtocol(image) === 'mp3'" class="nft-video">
+      <video width="320" height="240" controls>
+        <source :src="getUrlProtocol(image)" type="video/mp4" />
+        <!-- <source :src="`${image}`" type="video/ogg" /> -->
+        Your browser does not support the video tag.
+      </video>
     </div>
+    <div v-else-if="image" class="nft-image">
+      <img :src="`${getUrlProtocol(image)}`" :alt="`${name}`" />
+    </div>
+    <div v-if="contract" class="nft-title">Contract : {{ contract }}</div>
+    <div v-if="tokenId" class="nft-title">Token Id : {{ tokenId }}</div>
     <div v-if="name" class="nft-title">
       {{ name }}
     </div>
     <div v-if="description" class="nft-description">
-      {{ description }}
+      <!-- {{ description }} -->
     </div>
     <div v-if="external_url" class="nft-external-url">
-      {{ external_url }}
+      <!-- {{ external_url }} -->
     </div>
     <div v-if="animation_url" class="nft-animation-url">
-      {{ animation_url }}
+      <!-- {{ animation_url }} -->
     </div>
     <div v-if="attributes" class="nft-attributes">
-      <template v-for="(key, attr) in attributes" :key="key">
-        <div v-if="attr.trait_value" class="nft-attribute-cards">
+      <!-- <template v-for="attr in attributes" :key="attr.value">
+        <div class="nft-attribute-cards">
           <div class="nft-attribute-card">
             <div class="nft-attribute-card-trait">{{ attr.trait_type }} : {{ attr.value }}</div>
           </div>
         </div>
-      </template>
+      </template> -->
     </div>
   </div>
 </template>
@@ -177,34 +186,34 @@ export default {
     font-weight: normal;
     text-align: center;
     margin: 10px auto 0;
+    display: flex;
+    flex-direction: row wrap;
+    align-content: flex-start;
+    justify-content: space-between;
+    align-items: flex-start;
+    overflow: scroll;
 
-    .nft-attribute-cards {
-      display: flex;
-      flex-direction: row wrap;
-      align-content: flex-start;
-      justify-content: space-between;
-      align-items: flex-start;
+    .nft-attribute-card {
+      width: auto;
+      min-width: 60px;
+      min-height: 40px;
+      color: $black;
+      background-color: #fff;
+      border: 1px solid $mojo-blue;
+      border-radius: 10px;
+      letter-spacing: 1px;
+      font-size: 12px;
+      line-height: 20px;
+      margin: 0 5px 5px 5px;
+      padding: 10px;
+      text-align: left;
 
-      .nft-attribute-card {
-        width: 49%;
-        color: $black;
-        background-color: #fff;
-        border: 1px solid $mojo-blue;
-        border-radius: 10px;
-        letter-spacing: 1px;
-        font-size: 12px;
-        line-height: 20px;
-        margin: 0 auto 5px;
-        padding: 10px;
-        text-align: left;
-
-        .nft-attribute-card-trait {
-          display: flex;
-          flex-direction: row wrap;
-          align-content: flex-start;
-          justify-content: space-between;
-          align-items: flex-start;
-        }
+      .nft-attribute-card-trait {
+        display: flex;
+        flex-direction: row wrap;
+        align-content: flex-start;
+        justify-content: space-between;
+        align-items: flex-start;
       }
     }
   }

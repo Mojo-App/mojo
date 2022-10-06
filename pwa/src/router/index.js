@@ -1,13 +1,14 @@
 import { createRouter, createWebHistory } from "vue-router";
 const baseURL = "";
-// Async Components
+
+/* Async Components */
 const HomeView = () => import("../views/HomeView.vue");
 const CollectionView = () => import("../views/CollectionView.vue");
 const StreamView = () => import("../views/StreamView.vue");
 const ExploreView = () => import("../views/ExploreView.vue");
 const MintView = () => import("../views/MintView.vue");
 const UploadView = () => import("../views/UploadView.vue");
-const ProfileView = () => import("../views/ProfileView.vue");
+const AccountView = () => import("../views/AccountView.vue");
 
 const router = createRouter({
   scrollBehavior(to, from, savedPosition) {
@@ -48,16 +49,13 @@ const router = createRouter({
       component: MintView,
     },
     {
-      path: "/profile",
-      name: "profile",
-      component: ProfileView,
+      path: "/account",
+      name: "account",
+      component: AccountView,
     },
     {
       path: "/upload",
       name: "upload",
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: UploadView,
     },
   ],

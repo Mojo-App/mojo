@@ -4,26 +4,33 @@
       <router-link :to="{ name: 'home' }" active-class="active" exact
         ><img class="header-logo" alt="Mojo" src="@/assets/images/MojoLogo.png" height="60"
       /></router-link>
-      <h1>beats on blocks</h1>
+      <div class="slogan">
+        <span class="blue-hover">beats</span><br />
+        <span class="red-hover">&nbsp;&nbsp;on</span><br />
+        <span class="purple-hover">&nbsp;&nbsp;&nbsp;&nbsp;blocks</span>
+      </div>
     </div>
     <div class="header-menu">
       <nav class="header-navbar">
         <router-link :to="{ name: 'home' }" active-class="active" exact>home</router-link>
-        <router-link :to="{ name: 'explore' }" active-class="active" exact>explore</router-link>
         <router-link :to="{ name: 'stream' }" active-class="active" exact>stream</router-link>
 
         <!-- NFT Holders / Members Only -->
-        <router-link v-if="account" :to="{ name: 'collection' }" active-class="active" exact
-          >collection</router-link
+        <router-link v-if="account" :to="{ name: 'explore' }" active-class="active" exact
+          >explore</router-link
+        >
+        <router-link v-if="account" :to="{ name: 'upload' }" active-class="active" exact
+          >upload</router-link
         >
         <router-link v-if="account" :to="{ name: 'mint' }" active-class="active" exact
           >mint</router-link
         >
-        <router-link :to="{ name: 'upload' }" active-class="active" exact>upload</router-link>
-        <router-link :to="{ name: 'profile' }" active-class="active" exact>profile</router-link>
-        <!-- NFT Holders / Members Only -->
-        <div v-if="!account" class="right">
-          <ConnectWalletButton v-model="account" v-if="!account" btnSize="small" />
+        <router-link v-if="account" :to="{ name: 'collection' }" active-class="active" exact
+          >collections</router-link
+        >
+        <!-- END NFT Holders / Members Only -->
+        <div class="right">
+          <ConnectWalletButton v-model="account" btnSize="small" />
         </div>
         <i :title="`Let's Jam ${isDark ? 'Light' : 'Dark'} Mode`">
           <i-mdi-brightness-7 v-if="isDark" class="icon-color" @click="toggleTheme" />
@@ -108,7 +115,10 @@ export default {
   },
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
+@import "../assets/styles/variables.scss";
+@import "../assets/styles/mixins.scss";
+
 #header {
   display: flex;
   justify-content: space-between;
@@ -127,11 +137,27 @@ export default {
       margin: 10px 10px 5px 0;
       border-radius: 50%;
     }
-    h1 {
-      font-size: 1.5rem;
+    .slogan {
+      font-size: 1.1rem;
       font-weight: 500;
       margin: 0 0 8px 0;
-      color: #333;
+      color: $white;
+      transition: 0.4s;
+      .blue-hover {
+        &:hover {
+          color: $mojo-blue;
+        }
+      }
+      .red-hover {
+        &:hover {
+          color: $mojo-red;
+        }
+      }
+      .purple-hover {
+        &:hover {
+          color: $mojo-purple;
+        }
+      }
     }
   }
 
@@ -143,18 +169,22 @@ export default {
       display: flex;
       align-items: center;
       text-align: right;
-      padding: 0.3em;
 
       a {
         color: var(--contrast-color);
         margin-right: 16px;
-        padding-bottom: 8px;
+        padding-bottom: 2px;
         text-decoration: none;
-
         border-bottom: 1px solid;
+        transition: 0.4s;
         cursor: pointer;
 
+        &:hover {
+          color: $mojo-blue;
+          font-weight: bold;
+        }
         &.active {
+          color: $mojo-blue;
           font-weight: bold;
         }
       }
