@@ -61,7 +61,7 @@ section#content {
     justify-content: center;
     height: 99%;
     color: #1a1a1a;
-    background: #ffca28;
+    background: $mojo-purple;
     padding: 1% 10px 0 10px;
     overflow: hidden;
 

@@ -11,12 +11,12 @@ pragma solidity ^0.8.12;
 /// @author Brecht Devos <brecht@loopring.org>
 library Base64 {
     bytes internal constant TABLE =
-        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
     /// @notice Encodes some bytes to the base64 representation
     function encode(bytes memory data) internal pure returns (string memory) {
         uint256 len = data.length;
-        if (len == 0) return '';
+        if (len == 0) return "";
 
         // multiply by 4/3 rounded up
         uint256 encodedLen = 4 * ((len + 2) / 3);

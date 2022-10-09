@@ -1,8 +1,7 @@
 // Import the NFTStorage class and File constructor from the 'nft.storage' package
 import { NFTStorage } from "nft.storage";
-
 const NFT_STORAGE_KEY = import.meta.env.VITE_NFT_STORAGE_KEY;
-console.log("NFT_STORAGE_KEY", NFT_STORAGE_KEY);
+
 /**
  * Store NFT Metadata in custom Attribute structure
  * @returns {MetadataURL}

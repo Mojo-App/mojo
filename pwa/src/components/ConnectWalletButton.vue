@@ -1,11 +1,32 @@
+<template>
+  <div class="connect-wallet-container">
+    <!-- Metamask Not Connected -->
+    <button
+      v-if="!account"
+      @click="connectWallet()"
+      :class="btnSize === 'large' ? 'connect-wallet-button' : 'connect-wallet-small-button'"
+    >
+      connect
+    </button>
+    <!-- Metamask Connected -->
+    <button
+      v-if="account"
+      @click="$router.push('account')"
+      :class="btnSize === 'large' ? 'profile-wallet-button' : 'profile-wallet-small-button'"
+    >
+      account
+    </button>
+  </div>
+</template>
 <script setup>
 /* Import our Pinia Store & Refs */
 import { storeToRefs } from "pinia";
 import { useStore } from "../store";
-import JSConfetti from "js-confetti";
+
 /* Import our IPFS and NftStorage Services */
 import authNFT from "../services/authNFT.js";
 
+/* Set our Props */
 defineProps({
   currentAccount: String,
   btnSize: {
@@ -13,108 +34,218 @@ defineProps({
     required: false,
   },
 });
+
 /* Define Emits */
 const emit = defineEmits(["update:modelValue"]);
-// Init Store & Refs
+
+/* Init Store & Refs */
 const store = useStore();
-const { isAuthenticated, walletConnectionAttempted } = storeToRefs(store);
+const { account } = storeToRefs(store);
 
 /* Connect Wallet method */
 async function connectWallet() {
-  const { ethereum } = window;
   store.setLoading(true);
-  if (typeof ethereum !== "undefined") {
-    store.setErrorMessage(false);
-    try {
-      if (!ethereum) {
-        alert("Please connect 🦊 Metamask to continue!");
-        return;
-      }
-      const [accountAddress] = await ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      if (accountAddress) {
-        store.setWalletConnectionAttempted(true);
-        const authAccount = new authNFT();
-        const authed = await authAccount.authAccountAddress(accountAddress);
-        if (authed) {
-          store.setIsAuthenticated(authed);
-          store.updateAccount(accountAddress);
-        }
-        emit("update:modelValue", accountAddress);
-        store.setLoading(false);
-      }
+  try {
+    /*
+     * First make sure we have access to window.ethereum
+     */
+    const { ethereum } = window;
+    if (!ethereum) {
+      alert("Please connect 🦊 Metamask to continue!");
+      return;
+    }
+    /* Get our Current Account */
+    const [accountAddress] = await ethereum.request({
+      method: "eth_requestAccounts",
+    });
+    if (accountAddress) {
+      /* Update our Current Account in the Store */
+      store.updateAccount(accountAddress);
       console.log("Account Address", accountAddress);
-    } catch (error) {
-      console.log("Error", error);
-      store.setIsAuthenticated(false);
-      store.setWalletConnectionAttempted(true);
+
+      /* Authenticate user */
+      const authAccount = new authNFT();
+      /* Mojo Music NFT holder */
+      const authed = await authAccount.authAccountAddress(accountAddress);
+      if (authed) {
+        store.setIsAuthenticated(authed);
+      }
+      /* or Tableland Rig NFT holders */
+      const rigRider = await authAccount.authTablelandContractAddress(accountAddress);
+      if (rigRider) {
+        store.setIsAuthenticated(rigRider);
+      }
+      /* Emit our account back to parent */
+      emit("update:modelValue", accountAddress);
       store.setLoading(false);
     }
-  } else {
-    store.setErrorMessage(true);
+    store.setLoading(false);
+  } catch (error) {
+    console.log("Error", error);
+    store.setLoading(false);
   }
-  store.setLoading(false);
-}
-function handleBackButtonClick() {
-  store.setIsAuthenticated(false);
-  store.setWalletConnectionAttempted(false);
-}
-function handleSuccessButtonClick() {
-  const jsConfetti = new JSConfetti();
-  jsConfetti.addConfetti({
-    emojis: ["🌸", "🦄"],
-    emojiSize: 100,
-    confettiRadius: 10,
-    confettiNumber: 100,
-  });
 }
 </script>
-<template>
-  <div class="connect-wallet-container">
-    <button
-      v-if="!walletConnectionAttempted && btnSize === 'large'"
-      @click="connectWallet"
-      class="connect-wallet-button"
-    >
-      🎧 Connect Wallet
-    </button>
-    <button
-      v-if="!walletConnectionAttempted && btnSize === 'small'"
-      @click="connectWallet"
-      class="connect-wallet-small-button"
-    >
-      🎧 Connect
-    </button>
 
-    <button
-      v-if="walletConnectionAttempted && isAuthenticated && btnSize === 'large'"
-      @click="handleSuccessButtonClick"
-      class="connect-wallet-button"
-    >
-      🎧 Collection
-    </button>
-    <button
-      v-if="walletConnectionAttempted && isAuthenticated && btnSize === 'small'"
-      @click="handleSuccessButtonClick"
-      class="connect-wallet-small-button"
-    >
-      🎧 Collection
-    </button>
+<style lang="scss" scoped>
+@import "../assets/styles/variables.scss";
+@import "../assets/styles/mixins.scss";
 
-    <button
-      v-if="walletConnectionAttempted && !isAuthenticated && btnSize === 'large'"
-      @click="handleBackButtonClick"
-      class="connect-wallet-button"
-    >
-      🎧 Go Back
-    </button>
-    <button
-      v-if="walletConnectionAttempted && !isAuthenticated && btnSize === 'small'"
-      @click="handleBackButtonClick"
-      class="connect-wallet-small-button"
-    >
-      🎧 Go Back
-    </button>
-  </div>
-</template>
+.connect-wallet-button {
+  color: $black;
+  background-color: $white;
+  font-size: 18px;
+  font-weight: bold;
+  width: auto;
+  height: 55px;
+  border: 2px solid $mojo-green;
+  border-radius: 30px;
+  padding-left: 60px;
+  padding-right: 60px;
+  transition: 0.4s;
+  cursor: pointer;
+
+  &:hover {
+    color: $mojo-blue;
+  }
+}
+
+.connect-wallet-small-button {
+  color: $black;
+  background-color: $white;
+  font-size: 14px;
+  font-weight: bold;
+  width: auto;
+  height: 35px;
+  border: 2px solid $mojo-green;
+  border-radius: 30px;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-right: 10px;
+  transition: 0.4s;
+  cursor: pointer;
+
+  &:hover {
+    color: $mojo-blue;
+  }
+}
+
+.profile-wallet-button {
+  color: $black;
+  background-color: $white;
+  font-size: 18px;
+  font-weight: bold;
+  width: auto;
+  height: 55px;
+  border: 2px solid $mojo-blue;
+  border-radius: 30px;
+  padding-left: 60px;
+  padding-right: 60px;
+  transition: 0.4s;
+  cursor: pointer;
+
+  &:hover {
+    color: $mojo-light-blue;
+  }
+}
+
+.profile-wallet-small-button {
+  color: $black;
+  background-color: $white;
+  font-size: 14px;
+  font-weight: bold;
+  width: auto;
+  height: 35px;
+  border: 2px solid $mojo-blue;
+  border-radius: 30px;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-right: 10px;
+  transition: 0.4s;
+  cursor: pointer;
+
+  &:hover {
+    color: $mojo-light-blue;
+  }
+}
+
+body.dark-theme {
+  .connect-wallet-button {
+    color: $mojo-green;
+    background-color: $white;
+    font-size: 18px;
+    font-weight: bold;
+    width: auto;
+    height: 55px;
+    border: 2px solid $mojo-green;
+    border-radius: 30px;
+    padding-left: 60px;
+    padding-right: 60px;
+    transition: 0.4s;
+    cursor: pointer;
+
+    &:hover {
+      color: $mojo-blue;
+    }
+  }
+
+  .connect-wallet-small-button {
+    color: $mojo-green;
+    background-color: $black;
+    font-size: 14px;
+    font-weight: bold;
+    width: auto;
+    height: 35px;
+    border: 2px solid $mojo-green;
+    border-radius: 30px;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-right: 10px;
+    transition: 0.4s;
+    cursor: pointer;
+
+    &:hover {
+      color: $mojo-blue;
+    }
+  }
+
+  .profile-wallet-button {
+    color: $mojo-blue;
+    background-color: $black;
+    font-size: 18px;
+    font-weight: bold;
+    width: auto;
+    height: 55px;
+    border: 2px solid $mojo-blue;
+    border-radius: 30px;
+    padding-left: 60px;
+    padding-right: 60px;
+    transition: 0.4s;
+    cursor: pointer;
+
+    &:hover {
+      color: $mojo-green;
+    }
+  }
+
+  .profile-wallet-small-button {
+    color: $mojo-blue;
+    background-color: $black;
+    font-size: 14px;
+    font-weight: bold;
+    width: auto;
+    height: 35px;
+    border: 2px solid $mojo-blue;
+    border-radius: 30px;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-right: 10px;
+    transition: 0.4s;
+    cursor: pointer;
+
+    &:hover {
+      color: $mojo-green;
+    }
+  }
+}
+</style>

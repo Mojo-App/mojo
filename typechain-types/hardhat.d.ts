@@ -81,29 +81,37 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC165Upgradeable__factory>;
     getContractFactory(
-      name: "Ownable",
+      name: "AccessControl",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Ownable__factory>;
+    ): Promise<Contracts.AccessControl__factory>;
     getContractFactory(
-      name: "Pausable",
+      name: "IAccessControl",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Pausable__factory>;
+    ): Promise<Contracts.IAccessControl__factory>;
     getContractFactory(
-      name: "ERC20",
+      name: "ERC721",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ERC20__factory>;
+    ): Promise<Contracts.ERC721__factory>;
     getContractFactory(
-      name: "ERC20Burnable",
+      name: "IERC721Metadata",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ERC20Burnable__factory>;
+    ): Promise<Contracts.IERC721Metadata__factory>;
     getContractFactory(
-      name: "IERC20Metadata",
+      name: "IERC721",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IERC20Metadata__factory>;
+    ): Promise<Contracts.IERC721__factory>;
     getContractFactory(
-      name: "IERC20",
+      name: "IERC721Receiver",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IERC20__factory>;
+    ): Promise<Contracts.IERC721Receiver__factory>;
+    getContractFactory(
+      name: "ERC165",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC165__factory>;
+    getContractFactory(
+      name: "IERC165",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC165__factory>;
     getContractFactory(
       name: "ITablelandController",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -117,13 +125,17 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.TablelandTables__factory>;
     getContractFactory(
+      name: "MOJO",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MOJO__factory>;
+    getContractFactory(
       name: "MojoCore",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MojoCore__factory>;
     getContractFactory(
-      name: "MojoERC20Token",
+      name: "TwoTablesNFT",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.MojoERC20Token__factory>;
+    ): Promise<Contracts.TwoTablesNFT__factory>;
     getContractFactory(
       name: "ERC721AIERC721ReceiverUpgradeable",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -231,35 +243,45 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IERC165Upgradeable>;
     getContractAt(
-      name: "Ownable",
+      name: "AccessControl",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.Ownable>;
+    ): Promise<Contracts.AccessControl>;
     getContractAt(
-      name: "Pausable",
+      name: "IAccessControl",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.Pausable>;
+    ): Promise<Contracts.IAccessControl>;
     getContractAt(
-      name: "ERC20",
+      name: "ERC721",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.ERC20>;
+    ): Promise<Contracts.ERC721>;
     getContractAt(
-      name: "ERC20Burnable",
+      name: "IERC721Metadata",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.ERC20Burnable>;
+    ): Promise<Contracts.IERC721Metadata>;
     getContractAt(
-      name: "IERC20Metadata",
+      name: "IERC721",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.IERC20Metadata>;
+    ): Promise<Contracts.IERC721>;
     getContractAt(
-      name: "IERC20",
+      name: "IERC721Receiver",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.IERC20>;
+    ): Promise<Contracts.IERC721Receiver>;
+    getContractAt(
+      name: "ERC165",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC165>;
+    getContractAt(
+      name: "IERC165",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC165>;
     getContractAt(
       name: "ITablelandController",
       address: string,
@@ -276,15 +298,20 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.TablelandTables>;
     getContractAt(
+      name: "MOJO",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MOJO>;
+    getContractAt(
       name: "MojoCore",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.MojoCore>;
     getContractAt(
-      name: "MojoERC20Token",
+      name: "TwoTablesNFT",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.MojoERC20Token>;
+    ): Promise<Contracts.TwoTablesNFT>;
     getContractAt(
       name: "ERC721AIERC721ReceiverUpgradeable",
       address: string,

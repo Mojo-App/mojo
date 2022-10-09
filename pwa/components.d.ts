@@ -7,8 +7,10 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AppFooter: typeof import('./src/components/AppFooter.vue')['default']
     AppHeader: typeof import('./src/components/AppHeader.vue')['default']
+    ArbitrumNftCard: typeof import('./src/components/ArbitrumNftCard.vue')['default']
     ArrowUp: typeof import('./src/components/icons/ArrowUp.vue')['default']
     ConnectWalletButton: typeof import('./src/components/ConnectWalletButton.vue')['default']
+    HeroSection: typeof import('./src/components/homeComponents/HeroSection.vue')['default']
     IMdiBrightness4: typeof import('~icons/mdi/brightness4')['default']
     IMdiBrightness7: typeof import('~icons/mdi/brightness7')['default']
     IMdiFlashOutline: typeof import('~icons/mdi/flash-outline')['default']
@@ -30,6 +32,7 @@ declare module '@vue/runtime-core' {
     ReloadPrompt: typeof import('./src/components/ReloadPrompt.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SearchCard: typeof import('./src/components/SearchCard.vue')['default']
     SearchResult: typeof import('./src/components/VUpload/SearchResult.vue')['default']
     StopButton: typeof import('./src/components/icons/StopButton.vue')['default']
     TokenCard: typeof import('./src/components/TokenCard.vue')['default']

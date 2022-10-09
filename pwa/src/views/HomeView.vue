@@ -12,19 +12,57 @@
           <p>
             Stream audio, video &amp; media directly from your favorite artists and musicians on the
             blockchain. Subscribe, watch and follow digital content creators for rewards. Purchase a
-            creators custom NFT to unlock additional content and so much more...
+            creators music NFT to unlock additional content and so much more...
             <strong>Get your Mojo on today!</strong>
           </p>
         </div>
       </section>
       <section id="stream-home">
-        <h2>Latest Beats</h2>
-        <div class="row">
-          <TrackPlayer v-for="track in categoryTracks" :track="track" :key="track.id"></TrackPlayer>
+        <div class="row-header">
+          <h2><span class="mint-black">fresh</span>beats</h2>
+        </div>
+        <div v-if="homeTokens && homeTokens.length > 0" class="row token-list">
+          <template v-for="token in homeTokens" :key="token.token_id">
+            <NftCard
+              :contract="token.contract_address"
+              :tokenId="token.token_id"
+              :type="token.type"
+              :name="
+                token.metadata && token.metadata.name
+                  ? token.metadata.name
+                  : token.metadata && token.metadata.title
+                  ? token.metadata.title
+                  : ''
+              "
+              :image="
+                token.cached_animation_url
+                  ? token.cached_animation_url
+                  : token.cached_file_url
+                  ? token.cached_file_url
+                  : token.image
+                  ? token.image
+                  : ''
+              "
+              :description="
+                token.metadata && token.metadata.description ? token.metadata.description : ''
+              "
+              :external_url="
+                token.metadata && token.metadata.external_url ? token.metadata.external_url : ''
+              "
+              :animation_url="
+                token.metadata && token.metadata.animation_url ? token.metadata.animation_url : ''
+              "
+              :attributes="
+                token.metadata && token.metadata.attributes ? token.metadata.attributes : []
+              "
+            />
+          </template>
         </div>
       </section>
       <section id="connect" class="multi-bg-header">
-        <h2>Connect</h2>
+        <div class="row-header">
+          <h2>connect</h2>
+        </div>
         <div class="row">
           <div class="left">
             <p>
@@ -46,15 +84,12 @@
             </p>
           </div>
           <div class="right">
-            <ConnectWalletButton v-model="account" v-if="!account" btnSize="large" />
-            <button @click="$router.push('stream')" v-if="account" className="stream-button">
-              Let's Stream
-            </button>
+            <button @click="$router.push('stream')" className="stream-button">Stream</button>
             <button @click="$router.push('upload')" v-if="account" className="upload-button">
-              IPFS Upload
+              Upload
             </button>
             <button @click="$router.push('mint')" v-if="account" className="mint-media-button">
-              Mint Tea
+              Mint
             </button>
           </div>
         </div>
@@ -104,18 +139,19 @@
   </section>
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
+import { onMounted } from "vue";
 import { Notyf } from "notyf";
-import { storeToRefs } from "pinia";
+
 /* Import our Pinia Store */
+import { storeToRefs } from "pinia";
 import { useStore } from "../store";
-/* Components */
-import ConnectWalletButton from "../components/ConnectWalletButton.vue";
-import TrackPlayer from "../components/TrackPlayer.vue";
+
+/* Logos */
 import Tableland from "../assets/svgs/TableLand.vue";
 import SpheronLogo from "../assets/svgs/SpheronLogo.vue";
 import PolygonLogo from "../assets/svgs/PolygonLogo.vue";
 import NFTStorage from "../assets/svgs/NFTStorage.vue";
+
 /* Create an instance of Notyf with settings */
 var notyf = new Notyf({
   duration: 5000,
@@ -156,11 +192,11 @@ var notyf = new Notyf({
     },
   ],
 });
-// Init Store
+
+/* Import our Pinia Store */
 const store = useStore();
-// 🦊 Metamask Account
-const { account } = storeToRefs(store);
-const categoryTracks = ref(null);
+const { account, homeTokens } = storeToRefs(store);
+
 /**
  * Check if Wallet connected
  */
@@ -183,24 +219,50 @@ async function checkIfWalletIsConnected() {
   }
 }
 /**
- * Fetch NFT Audio/Media data
- * @dev WIP: This will change to pull our NFTs and their metadata from Tableland
+ * Fetch NFT Audio/Media data from opensea.io
  */
 async function fetchData() {
-  categoryTracks.value = null;
-  const res = await fetch(`./tracks/1.json`);
-  console.log("Tracks Loaded:", res);
-  categoryTracks.value = await res.json();
+  /* Load some cool NFTs using NFT Port */
+  if (homeTokens.value.length === 0) {
+    try {
+      let homeTokens = await store.contractNftSearch(
+        "0xa0e1b198bcc877a950a29512ab5c0ce1bb964c97",
+        "ethereum",
+        "metadata",
+        "true",
+        4,
+        1
+      );
+      console.log("Home NFTs:", JSON.stringify(homeTokens, "", 4));
+      if (homeTokens.nfts) {
+        store.addHomeTokens(...homeTokens.nfts);
+      }
+      let homeTokensRowTwo = await store.contractNftSearch(
+        "0xefadc46bb78b01195a1e12c82a584caf5403585c",
+        "ethereum",
+        "metadata",
+        "true",
+        4,
+        1
+      );
+      console.log("Home NFTs:", JSON.stringify(homeTokensRowTwo, "", 4));
+      if (homeTokensRowTwo.nfts) {
+        store.addHomeTokens(...homeTokensRowTwo.nfts);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
 
-onMounted(() => {
+onMounted(async () => {
   window.scrollTo({
     top: 0,
     left: 0,
     behavior: "smooth",
   });
-  checkIfWalletIsConnected();
-  fetchData();
+  await checkIfWalletIsConnected();
+  await fetchData();
 });
 </script>
 <style lang="scss" scoped>
@@ -218,34 +280,32 @@ section#content {
     padding: 0;
 
     section#home {
-      color: #212121;
+      color: $white;
       background: #ffca28;
       border-bottom: 1px solid #212121;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       align-content: center;
       align-items: center;
-      justify-content: center;
-      padding: 20px;
+      justify-content: space-between;
+      padding: 40px 20px;
 
       @include breakpoint($medium) {
-        flex-direction: row;
-        align-content: center;
-        align-items: center;
-        justify-content: space-between;
-        padding: 40px 20px;
+        flex-direction: column;
+        justify-content: center;
+        padding: 20px;
       }
 
       .left {
-        width: 100%;
+        width: 55%;
         display: flex;
         flex-direction: row;
         align-content: center;
         justify-content: center;
-        padding: 0;
+        padding: 20px;
 
         @include breakpoint($medium) {
-          width: 55%;
+          width: 100%;
         }
 
         .player-graphic {
@@ -253,10 +313,6 @@ section#content {
           margin: 0 auto;
           padding: 0;
           overflow: hidden;
-
-          @include breakpoint($medium) {
-            padding: 0;
-          }
 
           img,
           svg {
@@ -268,128 +324,101 @@ section#content {
       }
 
       .right {
-        width: 100%;
+        width: 45%;
         display: flex;
+        align-content: flex-start;
+        justify-content: flex-start;
         flex-direction: column;
-        align-content: center;
-        justify-content: center;
-        padding: 0 0 0 20px;
+        padding: 20px;
 
         @include breakpoint($medium) {
-          width: 45%;
-          align-content: flex-start;
-          justify-content: flex-start;
-          padding: 0 0 0 20px;
+          width: 100%;
+          align-content: center;
+          justify-content: center;
         }
-      }
 
-      h1 {
-        font-size: 4.55rem;
-        margin-bottom: 20px;
-      }
-
-      a {
-        color: var(--contrast-color);
-        font-weight: bold;
-        border-bottom: 1px solid var(--contrast-color);
-        text-decoration: none;
-
-        &.author {
-          padding: 6px 12px;
-          border-radius: 8px;
-          background-color: var(--gradient-100);
-          color: var(--icon-color);
-          font-size: 0.85rem;
-
-          border-bottom: none;
+        h1 {
+          font-size: 4.25rem;
+          margin-bottom: 20px;
         }
-      }
 
-      p {
-        line-height: 1.7;
-        margin-bottom: 20px;
+        a {
+          color: var(--contrast-color);
+          font-weight: bold;
+          border-bottom: 1px solid var(--contrast-color);
+          text-decoration: none;
+
+          &.author {
+            padding: 6px 12px;
+            border-radius: 8px;
+            background-color: var(--gradient-100);
+            color: var(--icon-color);
+            font-size: 0.85rem;
+
+            border-bottom: none;
+          }
+        }
+
+        p {
+          line-height: 1.7;
+          margin-bottom: 20px;
+        }
       }
     }
 
     section#stream-home {
-      color: #fff;
-      background: #1c8bfe;
+      color: $white;
+      background: $mojo-blue;
       display: flex;
       flex-direction: column;
       align-content: center;
       align-items: center;
       justify-content: center;
       margin: 0 auto;
-      padding: 40px 0;
+      padding: 40px;
+
+      .row-header {
+        width: 100%;
+        max-width: 1280px;
+        display: flex;
+        flex-direction: row;
+        align-content: flex-start;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+
+        h2 {
+          width: 100%;
+          color: $white;
+          font-style: normal;
+          font-weight: 700;
+          font-size: 36px;
+          line-height: 42px;
+          text-align: center;
+
+          .mint-black {
+            color: $black;
+          }
+        }
+      }
 
       .row {
         width: 100%;
-        display: inline-block;
-        margin: 0 auto;
-        @include breakpoint($breakpoint-sm) {
-          max-width: 680px;
-          margin: 0 auto;
-          padding: 20px 0 0 20px;
-        }
-        @include breakpoint($breakpoint-md) {
-          max-width: 680px;
-          margin: 0 auto;
-          padding: 20px 0 0 20px;
-        }
-        @include breakpoint($breakpoint-xl) {
-          max-width: 990px;
-          margin: 0 auto;
-          padding: 40px 0 0 0;
-        }
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+        justify-content: center;
+        align-items: flex-start;
       }
 
-      h2 {
-        font-size: 2.45rem;
-        margin: 0 0 20px 0;
-        text-decoration: underline;
-        text-decoration-thickness: 2px;
-        text-underline-offset: 4px;
-      }
-
-      ul.category-list {
-        list-style-type: none;
-        list-style-position: outside;
-        margin-block-start: 1em;
-        margin-block-end: 1em;
-        margin-inline-start: 0px;
-        margin-inline-end: 0px;
-        padding-inline-start: 0;
-        border-top: 1px solid #1a1a1a;
-
-        li {
-          font-size: 22px;
-          font-weight: 700;
-          line-height: 1.75rem;
-          padding-top: 0.75rem;
-          padding-bottom: 0.75rem;
-          padding-left: 1rem;
-          padding-right: 1rem;
-          border-bottom: 1px solid #1a1a1a;
-
-          &:hover {
-            color: #fff;
-            cursor: pointer;
-          }
-
-          &:active {
-            color: #fff;
-            font-weight: 600;
-          }
-        }
-      }
-
-      .li-active {
-        color: #fff;
-        font-weight: 600;
-      }
-
-      .category-list-play-button {
-        margin: 0 5px 0 -15px;
+      .token-list {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px;
+        align-content: center;
+        justify-content: center;
+        align-items: flex-start;
       }
     }
 
@@ -411,30 +440,51 @@ section#content {
         padding: 60px 40px 100px 40px;
       }
 
+      .row-header {
+        width: 100%;
+        max-width: 1280px;
+        display: flex;
+        flex-direction: row;
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto;
+
+        h2 {
+          width: 100%;
+          color: $black;
+          font-style: normal;
+          font-weight: 700;
+          font-size: 36px;
+          line-height: 42px;
+          text-align: center;
+
+          .mint-black {
+            color: $black;
+          }
+        }
+      }
+
       .row {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-content: center;
         justify-content: center;
         align-items: center;
 
         @include breakpoint($medium) {
-          flex-direction: row;
-          align-content: center;
-          justify-content: center;
-          align-items: center;
+          flex-direction: column;
         }
 
         .left {
-          width: 100%;
+          width: 60%;
           display: flex;
           flex-direction: row;
           align-content: center;
           justify-content: flex;
           align-items: center;
-
           @include breakpoint($medium) {
-            width: 60%;
+            width: 100%;
           }
 
           p {
@@ -446,7 +496,7 @@ section#content {
         }
 
         .right {
-          width: 100%;
+          width: 40%;
           display: flex;
           flex-direction: column;
           align-content: center;
@@ -454,17 +504,9 @@ section#content {
           align-items: flex-start;
           padding: 30px 0;
           @include breakpoint($medium) {
-            width: 40%;
+            width: 100%;
           }
         }
-      }
-
-      h2 {
-        font-size: 2.85rem;
-        text-align: center;
-        text-decoration: underline;
-        text-decoration-thickness: 2px;
-        text-underline-offset: 4px;
       }
 
       a {
@@ -472,16 +514,6 @@ section#content {
         font-weight: bold;
         border-bottom: 1px solid #1a1a1a;
         text-decoration: none;
-
-        &.author {
-          padding: 6px 12px;
-          border-radius: 8px;
-          background-color: var(--gradient-100);
-          color: var(--icon-color);
-          font-size: 0.85rem;
-
-          border-bottom: none;
-        }
       }
     }
 
@@ -500,42 +532,9 @@ section#content {
       flex-direction: column;
       align-content: center;
       justify-content: center;
-      padding: 20px;
-
-      @include breakpoint($medium) {
-        padding: 20px;
-      }
+      padding: 0;
 
       .row {
-        display: flex;
-        flex-direction: column;
-        align-content: center;
-        justify-content: center;
-        align-items: center;
-
-        @include breakpoint($medium) {
-          flex-direction: row;
-          align-content: center;
-          justify-content: center;
-          align-items: center;
-        }
-      }
-
-      .left {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-content: center;
-        justify-content: center;
-        align-items: center;
-
-        @include breakpoint($medium) {
-          width: 50%;
-        }
-      }
-
-      .right {
-        width: 100%;
         display: flex;
         flex-direction: row;
         align-content: center;
@@ -543,13 +542,39 @@ section#content {
         align-items: center;
 
         @include breakpoint($medium) {
-          width: 50%;
+          flex-direction: column;
+        }
+      }
+
+      .left {
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+
+        @include breakpoint($medium) {
+          width: 100%;
+        }
+      }
+
+      .right {
+        width: 50%;
+        display: flex;
+        flex-direction: row;
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+
+        @include breakpoint($medium) {
+          width: 100%;
         }
 
         .royalty-graphic {
           width: 100%;
           margin: 0 auto;
-          padding: 0 10px;
+          padding: 0;
           overflow: hidden;
 
           @include breakpoint($medium) {
@@ -629,22 +654,15 @@ section#content {
       justify-content: center;
       padding: 20px;
 
-      @include breakpoint($medium) {
-        padding: 20px;
-      }
-
       .row {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-content: center;
         justify-content: center;
         align-items: center;
 
         @include breakpoint($medium) {
-          flex-direction: row;
-          align-content: center;
-          justify-content: center;
-          align-items: center;
+          flex-direction: column;
         }
 
         .sponsors-logo {

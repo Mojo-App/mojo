@@ -15,8 +15,8 @@ app.use(pinia).use(router);
 
 if (isRunningOnPWA()) window.resizeTo(985, 677);
 
-if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) {
-  document.body.classList.add("light-theme");
+if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+  document.body.classList.add("dark-theme");
 }
 
 app.mount("#app");

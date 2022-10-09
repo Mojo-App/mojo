@@ -2,22 +2,22 @@
   <div v-if="offlineReady || needRefresh" class="pwa-toast" role="alert">
     <div class="pwa-toast--offline" v-if="offlineReady">
       <i-mdi-flash-outline />
-      <span>Offline Mode Ready</span>
+      <span>Offline mode ready...</span>
     </div>
     <div class="pwa-toast--update" v-if="needRefresh">
       <i-mdi-timer-sand />
-      <span>Working Auto Update</span>
+      <span>Working auto update now...</span>
     </div>
   </div>
 </template>
 <script>
-import { useRegisterSW } from 'virtual:pwa-register/vue';
-import { watch } from '@vue/runtime-core';
+import { useRegisterSW } from "virtual:pwa-register/vue";
+import { watch } from "@vue/runtime-core";
 /* Register Service workers */
 const { offlineReady, needRefresh, updateServiceWorker } = useRegisterSW();
 /* LFG */
 export default {
-  name: 'ReloadPrompt',
+  name: "ReloadPrompt",
   setup() {
     const watcherStop = watch([offlineReady, needRefresh], (now, prev) => {
       const [offlineNow, refreshNow] = now;

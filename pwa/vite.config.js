@@ -10,6 +10,7 @@ import IconsResolver from "unplugin-icons/resolver";
 import ViteFonts from "vite-plugin-fonts";
 
 export default defineConfig({
+  global: {},
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
