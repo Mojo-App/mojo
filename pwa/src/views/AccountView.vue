@@ -17,7 +17,7 @@
         </a>
       </p>
       <p>
-        <button class="home-button" @click="$router.push('home')">home</button>
+        <button class="home-button" @click="$router.push({ name: 'home' })">home</button>
       </p>
     </div>
     <div v-if="account && isAuthenticated" class="row">
@@ -79,13 +79,11 @@ var notyf = new Notyf({
     },
   ],
 });
-
 /* Init Store and Refs */
 const store = useStore();
 const { account, isAuthenticated } = storeToRefs(store);
-
+/* Mojo Contract Address */
 const mojoContractAddress = "0x41B02B29CE0B8E2f13A3ff189D18E87f78d8E236";
-
 /**
  * Check if our Wallet is Connected to 🦊 Metamask
  */
@@ -109,7 +107,6 @@ async function checkIfWalletIsConnected() {
     console.log(error);
   }
 }
-
 /* Fetch NFT by Account Address */
 async function fetchTokens() {
   if (account.value) {

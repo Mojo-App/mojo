@@ -108,13 +108,7 @@ export default class nftPort {
    * @returns {Promise<String|Error>}
    *
    */
-  async nftSearchImage(
-    imageUrl,
-    filter_by_contract_address,
-    page_size,
-    page_number,
-    threshold
-  ) {
+  async nftSearchImage(imageUrl, filter_by_contract_address, page_size, page_number, threshold) {
     console.log("Search Image:", imageUrl);
     console.log("Filter by Contract:", filter_by_contract_address);
     console.log("Search page_size:", page_size);
@@ -301,7 +295,7 @@ export default class nftPort {
   /**
    *
    * @param {String} contract_address Results will only include NFTs from this contract address.
-   * @param {String} chain Allowed values: polygon / ethereum / rinkeby
+   * @param {String} chain Allowed values: polygon / ethereum
    * @param {String} include Include optional data in the response. default Allowed values: default / metadata / all
    * @param {Bool} refresh_metadata Queues and refreshes all the NFTs metadata inside the contract (i.e. all tokens)
    * if they have changed since the updated_date. Useful for example, when NFT collections are revealed.

@@ -178,7 +178,7 @@
           <h2>beats<span class="mojo-black">on</span>blocks</h2>
         </div>
         <div class="row token-list">
-          <template v-for="token in trendingTokens" :key="token.tokenId">
+          <template v-for="token in latestTokens" :key="token.token_id">
             <NftCard
               :contract="token.contract_address"
               :tokenId="token.token_id"
@@ -191,10 +191,12 @@
                   : ''
               "
               :image="
-                token.metadata && token.metadata.image
-                  ? token.metadata.image
-                  : token.tokenUri && token.tokenUri.raw
-                  ? token.tokenUri.raw
+                token.cached_animation_url
+                  ? token.cached_animation_url
+                  : token.cached_file_url
+                  ? token.cached_file_url
+                  : token.image
+                  ? token.image
                   : ''
               "
               :description="
@@ -216,7 +218,7 @@
           <h2>top<span class="mojo-black">pics</span></h2>
         </div>
         <div class="row token-list">
-          <template v-for="token in topTokens" :key="token.tokenId">
+          <template v-for="token in topTokens" :key="token.token_id">
             <NftCard
               :contract="token.contract_address"
               :tokenId="token.token_id"
@@ -229,10 +231,12 @@
                   : ''
               "
               :image="
-                token.metadata && token.metadata.file_url
-                  ? token.metadata.file_url
-                  : token.tokenUri && token.metadata.image
-                  ? token.metadata.image
+                token.cached_animation_url
+                  ? token.cached_animation_url
+                  : token.cached_file_url
+                  ? token.cached_file_url
+                  : token.image
+                  ? token.image
                   : ''
               "
               :description="
@@ -254,7 +258,7 @@
           <h2>trendy<span class="mojo-black">tunes</span></h2>
         </div>
         <div class="row token-list">
-          <template v-for="token in latestTokens" :key="token.tokenId">
+          <template v-for="token in trendingTokens" :key="token.token_id">
             <NftCard
               :contract="token.contract_address"
               :tokenId="token.token_id"
@@ -267,10 +271,12 @@
                   : ''
               "
               :image="
-                token.metadata && token.metadata.image
-                  ? token.metadata.image
-                  : token.tokenUri && token.tokenUri.raw
-                  ? token.tokenUri.raw
+                token.cached_animation_url
+                  ? token.cached_animation_url
+                  : token.cached_file_url
+                  ? token.cached_file_url
+                  : token.image
+                  ? token.image
                   : ''
               "
               :description="
@@ -420,8 +426,8 @@ async function fetchTokens() {
   if (topTokens.value.length === 0) {
     try {
       let topTokens = await store.contractNftSearch(
-        "0x2953399124f0cbb46d2cbacd8a89cf0599974963",
-        "polygon",
+        "0xefadc46bb78b01195a1e12c82a584caf5403585c",
+        "ethereum",
         "metadata",
         "true",
         8,
@@ -438,11 +444,11 @@ async function fetchTokens() {
   if (latestTokens.value.length === 0) {
     try {
       let latestTokens = await store.contractNftSearch(
-        "0x495f947276749ce646f68ac8c248420045cb7b5e",
+        "0x19b703f65aa7e1e775bd06c2aa0d0d08c80f1c45",
         "ethereum",
         "metadata",
         "true",
-        12,
+        8,
         1
       );
       if (latestTokens.nfts && latestTokens.total > 0) {
@@ -456,7 +462,7 @@ async function fetchTokens() {
   if (trendingTokens.value.length === 0) {
     try {
       let trendingTokens = await store.contractNftSearch(
-        "0x495f947276749ce646f68ac8c248420045cb7b5e",
+        "0x719c6d392fc659f4fe9b0576cbc46e18939687a7",
         "ethereum",
         "metadata",
         "true",

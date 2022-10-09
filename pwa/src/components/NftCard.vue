@@ -1,45 +1,45 @@
 <template>
-  <div class="nft">
+  <div class="nft" v-if="image && name">
     <div v-if="image && getUrlProtocol(image) === 'mp4'" class="nft-video">
-      <video width="320" height="240" controls>
+      <video width="340" height="250" controls>
         <source :src="`${image}`" type="video/mp4" />
         <!-- <source :src="`${token.metadata.image}`" type="video/ogg" /> -->
         Your browser does not support the video tag.
       </video>
     </div>
-    <div v-if="image && getUrlProtocol(image) === 'mp3'" class="nft-video">
-      <video width="320" height="240" controls>
+    <div v-else-if="image && getUrlProtocol(image) === 'mp3'" class="nft-video">
+      <video width="340" height="250" controls>
         <source :src="getUrlProtocol(image)" type="video/mp4" />
         <!-- <source :src="`${image}`" type="video/ogg" /> -->
         Your browser does not support the video tag.
       </video>
     </div>
-    <div v-else-if="image" class="nft-image">
+    <div v-else class="nft-image">
       <img :src="`${getUrlProtocol(image)}`" :alt="`${name}`" />
     </div>
-    <div v-if="contract" class="nft-title">Contract : {{ contract }}</div>
-    <div v-if="tokenId" class="nft-title">Token Id : {{ tokenId }}</div>
+    <!-- <div v-if="contract" class="nft-title">Contract : {{ contract }}</div> -->
+    <!-- <div v-if="tokenId" class="nft-title">Token Id : {{ tokenId }}</div> -->
     <div v-if="name" class="nft-title">
       {{ name }}
     </div>
-    <div v-if="description" class="nft-description">
-      <!-- {{ description }} -->
+    <!-- <div v-if="description" class="nft-description">
+      {{ description }}
     </div>
     <div v-if="external_url" class="nft-external-url">
-      <!-- {{ external_url }} -->
+      {{ external_url }}
     </div>
     <div v-if="animation_url" class="nft-animation-url">
-      <!-- {{ animation_url }} -->
+      {{ animation_url }}
     </div>
     <div v-if="attributes" class="nft-attributes">
-      <!-- <template v-for="attr in attributes" :key="attr.value">
+      <template v-for="attr in attributes" :key="attr.value">
         <div class="nft-attribute-cards">
           <div class="nft-attribute-card">
             <div class="nft-attribute-card-trait">{{ attr.trait_type }} : {{ attr.value }}</div>
           </div>
         </div>
-      </template> -->
-    </div>
+      </template>
+    </div> -->
   </div>
 </template>
 <script>
@@ -101,16 +101,10 @@ export default {
   display: block;
   box-sizing: border-box;
   width: 100%;
-  max-width: 320px;
-  height: auto;
-  min-height: 350px;
+  // min-height: 350px;
   background: #f4f4f4;
-  border: 2px solid #f4f4f4;
-  border-radius: 6px;
-
-  &:hover {
-    border: 2px solid #8d50f5;
-  }
+  border-radius: 10px;
+  overflow: hidden;
 
   .nft-video {
     width: 100%;
@@ -118,6 +112,10 @@ export default {
     padding: 0;
     overflow: hidden;
     background: #f4f4f4;
+
+    video {
+      object-fit: auto;
+    }
   }
 
   .nft-image {
@@ -125,11 +123,6 @@ export default {
     margin: 0 auto;
     padding: 0;
     overflow: hidden;
-
-    @include breakpoint($medium) {
-      width: 96%;
-      padding: 2%;
-    }
 
     img,
     svg {

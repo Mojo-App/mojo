@@ -45,11 +45,12 @@ export const useStore = defineStore({
       optimismTokens: [],
       arbitrumTokens: [],
       avalancheTokens: [],
+      homeTokens: [],
       trendingTokens: [],
       topTokens: [],
       latestTokens: [],
       trackList: [],
-      newArrivals: [],
+      musicCategories: [],
       counter: 0,
       filesNft: [],
       nftResults: db.data.nftResults,
@@ -116,6 +117,9 @@ export const useStore = defineStore({
     getAvalancheTokens(state) {
       return state.avalancheTokens;
     },
+    getHomeTokens(state) {
+      return state.homeTokens;
+    },
     getTrendingTokens(state) {
       return state.trendingTokens;
     },
@@ -128,8 +132,8 @@ export const useStore = defineStore({
     getTrackList(state) {
       return state.trackList;
     },
-    getNewArrivals(state) {
-      return state.newArrivals;
+    getMusicCategories(state) {
+      return state.musicCategories;
     },
     getCount(state) {
       return state.counter;
@@ -221,6 +225,9 @@ export const useStore = defineStore({
     addAvalancheTokens(...tokens) {
       this.avalancheTokens.push(...tokens);
     },
+    addHomeTokens(...tokens) {
+      this.homeTokens.push(...tokens);
+    },
     addTrendingTokens(...tokens) {
       this.trendingTokens.push(...tokens);
     },
@@ -236,8 +243,8 @@ export const useStore = defineStore({
     addTracks(...tracks) {
       this.trackList.push(...tracks);
     },
-    addNewArrivals(...tracks) {
-      this.newArrivals.push(...tracks);
+    addMusicCategories(...tracks) {
+      this.musicCategories.push(...tracks);
     },
     addToCount(amount) {
       this.counter += amount;
@@ -271,6 +278,21 @@ export const useStore = defineStore({
       db.data.results = [...this.results];
       db.write();
     },
+    /**
+     * Update Shorten Link for File
+     * @param {String} cid
+     * @param {String} link
+     */
+    updateShortenLink(cid, link) {
+      this.results = this.results.map((result) => {
+        if (result.cid === cid) {
+          return { ...result, shorten: link };
+        }
+        return result;
+      });
+      db.data.results = [...this.results];
+      db.write();
+    },
 
     /**
      * Get User 🦊 Metamask Account Balance
@@ -299,6 +321,132 @@ export const useStore = defineStore({
     //     console.log("Load Balance Error:", error);
     //   }
     // },
+
+    /**
+     * Creates a Music Category entry in Tableland,
+     */
+    async getCategories() {
+      // Connect to the Tableland testnet (defaults to Polygon Mumbai testnet chain)
+      // @return {Connection} Interface to access the Tableland network and, optionally, a target `chain`
+      const tableland = await connect({ network: "testnet", chain: "polygon-mumbai" });
+
+      // Run a SQL SELECT query
+      // @return {ReadQueryResult} Tableland gateway response with row & column values
+      const { rows } = await tableland.read(
+        `SELECT id, position, value, label FROM Mojo_Music_80001_3473;`
+      );
+
+      // console.log("columns", columns);
+      // [ { name: 'name' }, { name: 'id' } ]
+      // console.log("rows", rows);
+      // [ [ 'Bobby Tables', 0 ], [ 'Molly Tables', 1 ] ]
+
+      /* Loop through our Music Categories from Tableland */
+      let i = 0;
+      for (i in rows) {
+        console.log(rows[i]);
+        let id = rows[i][0];
+        let position = rows[i][1];
+        let value = rows[i][2];
+        let label = rows[i][3];
+        this.musicCategories.push({ id: id, position: position, value: value, label: label });
+        i++;
+      }
+      // console.log("this.musicCategories", this.musicCategories);
+    },
+
+
+     /**
+     * Search Nfts on Tableland by Category Value or by Name
+     * @param {String} cid
+     * @param {String} name
+     */
+      async searchMojoNfts(id, name) {
+        console.log("Search by ID:", id);
+        console.log("Search by Name:", name);
+
+        this.setLoading(true);
+        // Run a SQL SELECT query
+        try {
+          /*
+           * First make sure we have access to window.ethereum
+           */
+          const { ethereum } = window;
+          if (ethereum) {
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const signer = provider.getSigner();
+
+            // ... access chain config information for localhost or Polygon Mumbai
+            // Connect to the Tableland testnet (defaults to Goerli testnet)
+            // @return {Connection} Interface to access the Tableland network and target chain
+            // tableland chains
+            // {
+            //   "ethereum-goerli": {
+            //     "name": "goerli",
+            //     "phrase": "Ethereum Goerli",
+            //     "chainId": 5,
+            //     "contract": "0xDA8EA22d092307874f30A1F277D1388dca0BA97a",
+            //     "host": "https://testnet.tableland.network"
+            //   },
+            //   "optimism-kovan": {
+            //     "name": "optimism-kovan",
+            //     "phrase": "Optimism Kovan",
+            //     "chainId": 69,
+            //     "contract": "0xf2C9Fc73884A9c6e6Db58778176Ab67989139D06",
+            //     "host": "https://testnet.tableland.network"
+            //   },
+            //   "polygon-mumbai": {
+            //     "name": "maticmum",
+            //     "phrase": "Polygon Testnet",
+            //     "chainId": 80001,
+            //     "contract": "0x4b48841d4b32C4650E4ABc117A03FE8B51f38F68",
+            //     "host": "https://testnet.tableland.network"
+            //   },
+            //   "local-tableland": {
+            //     "name": "localhost",
+            //     "phrase": "Local Tableland",
+            //     "chainId": 31337,
+            //     "contract": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+            //     "host": "http://localhost:8080"
+            //   }
+            // }
+            // const localTestnet = SUPPORTED_CHAINS.custom;
+
+            const polygonTestnet = SUPPORTED_CHAINS["polygon-mumbai"];
+            // Connect to the Tableland network
+            const tableland = await connect({
+              name: polygonTestnet.name,
+              phrase: polygonTestnet.phrase,
+              chainId: polygonTestnet.chainId,
+              contract: polygonTestnet.contract,
+              host: polygonTestnet.host,
+            })
+              .then(async (connection) => {
+                // Run a SQL select on our Mojo table
+                // const results = await connection.read(`SELECT * FROM mojo_80001_554`);
+                const results = await connection.read(`SELECT * FROM mojo_80001_1199`);
+                const entries = resultsToObjects(results);
+                return entries;
+              })
+              .then((data) => {
+                // Format and store our data in the tracks[] array
+                this.resetTracks();
+                for (const { id, external_link } of data) {
+                  console.log(`${id}: ${external_link}`);
+                  this.addTracks({ id, external_link });
+                }
+              });
+          }
+        } catch (err) {
+          console.error("Error loading Tracks:", err);
+          return err;
+        }
+        this.setLoading(false);
+      },
+
+
+
+
 
     /**
      * Creates a row entry for new NFT in Tableland,
@@ -410,128 +558,7 @@ export const useStore = defineStore({
       this.setLoading(false);
     },
 
-    /**
-     * Search Nfts on Tableland by Category ID or by Name
-     * @param {String} cid
-     * @param {String} name
-     */
-    async searchMojoNfts(id, name) {
-      console.log("Search by ID:", id);
-      console.log("Search by Name:", name);
 
-      this.setLoading(true);
-      // Run a SQL SELECT query
-      try {
-        /*
-         * First make sure we have access to window.ethereum
-         */
-        const { ethereum } = window;
-        if (ethereum) {
-          const provider = new ethers.providers.Web3Provider(ethereum);
-          const signer = provider.getSigner();
-
-          // ... access chain config information for localhost or Polygon Mumbai
-          // Connect to the Tableland testnet (defaults to Goerli testnet)
-          // @return {Connection} Interface to access the Tableland network and target chain
-          // tableland chains
-          // {
-          //   "ethereum-goerli": {
-          //     "name": "goerli",
-          //     "phrase": "Ethereum Goerli",
-          //     "chainId": 5,
-          //     "contract": "0xDA8EA22d092307874f30A1F277D1388dca0BA97a",
-          //     "host": "https://testnet.tableland.network"
-          //   },
-          //   "optimism-kovan": {
-          //     "name": "optimism-kovan",
-          //     "phrase": "Optimism Kovan",
-          //     "chainId": 69,
-          //     "contract": "0xf2C9Fc73884A9c6e6Db58778176Ab67989139D06",
-          //     "host": "https://testnet.tableland.network"
-          //   },
-          //   "polygon-mumbai": {
-          //     "name": "maticmum",
-          //     "phrase": "Polygon Testnet",
-          //     "chainId": 80001,
-          //     "contract": "0x4b48841d4b32C4650E4ABc117A03FE8B51f38F68",
-          //     "host": "https://testnet.tableland.network"
-          //   },
-          //   "local-tableland": {
-          //     "name": "localhost",
-          //     "phrase": "Local Tableland",
-          //     "chainId": 31337,
-          //     "contract": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
-          //     "host": "http://localhost:8080"
-          //   }
-          // }
-          // const localTestnet = SUPPORTED_CHAINS.custom;
-
-          const polygonTestnet = SUPPORTED_CHAINS["polygon-mumbai"];
-          // Connect to the Tableland network
-          const tableland = await connect({
-            name: polygonTestnet.name,
-            phrase: polygonTestnet.phrase,
-            chainId: polygonTestnet.chainId,
-            contract: polygonTestnet.contract,
-            host: polygonTestnet.host,
-          })
-            .then(async (connection) => {
-              // Run a SQL select on our Mojo table
-              // const results = await connection.read(`SELECT * FROM mojo_80001_554`);
-              const results = await connection.read(`SELECT * FROM mojo_80001_1199`);
-              const entries = resultsToObjects(results);
-              return entries;
-            })
-            .then((data) => {
-              // Format and store our data in the tracks[] array
-              this.resetTracks();
-              for (const { id, external_link } of data) {
-                console.log(`${id}: ${external_link}`);
-                this.addTracks({ id, external_link });
-              }
-            });
-        }
-      } catch (err) {
-        console.error("Error loading Tracks:", err);
-        return err;
-      }
-      this.setLoading(false);
-    },
-
-    /**
-     * Update Shorten Link for File
-     * @param {String} cid
-     * @param {String} link
-     */
-    updateShortenLink(cid, link) {
-      this.results = this.results.map((result) => {
-        if (result.cid === cid) {
-          return { ...result, shorten: link };
-        }
-        return result;
-      });
-      db.data.results = [...this.results];
-      db.write();
-    },
-
-    /**
-     * Fetch New Arrivals
-     * @param {String} cid
-     * @param {String} link
-     */
-    async fetchNewArrivals() {
-      this.loading = true;
-      const response = await fetch("/tracks/new-arrivals.json");
-      try {
-        const result = await response.json();
-        this.newArrivals = result;
-      } catch (err) {
-        this.newArrivals = [];
-        console.error("Error loading new arrivals:", err);
-        return err;
-      }
-      this.loading = false;
-    },
 
     /**
      * NFT PORT API - Search NFTs by Name and filter by Contract Address

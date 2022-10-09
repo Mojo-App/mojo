@@ -3,7 +3,7 @@
     <div class="main">
       <section id="collection">
         <div class="left">
-          <h2>chains</h2>
+          <h2>Blockchains</h2>
           <ul class="blockchain-list">
             <li
               v-for="chain of blockchains"
@@ -469,10 +469,11 @@ section#collection-content {
         }
 
         ul.blockchain-list {
+          min-width: 300px;
           list-style-type: none;
           list-style-position: outside;
-          margin-block-start: 0;
-          margin-block-end: 1em;
+          margin-block-start: 0.5em;
+          margin-block-end: 0;
           margin-inline-start: 0;
           margin-inline-end: 0px;
           padding-inline-start: 0;
@@ -481,13 +482,12 @@ section#collection-content {
           li {
             font-size: 22px;
             font-weight: 700;
-            line-height: 1.75rem;
-            padding-top: 0.75rem;
-            padding-bottom: 0.75rem;
+            line-height: 1.7rem;
+            padding-top: 0.7rem;
+            padding-bottom: 0.5rem;
             padding-left: 1rem;
             padding-right: 1rem;
             border-bottom: 1px solid #1a1a1a;
-            cursor: pointer;
             transition: 0.4s;
             cursor: pointer;
 
@@ -495,7 +495,10 @@ section#collection-content {
               color: $white;
               font-weight: 900;
             }
-
+            &:focus {
+              color: #fff;
+              font-weight: 900;
+            }
             &:active {
               color: $white;
               font-weight: 900;
@@ -505,7 +508,7 @@ section#collection-content {
 
         .li-active {
           color: #fff;
-          font-weight: 600;
+          font-weight: 900;
         }
 
         .blockchain-list-play-button {

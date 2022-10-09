@@ -92,13 +92,13 @@ async function connectWallet() {
 @import "../assets/styles/mixins.scss";
 
 .connect-wallet-button {
-  color: $white;
-  background-color: $mojo-green;
+  color: $black;
+  background-color: $white;
   font-size: 18px;
   font-weight: bold;
   width: auto;
   height: 55px;
-  border: 0;
+  border: 2px solid $mojo-green;
   border-radius: 30px;
   padding-left: 60px;
   padding-right: 60px;
@@ -106,18 +106,18 @@ async function connectWallet() {
   cursor: pointer;
 
   &:hover {
-    color: $black;
+    color: $mojo-blue;
   }
 }
 
 .connect-wallet-small-button {
-  color: $white;
-  background-color: $mojo-green;
+  color: $black;
+  background-color: $white;
   font-size: 14px;
   font-weight: bold;
   width: auto;
   height: 35px;
-  border: 0;
+  border: 2px solid $mojo-green;
   border-radius: 30px;
   padding-left: 20px;
   padding-right: 20px;
@@ -126,18 +126,18 @@ async function connectWallet() {
   cursor: pointer;
 
   &:hover {
-    color: $black;
+    color: $mojo-blue;
   }
 }
 
 .profile-wallet-button {
-  color: $white;
-  background-color: $mojo-blue;
+  color: $black;
+  background-color: $white;
   font-size: 18px;
   font-weight: bold;
   width: auto;
   height: 55px;
-  border: 0;
+  border: 2px solid $mojo-blue;
   border-radius: 30px;
   padding-left: 60px;
   padding-right: 60px;
@@ -145,18 +145,18 @@ async function connectWallet() {
   cursor: pointer;
 
   &:hover {
-    color: $black;
+    color: $mojo-light-blue;
   }
 }
 
 .profile-wallet-small-button {
-  color: $white;
-  background-color: $mojo-blue;
+  color: $black;
+  background-color: $white;
   font-size: 14px;
   font-weight: bold;
   width: auto;
   height: 35px;
-  border: 0;
+  border: 2px solid $mojo-blue;
   border-radius: 30px;
   padding-left: 20px;
   padding-right: 20px;
@@ -165,7 +165,87 @@ async function connectWallet() {
   cursor: pointer;
 
   &:hover {
-    color: $black;
+    color: $mojo-light-blue;
+  }
+}
+
+body.dark-theme {
+  .connect-wallet-button {
+    color: $mojo-green;
+    background-color: $white;
+    font-size: 18px;
+    font-weight: bold;
+    width: auto;
+    height: 55px;
+    border: 2px solid $mojo-green;
+    border-radius: 30px;
+    padding-left: 60px;
+    padding-right: 60px;
+    transition: 0.4s;
+    cursor: pointer;
+
+    &:hover {
+      color: $mojo-blue;
+    }
+  }
+
+  .connect-wallet-small-button {
+    color: $mojo-green;
+    background-color: $black;
+    font-size: 14px;
+    font-weight: bold;
+    width: auto;
+    height: 35px;
+    border: 2px solid $mojo-green;
+    border-radius: 30px;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-right: 10px;
+    transition: 0.4s;
+    cursor: pointer;
+
+    &:hover {
+      color: $mojo-blue;
+    }
+  }
+
+  .profile-wallet-button {
+    color: $mojo-blue;
+    background-color: $black;
+    font-size: 18px;
+    font-weight: bold;
+    width: auto;
+    height: 55px;
+    border: 2px solid $mojo-blue;
+    border-radius: 30px;
+    padding-left: 60px;
+    padding-right: 60px;
+    transition: 0.4s;
+    cursor: pointer;
+
+    &:hover {
+      color: $mojo-green;
+    }
+  }
+
+  .profile-wallet-small-button {
+    color: $mojo-blue;
+    background-color: $black;
+    font-size: 14px;
+    font-weight: bold;
+    width: auto;
+    height: 35px;
+    border: 2px solid $mojo-blue;
+    border-radius: 30px;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-right: 10px;
+    transition: 0.4s;
+    cursor: pointer;
+
+    &:hover {
+      color: $mojo-green;
+    }
   }
 }
 </style>

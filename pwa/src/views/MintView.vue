@@ -1973,7 +1973,7 @@ section#mint-content {
       }
 
       .left {
-        width: 100%;
+        width: 45%;
         height: 100%;
         display: flex;
         flex-direction: row;
@@ -1981,16 +1981,12 @@ section#mint-content {
         justify-content: center;
         align-items: flex-end;
 
-        @include breakpoint($breakpoint-sm) {
-          width: 50%;
-        }
-
         @include breakpoint($breakpoint-md) {
-          width: 50%;
+          width: 100%;
         }
 
-        @include breakpoint($breakpoint-xl) {
-          width: 60%;
+        @include breakpoint($breakpoint-sm) {
+          width: 100%;
         }
 
         .connect-message {
@@ -2580,45 +2576,37 @@ section#mint-content {
       }
 
       .right {
-        width: 100%;
+        width: 45%;
         display: flex;
         flex-direction: column;
         align-content: center;
         justify-content: center;
         align-items: flex-start;
 
-        @include breakpoint($breakpoint-sm) {
-          width: 50%;
-        }
-
         @include breakpoint($breakpoint-md) {
           width: 50%;
         }
 
-        @include breakpoint($breakpoint-xl) {
-          width: 40%;
-        }
-
         .form-container {
           display: flex;
-          width: 99%;
+          width: 98%;
           height: 505px;
           flex-direction: column;
           justify-content: center;
           align-items: center;
           border: 4px solid var(--gradient-100);
-          border-top-right-radius: 0;
-          border-bottom-right-radius: 0;
-          border-bottom-left-radius: 1em;
-          border-bottom-right-radius: 1em;
-          padding: 30px 0 30px 0;
+          border-top-right-radius: 1rem;
+          border-bottom-right-radius: 1rem;
+          border-bottom-left-radius: 0;
+          padding: 30px 20px;
 
           @include breakpoint($medium) {
             width: 100%;
-            border-top-right-radius: 1rem;
-            border-bottom-right-radius: 1rem;
-            border-bottom-left-radius: 0;
-            padding: 30px 20px;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 1em;
+            border-bottom-right-radius: 1em;
+            padding: 30px 0 30px 0;
           }
 
           h2 {

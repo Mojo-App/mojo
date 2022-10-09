@@ -10,6 +10,7 @@ declare module '@vue/runtime-core' {
     ArbitrumNftCard: typeof import('./src/components/ArbitrumNftCard.vue')['default']
     ArrowUp: typeof import('./src/components/icons/ArrowUp.vue')['default']
     ConnectWalletButton: typeof import('./src/components/ConnectWalletButton.vue')['default']
+    HeroSection: typeof import('./src/components/homeComponents/HeroSection.vue')['default']
     IMdiBrightness4: typeof import('~icons/mdi/brightness4')['default']
     IMdiBrightness7: typeof import('~icons/mdi/brightness7')['default']
     IMdiFlashOutline: typeof import('~icons/mdi/flash-outline')['default']

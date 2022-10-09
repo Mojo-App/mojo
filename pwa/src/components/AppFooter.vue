@@ -2,7 +2,7 @@
   <footer id="footer">
     <div class="footer-title">
       <span
-        >Web3 content streaming powered by
+        >web3 content streaming powered by
         <a href="https://infura.io/product/ipfs" alt="IPFS" target="_blank" rel="noopener">IPFS</a>
         &amp;
         <a href="https://filecoin.io/" alt="Filecoin" target="_blank" rel="noopener"
@@ -17,11 +17,11 @@
           alt="HackFS"
           target="_blank"
           rel="noopener"
-          >HackFS</a
+          >hackFS</a
         >
-        <a href="https://github.com/Mojo-App" alt="GitHub" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/Mojo-App" alt="GitHub" target="_blank" rel="noopener">github</a>
         <a href="https://twitter.com/MojoMusicNFT" alt="Twitter" target="_blank" rel="noopener"
-          >Twitter</a
+          >twitter</a
         >
       </nav>
     </div>
@@ -42,9 +42,10 @@ export default {
   align-items: center;
   transition: border-top 0.5s ease;
   border-top: 1px solid #000000;
-  padding: 10px 0;
+  padding: 1em 64px;
+
   @include breakpoint($medium) {
-    padding: 1em 64px;
+    padding: 10px 0;
   }
 
   color: #000000;
@@ -54,33 +55,36 @@ export default {
   .footer-title {
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 1em 0 0 0;
-    font-size: 0.7rem;
+    justify-content: flex-start;
+    padding: 0.3em;
+    font-size: 0.8rem;
     @include breakpoint($medium) {
-      padding: 0.3em;
-      font-size: 0.8rem;
-      justify-content: flex-start;
+      padding: 1em 0 0 0;
+      font-size: 0.7rem;
+      justify-content: center;
     }
 
     span {
-      font-size: 0.6rem;
+      font-size: 0.8rem;
       @include breakpoint($medium) {
-        font-size: 0.8rem;
+        font-size: 0.6rem;
       }
       a {
-        font-size: 0.6rem;
+        font-size: 0.8rem;
         color: var(--contrast-color);
         padding-bottom: 1px;
         text-decoration: none;
-        border-bottom: 1px solid;
+        border-bottom: 0.5px solid;
         cursor: pointer;
         @include breakpoint($medium) {
-          font-size: 0.8rem;
+          font-size: 0.6rem;
         }
-
-        &.active {
+        &:hover {
           font-weight: bold;
+          border-bottom: 0.5px solid $mojo-light-blue;
+        }
+        &:focus {
+          border-bottom: 0.5px solid $mojo-light-blue;
         }
       }
     }
@@ -93,30 +97,34 @@ export default {
     .footer-navbar {
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-end;
       margin: 0;
-      padding: 0;
+      padding: 0.3em;
       font-size: 0.8rem;
       @include breakpoint($medium) {
-        padding: 0.3em;
+        padding: 0;
         font-size: 0.8rem;
-        justify-content: flex-end;
+        justify-content: center;
       }
 
       a {
-        font-size: 0.6rem;
+        font-size: 0.8rem;
         color: var(--contrast-color);
         margin-right: 14px;
         padding-bottom: 1px;
         text-decoration: none;
-        border-bottom: 1px solid;
+        border-bottom: 0.5px solid;
+        transition: 0.4s;
         cursor: pointer;
         @include breakpoint($medium) {
-          font-size: 0.8rem;
+          font-size: 0.6rem;
         }
-
-        &.active {
+        &:hover {
           font-weight: bold;
+          border-bottom: 0.5px solid $mojo-light-blue;
+        }
+        &:focus {
+          border-bottom: 0.5px solid $mojo-light-blue;
         }
       }
 

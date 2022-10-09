@@ -42,14 +42,11 @@
 </template>
 <script>
 import { ref, onMounted } from "vue";
-
 /* Import our Pinia Store & Refs */
 import { storeToRefs } from "pinia";
 import { useStore } from "../store";
-
 /* Components */
 import ConnectWalletButton from "../components/ConnectWalletButton.vue";
-
 /* LFG */
 export default {
   name: "AppHeader",
@@ -58,11 +55,9 @@ export default {
     /* Init Store */
     const store = useStore();
     const { account } = storeToRefs(store);
-
     /* Darth Vader Mode */
     const isDarkClassAvailable = document.body.classList.contains("dark-theme");
     const isDark = ref(isDarkClassAvailable);
-
     /**
      * Get our current 🦊 Metamask account details
      */
@@ -77,9 +72,6 @@ export default {
         const accounts = await ethereum.request({ method: "eth_accounts" });
         if (accounts.length !== 0) {
           store.updateAccount(accounts[0]);
-          /* Console log with some style */
-          const stylesAccounts = ["color: black", "background: cyan"].join(";");
-          console.log("%c🧰 Web3 Account %s 🧰", stylesAccounts, account.value);
         } else {
           console.log("⚠ No authorized MetaMask accounts connected!");
         }
@@ -87,7 +79,6 @@ export default {
         console.log(error);
       }
     };
-
     /**
      * Toggle our theme colors and animations
      */
@@ -141,7 +132,7 @@ export default {
       font-size: 1.1rem;
       font-weight: 500;
       margin: 0 0 8px 0;
-      color: $white;
+      color: $black;
       transition: 0.4s;
       .blue-hover {
         &:hover {
@@ -178,20 +169,23 @@ export default {
         border-bottom: 1px solid;
         transition: 0.4s;
         cursor: pointer;
-
         &:hover {
-          color: $mojo-blue;
+          border-bottom: 1px solid $mojo-light-blue;
           font-weight: bold;
         }
-        &.active {
-          color: $mojo-blue;
+        &:focus {
+          border-bottom: 1px solid $mojo-light-blue;
+          font-weight: bold;
+        }
+        &:active {
+          border-bottom: 1px solid $mojo-light-blue;
           font-weight: bold;
         }
       }
 
       svg {
         cursor: pointer;
-        font-size: 2em;
+        font-size: 1.7em;
       }
     }
   }
@@ -207,6 +201,29 @@ body.dark-theme {
 
     .header-logo {
       border: 1px solid #ffffff;
+    }
+
+    .slogan {
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin: 0 0 8px 0;
+      color: $white;
+      transition: 0.4s;
+      .blue-hover {
+        &:hover {
+          color: $mojo-blue;
+        }
+      }
+      .red-hover {
+        &:hover {
+          color: $mojo-red;
+        }
+      }
+      .purple-hover {
+        &:hover {
+          color: $mojo-purple;
+        }
+      }
     }
   }
 }

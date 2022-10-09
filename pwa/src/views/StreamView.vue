@@ -6,13 +6,13 @@
           <h2>Find your groove</h2>
           <ul class="category-list">
             <li
-              v-for="category of categories"
-              :key="category"
+              v-for="category of musicCategories"
+              :key="category.id"
               @click="selectCategory(category)"
-              :class="categorySelectedId === category.id ? 'li-active' : ''"
+              :class="categorySelected === category.value ? 'li-active' : ''"
             >
               <PlayButtonWhite
-                v-if="categorySelectedId === category.id"
+                v-if="categorySelected === category.value"
                 class="category-list-play-button"
               />{{ category.label }}
             </li>
@@ -82,12 +82,11 @@ var notyf = new Notyf({
     },
   ],
 });
-// Init Store
+/* Init Store */
 const store = useStore();
-// Store Values and Methods
-const { account, trackList } = storeToRefs(store);
-// Local Vars
-const categorySelectedId = ref(1);
+const { musicCategories, trackList } = storeToRefs(store);
+/* Local variables */
+const categorySelected = ref("acoustic");
 
 /**
  * Check if our Wallet is Connected to 🦊 Metamask
@@ -110,65 +109,58 @@ async function checkIfWalletIsConnected() {
     console.log(error);
   }
 }
+
 /* Track Player */
-const categories = ref([
-  { id: 1, label: "Fresh Jams" },
-  { id: 2, label: "Dance & Electronica" },
-  { id: 3, label: "Pop" },
-  { id: 4, label: "Jazz & Classical" },
-  { id: 5, label: "World & Ethnic" },
-  { id: 6, label: "Cinematic & Soundscapes" },
-  { id: 7, label: "More" },
-]);
+// const categories = ref([
+//   { id: 1, value: "fresh-jams", label: "Fresh Jams" },
+//   { id: 2, value: "", label: "Dance & Electronica" },
+//   { id: 3, value: "", label: "Pop" },
+//   { id: 4, value: "", label: "Jazz & Classical" },
+//   { id: 5, value: "", label: "World & Ethnic" },
+//   { id: 6, value: "", label: "Cinematic & Soundscapes" },
+//   { id: 7, value: "", label: "More" },
+// ]);
+
 /* Select a new Category */
 function selectCategory(category) {
-  categorySelectedId.value = category.id;
-  console.log("categorySelectedId:", categorySelectedId.value);
+  categorySelected.value = category.value;
+  console.log("Music Category Selected:", categorySelected.value);
 }
+
 /**
  * Fetch NFT Audio/Media category data from Tableland
  */
-// async function fetchCategories() {
-//   categories.value = null;
-//   try {
-//     const res = await fetch(
-//       `https://testnet.tableland.network/query?mode=list&s=SELECT%20*%20FROM%20mojo_80001_554`
-//     );
-//     console.log("Categories Loaded:", res);
-//     categories.value = await res.json();
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
-
-/* Fetch new NFT audio/media by Category or Name */
-async function fetchData() {
+async function fetchMusicCategories() {
   try {
-    await store.searchMojoNfts(categorySelectedId.value, "");
-    /* Console log with some style */
+    const categories = await store.getCategories();
     const stylesTracks = ["color: black", "background: yellow"].join(";");
-    console.log(
-      "%c📻 NFT Audio/Media fetched : %s 📻",
-      stylesTracks,
-      JSON.stringify(trackList.value)
-    );
+    console.log("%c📻 Music Categories fetched : %s ", stylesTracks, JSON.stringify(categories));
   } catch (error) {
     console.log(error);
   }
 }
 
-/* Watch for Category Changes */
-watch(categorySelectedId, fetchData);
+/* Fetch new NFT audio/media by Category or Name */
+async function fetchData() {
+  console.log("categorySelected.value", categorySelected.value);
+  // try {
+  //   await store.searchMojoNfts(categorySelected.value, "");
+  // } catch (error) {
+  //   console.log(error);
+  // }
+}
 
-onMounted(() => {
+/* Watch for Category Changes */
+watch(categorySelected, fetchData);
+
+onMounted(async () => {
   window.scrollTo({
     top: 0,
     left: 0,
     behavior: "smooth",
   });
-  fetchData();
-  // fetchCategories();
-  checkIfWalletIsConnected();
+  await checkIfWalletIsConnected();
+  await fetchMusicCategories();
 });
 </script>
 <style lang="scss" scoped>
@@ -193,9 +185,9 @@ section#stream-content {
       display: flex;
       flex-direction: row;
       align-content: center;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
-      padding: 0 10px;
+      padding: 10px;
       overflow: scroll;
 
       @include breakpoint($medium) {
@@ -213,7 +205,7 @@ section#stream-content {
         align-content: center;
         justify-content: center;
         align-items: flex-start;
-        padding: 50px 20px 60px 60px;
+        padding: 50px 20px 50px 50px;
 
         @include breakpoint($medium) {
           width: 100%;
@@ -222,7 +214,7 @@ section#stream-content {
         h2 {
           width: 100%;
           color: $white;
-          font-size: 34px;
+          font-size: 31px;
           font-style: normal;
           font-weight: 700;
           line-height: 42px;
@@ -231,66 +223,50 @@ section#stream-content {
         }
 
         ul.category-list {
+          min-width: 300px;
           list-style-type: none;
           list-style-position: outside;
-          margin-block-start: 1em;
-          margin-block-end: 1em;
-          margin-inline-start: 0px;
-          margin-inline-end: 0px;
+          margin-block-start: 0.5em;
+          margin-block-end: 0;
+          margin-inline-start: 0;
+          margin-inline-end: 0;
           padding-inline-start: 0;
           border-top: 1px solid #1a1a1a;
 
           li {
             font-size: 22px;
             font-weight: 700;
-            line-height: 1.75rem;
-            padding-top: 0.75rem;
-            padding-bottom: 0.75rem;
+            line-height: 1.7rem;
+            padding-top: 0.7rem;
+            padding-bottom: 0.5rem;
             padding-left: 1rem;
             padding-right: 1rem;
             border-bottom: 1px solid #1a1a1a;
+            transition: 0.4s;
+            cursor: pointer;
 
             &:hover {
               color: #fff;
-              cursor: pointer;
+              font-weight: 900;
             }
-
+            &:focus {
+              color: #fff;
+              font-weight: 900;
+            }
             &:active {
               color: #fff;
-              font-weight: 600;
+              font-weight: 900;
             }
           }
         }
 
         .li-active {
           color: #fff;
-          font-weight: 600;
+          font-weight: 900;
         }
 
         .category-list-play-button {
           margin: 0 5px -2px -15px;
-        }
-
-        a {
-          color: #1a1a1a;
-          font-weight: bold;
-          border-bottom: 1px solid var(--contrast-color);
-          text-decoration: none;
-
-          &.author {
-            padding: 6px 12px;
-            border-radius: 8px;
-            background-color: var(--gradient-100);
-            color: var(--icon-color);
-            font-size: 0.85rem;
-
-            border-bottom: none;
-          }
-        }
-
-        p {
-          line-height: 1.7;
-          margin-bottom: 20px;
         }
       }
 
@@ -301,11 +277,7 @@ section#stream-content {
         align-content: center;
         justify-content: center;
         align-items: center;
-        padding: 0;
-
-        @include breakpoint($medium) {
-          padding: 60px 20px 0;
-        }
+        padding: 50px 20px 60px 60px;
 
         .track-list {
           width: 100%;
