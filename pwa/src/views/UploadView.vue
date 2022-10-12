@@ -54,6 +54,14 @@ section#content {
   height: 100%;
   overflow: hidden;
 
+  .bg-shape {
+    background: #fff;
+    background-image: url("./BlackCorner.png");
+    background-repeat: no-repeat;
+    background-position: center right;
+    background-size: auto;
+  }
+
   .main {
     display: flex;
     align-content: center;
@@ -61,9 +69,9 @@ section#content {
     justify-content: center;
     height: 99%;
     color: #1a1a1a;
-    background: $mojo-purple;
-    padding: 1% 10px 0 10px;
-    overflow: hidden;
+    background: $mojo-blue;
+    padding: 20px 10px 40px 10px;
+    overflow: scroll;
 
     .main-content {
       position: absolute;
@@ -76,19 +84,22 @@ section#content {
         width: 100%;
         height: 360px;
 
-        @include breakpoint($breakpoint-sm) {
+        @include breakpoint($break-sm) {
           width: 400px;
           height: 500px;
         }
-        @include breakpoint($breakpoint-md) {
+
+        @include breakpoint($break-md) {
           width: 500px;
           height: 600px;
         }
-        @include breakpoint($breakpoint-xl) {
+
+        @include breakpoint($break-xxl) {
           width: 600px;
           height: 600px;
         }
-        @include breakpoint($x3xl) {
+
+        @include breakpoint($break-xxxl) {
           width: 600px;
           height: 600px;
         }

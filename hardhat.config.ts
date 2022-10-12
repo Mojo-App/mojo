@@ -60,7 +60,7 @@ const config: HardhatUserConfig = {
       polygonMumbai: process.env.POLYSCAN_API_KEY || "",
     },
   },
-  defaultNetwork: 'polygon-mumbai',
+  defaultNetwork: "polygon-mumbai",
   networks: {
     /* Main Networks */
     ethereum: {
@@ -108,6 +108,8 @@ const config: HardhatUserConfig = {
         process.env.OPTIMISM_GOERLI_PRIVATE_KEY !== undefined
           ? [process.env.OPTIMISM_GOERLI_PRIVATE_KEY]
           : [],
+      gas: 2100000,
+      gasPrice: 8000000000
     },
     "polygon-mumbai": {
       url: `https://polygon-mumbai.g.alchemy.com/v2/${
@@ -117,6 +119,8 @@ const config: HardhatUserConfig = {
         process.env.POLYGON_MUMBAI_PRIVATE_KEY !== undefined
           ? [process.env.POLYGON_MUMBAI_PRIVATE_KEY]
           : [],
+      gas: 2100000,
+      gasPrice: 8000000000
     },
     /* Development Networks */
     "optimism-kovan-staging": {
@@ -127,6 +131,8 @@ const config: HardhatUserConfig = {
         process.env.OPTIMISM_GOERLI_STAGING_PRIVATE_KEY !== undefined
           ? [process.env.OPTIMISM_GOERLI_STAGING_PRIVATE_KEY]
           : [],
+      gas: 2100000,
+      gasPrice: 8000000000
     },
     hardhat: {
       mining: {

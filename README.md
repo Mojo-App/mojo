@@ -44,16 +44,6 @@ Tableland is a web3-native database that can be used to store data in relational
 
 Tableland solves the web3 metadata problem with ERC721-based tables that are powered by smart contracts. Create, insert, and update tables, all using smart contracts and/or libraries built on top of Tableland smart contracts. The metadata can also be dynamic and change based on user interactions or on-chain events. The Tableland contracts are currently deployed on Polygon mainnet & Mumbai testnet, as well as a number of other chains with more coming soon.
 
-Tableland Examples
-
-```shell
-https://testnet.tableland.network/query?mode=list&s=SELECT%20*%20FROM%20mojo_80001_1199
-```
-
-```shell
-https://testnet.tableland.network/query?s=SELECT%20%27id%27,id,%27external_link%27,external_link%20FROM%20mojo_80001_1199%20WHERE%20id%3D1
-```
-
 ### NFTPort Enhanced APIs 🦸🏻
 
 NFTPort provide core products which make the developer experience as easy as possible and accelerate NFT application development. All of them enable to focus on building the best product for your users, instead of reinventing the NFT infrastructure wheel.

@@ -426,7 +426,7 @@ async function fetchTokens() {
   if (topTokens.value.length === 0) {
     try {
       let topTokens = await store.contractNftSearch(
-        "0xefadc46bb78b01195a1e12c82a584caf5403585c",
+        "0xf12fd10f278c1fb29a62d6338d050cf2832f8080",
         "ethereum",
         "metadata",
         "true",
@@ -444,11 +444,11 @@ async function fetchTokens() {
   if (latestTokens.value.length === 0) {
     try {
       let latestTokens = await store.contractNftSearch(
-        "0x19b703f65aa7e1e775bd06c2aa0d0d08c80f1c45",
+        "0x317cb9eb5e2fdbfe4a58a3750a34136729b11280",
         "ethereum",
         "metadata",
         "true",
-        8,
+        4,
         1
       );
       if (latestTokens.nfts && latestTokens.total > 0) {
@@ -462,11 +462,11 @@ async function fetchTokens() {
   if (trendingTokens.value.length === 0) {
     try {
       let trendingTokens = await store.contractNftSearch(
-        "0x719c6d392fc659f4fe9b0576cbc46e18939687a7",
+        "0xef44e83db68b9e6df9ce6cc9343653c733762617",
         "ethereum",
         "metadata",
         "true",
-        4,
+        8,
         1
       );
       if (trendingTokens.nfts) {
@@ -651,6 +651,14 @@ section#explore-content {
   position: relative;
   height: 100%;
   overflow: scroll;
+
+  .bg-shape {
+    background: #fff;
+    background-image: url("./BlackCorner.png");
+    background-repeat: no-repeat;
+    background-position: center right;
+    background-size: auto;
+  }
 
   .main {
     width: 100%;
@@ -1514,7 +1522,7 @@ section#explore-content {
 
         .token-list {
           width: 100%;
-          max-width: 1280px;
+          max-width: $max-width;
           display: grid;
           grid-template-columns: repeat(4, 1fr);
           gap: 5px;
@@ -1522,24 +1530,25 @@ section#explore-content {
           justify-content: center;
           align-items: flex-start;
           margin: 0 auto 20px;
-          @include breakpoint($break-lg) {
-            width: 100%;
-            margin: 0 auto 20px;
-            grid-template-columns: repeat(4, 1fr);
-          }
+
+          /* Tablet Landscape */
           @include breakpoint($break-md) {
-            width: 100%;
-            margin: 0 auto 20px;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr);
           }
+          /* Tablet Portrait LG */
           @include breakpoint($break-sm) {
-            width: 100%;
-            margin: 0 auto 20px;
+            grid-template-columns: repeat(3, 1fr);
+          }
+          /* Tablet Portrait SML */
+          @include breakpoint($break-ssm) {
+            grid-template-columns: repeat(2, 1fr);
+          }
+          /* Smartphone */
+          @include breakpoint($break-xs) {
             grid-template-columns: repeat(1, 1fr);
           }
-          @include breakpoint($break-xs) {
-            width: 100%;
-            margin: 0 auto 20px;
+          /* Old devices */
+          @include breakpoint($break-xxs) {
             grid-template-columns: repeat(1, 1fr);
           }
 
@@ -1612,12 +1621,13 @@ section#explore-content {
 
       .row-header {
         width: 100%;
-        max-width: 1280px;
+        max-width: $max-width;
         display: flex;
         flex-direction: row;
         align-content: flex-start;
         justify-content: center;
         align-items: center;
+        margin: 50px 0 0 0;
         @include breakpoint($break-md) {
           width: 83%;
           margin: 0 auto;
@@ -1655,7 +1665,7 @@ section#explore-content {
 
       .token-list {
         width: 100%;
-        max-width: 1280px;
+        max-width: $max-width;
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 20px;
@@ -1663,24 +1673,25 @@ section#explore-content {
         justify-content: center;
         align-items: flex-start;
         margin: 20px auto 0;
-        @include breakpoint($break-lg) {
-          width: 100%;
-          margin: 20px auto 0;
-          grid-template-columns: repeat(4, 1fr);
-        }
+
+        /* Tablet Landscape */
         @include breakpoint($break-md) {
-          width: 100%;
-          margin: 20px auto 0;
-          grid-template-columns: repeat(4, 1fr);
+          grid-template-columns: repeat(3, 1fr);
         }
+        /* Tablet Portrait LG */
         @include breakpoint($break-sm) {
-          width: 100%;
-          margin: 20px auto 0;
+          grid-template-columns: repeat(3, 1fr);
+        }
+        /* Tablet Portrait SML */
+        @include breakpoint($break-ssm) {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        /* Smartphone */
+        @include breakpoint($break-xs) {
           grid-template-columns: repeat(1, 1fr);
         }
-        @include breakpoint($break-xs) {
-          width: 100%;
-          margin: 20px auto 0;
+        /* Old devices */
+        @include breakpoint($break-xxs) {
           grid-template-columns: repeat(1, 1fr);
         }
       }
@@ -1709,7 +1720,7 @@ body.dark-theme {
 
 @media (min-width: 1024px) {
   section#marketplace {
-    min-height: 100vh;
+    min-height: $page-height;
     display: flex;
     align-items: center;
   }

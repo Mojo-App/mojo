@@ -86,7 +86,7 @@ var notyf = new Notyf({
 const store = useStore();
 const { musicCategories, trackList } = storeToRefs(store);
 /* Local variables */
-const categorySelected = ref("acoustic");
+const categorySelected = ref("fresh-jams");
 
 /**
  * Check if our Wallet is Connected to 🦊 Metamask
@@ -132,9 +132,7 @@ function selectCategory(category) {
  */
 async function fetchMusicCategories() {
   try {
-    const categories = await store.getCategories();
-    const stylesTracks = ["color: black", "background: yellow"].join(";");
-    console.log("%c📻 Music Categories fetched : %s ", stylesTracks, JSON.stringify(categories));
+    await store.getCategories();
   } catch (error) {
     console.log(error);
   }
@@ -172,6 +170,14 @@ section#stream-content {
   height: 100%;
   overflow: scroll;
 
+  .bg-shape {
+    background: #fff;
+    background-image: url("./BlackCorner.png");
+    background-repeat: no-repeat;
+    background-position: center right;
+    background-size: auto;
+  }
+
   .main {
     width: 100%;
     height: 100%;
@@ -190,12 +196,12 @@ section#stream-content {
       padding: 10px;
       overflow: scroll;
 
-      @include breakpoint($medium) {
+      @include breakpoint($break-ssm) {
         padding: 0;
         flex-direction: column;
         align-content: center;
         align-items: flex-start;
-        justify-content: center;
+        justify-content: flex-start;
       }
 
       .left {
@@ -207,7 +213,7 @@ section#stream-content {
         align-items: flex-start;
         padding: 50px 20px 50px 50px;
 
-        @include breakpoint($medium) {
+        @include breakpoint($break-ssm) {
           width: 100%;
         }
 
@@ -279,6 +285,10 @@ section#stream-content {
         align-items: center;
         padding: 50px 20px 60px 60px;
 
+        @include breakpoint($break-ssm) {
+          padding: 20px;
+        }
+
         .track-list {
           width: 100%;
           max-width: 960px;
@@ -292,7 +302,7 @@ section#stream-content {
           padding: 0 10px;
           overflow: hidden;
 
-          @include breakpoint($medium) {
+          @include breakpoint($break-ssm) {
             padding: 0;
           }
 
@@ -310,7 +320,7 @@ section#stream-content {
           font-size: 2rem;
           margin: 0;
 
-          @include breakpoint($medium) {
+          @include breakpoint($break-ssm) {
             font-size: 2.45rem;
           }
         }
@@ -327,7 +337,7 @@ body.dark-theme {
 
 @media (min-width: 1024px) {
   .stream {
-    min-height: 100vh;
+    min-height: $page-height;
     display: flex;
     align-items: center;
   }

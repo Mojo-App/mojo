@@ -157,6 +157,14 @@ section#account {
   justify-content: center;
   overflow: scroll;
 
+  .bg-shape {
+    background: #fff;
+    background-image: url("./BlackCorner.png");
+    background-repeat: no-repeat;
+    background-position: center right;
+    background-size: auto;
+  }
+
   .row {
     display: flex;
     flex-direction: column;
@@ -179,7 +187,7 @@ section#account {
     margin-block-start: 0;
     margin-block-end: 0.2em;
 
-    @include breakpoint($medium) {
+    @include breakpoint($break-ssm) {
       font-size: 2.25rem;
       margin-block-start: 0.3em;
       margin-block-end: 0.2em;
@@ -237,7 +245,7 @@ body.dark-theme {
 
 @media (min-width: 1024px) {
   .account {
-    min-height: 100vh;
+    min-height: $page-height;
     display: flex;
     align-items: center;
   }

@@ -274,7 +274,7 @@ code {
               width: 100%;
               margin: 0 auto 10px;
 
-              @include breakpoint($medium) {
+              @include breakpoint($break-ssm) {
                 height: 250px;
                 width: calc(100% - 1.6rem);
                 margin: 0 0.8rem 1em 0.8rem;

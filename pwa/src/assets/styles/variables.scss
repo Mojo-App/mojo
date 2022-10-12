@@ -1,7 +1,7 @@
 /* Mojo Colours */
 $mojo-red: #f23f3f;
 $mojo-pink: #e9429b;
-$mojo-yellow: #FFDB1E;
+$mojo-yellow: #ffdb1e;
 $mojo-green: #08d0a5;
 $mojo-blue: #2c67ff;
 $mojo-light-blue: #2bb5f0;
@@ -33,15 +33,11 @@ $gradient-one: linear-gradient(283.66deg, #e9429b 37.69%, #ffdb1e 100.73%);
 $gradient-two: linear-gradient(283.16deg, #e9429b 21.19%, #2bb5f0 100.56%);
 $gradient-three: linear-gradient(285.43deg, #2bb5f0 40.19%, #32c33a 101.31%);
 
+
 /* Responsive Breakpoints */
-$breakpoint-xs: 479px !default;
-$breakpoint-sm: 839px !default;
-$breakpoint-md: 959px !default;
-$breakpoint-lg: 1279px !default;
-$breakpoint-xl: 1439px !default;
-/* Responsive Breakpoints */
-$break-xs: 360px !default;
+$break-xxs: 360px !default;
 $break-xs: 479px !default;
+$break-ssm: 769px !default;
 $break-sm: 839px !default;
 $break-md: 959px !default;
 $break-lg: 1023px !default;
@@ -49,26 +45,6 @@ $break-xl: 1279px !default;
 $break-xxl: 1439px !default;
 $break-xxxl: 2872px !default;
 
-/* OR */
-$mobileSmall: 18em;
-$mobileMedium: 24em;
-$mobileLarge: 30em;
-$small: 36em;
-$medium: 48em;
-$large: 60em;
-$extraLarge: 72em;
-$desktop1280: 80em;
-$x1xl: 100em;
-$x2xl: 120em;
-$x3xl: 160em;
-
 /* Display Settings */
 $max-width: 1280px;
-$page-height: 60vh;
-$full-width: 100%;
-
-/* Header Settings */
-$header-height: 90px;
-$mobile-header-height: 80px;
-
-
+$page-height: 100vh;

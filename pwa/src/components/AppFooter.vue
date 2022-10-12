@@ -44,7 +44,7 @@ export default {
   border-top: 1px solid #000000;
   padding: 1em 64px;
 
-  @include breakpoint($medium) {
+  @include breakpoint($break-ssm) {
     padding: 10px 0;
   }
 
@@ -58,7 +58,7 @@ export default {
     justify-content: flex-start;
     padding: 0.3em;
     font-size: 0.8rem;
-    @include breakpoint($medium) {
+    @include breakpoint($break-ssm) {
       padding: 1em 0 0 0;
       font-size: 0.7rem;
       justify-content: center;
@@ -66,7 +66,7 @@ export default {
 
     span {
       font-size: 0.8rem;
-      @include breakpoint($medium) {
+      @include breakpoint($break-ssm) {
         font-size: 0.6rem;
       }
       a {
@@ -76,7 +76,7 @@ export default {
         text-decoration: none;
         border-bottom: 0.5px solid;
         cursor: pointer;
-        @include breakpoint($medium) {
+        @include breakpoint($break-ssm) {
           font-size: 0.6rem;
         }
         &:hover {
@@ -101,7 +101,7 @@ export default {
       margin: 0;
       padding: 0.3em;
       font-size: 0.8rem;
-      @include breakpoint($medium) {
+      @include breakpoint($break-ssm) {
         padding: 0;
         font-size: 0.8rem;
         justify-content: center;
@@ -116,7 +116,7 @@ export default {
         border-bottom: 0.5px solid;
         transition: 0.4s;
         cursor: pointer;
-        @include breakpoint($medium) {
+        @include breakpoint($break-ssm) {
           font-size: 0.6rem;
         }
         &:hover {

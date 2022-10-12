@@ -11,9 +11,9 @@
       >
         <input type="file" multiple ref="fileRef" @change="onFileChangedHandler" />
         <div class="dropzone-box" @click="openSelectFile">
-          <div class="sponsors-logo">
+          <!-- <div class="sponsors-logo">
             <img alt="IPFS" src="@/assets/images/IPFS.png" />
-          </div>
+          </div> -->
           <!-- Uploader Icon -->
           <i-mdi-timer-sand v-if="isUploading" class="icon-color" />
           <i-mdi-upload v-else class="icon-color" />
@@ -143,11 +143,10 @@ section#panel-upload {
   background-color: var(--gradient-100);
   border-top-left-radius: 1rem;
   border-bottom-left-radius: 1rem;
-  border-bottom-left-radius: 0;
   width: 100%;
   height: 100%;
 
-  @include breakpoint($medium) {
+  @include breakpoint($break-ssm) {
     margin-top: 0;
     padding-top: 0;
     border-top-left-radius: 1rem;
@@ -189,15 +188,18 @@ section#panel-upload {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-top: 20px;
+      margin-top: 60px;
       padding: 0.8rem;
       border-radius: 0.5rem;
       text-align: center;
+
       .sponsors-logo {
         margin-bottom: 1rem;
+
         img {
           height: 60px;
-          @include breakpoint($breakpoint-sm) {
+
+          @include breakpoint($break-sm) {
             height: 160px;
           }
         }
@@ -307,6 +309,7 @@ body.dark-theme {
     left: -35%;
     right: 100%;
   }
+
   60% {
     left: 100%;
     right: -90%;
@@ -317,15 +320,18 @@ body.dark-theme {
     right: -90%;
   }
 }
+
 @keyframes indeterminate-short {
   0% {
     left: -200%;
     right: 100%;
   }
+
   60% {
     left: 107%;
     right: -8%;
   }
+
   100% {
     left: 107%;
     right: -8%;
