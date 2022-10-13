@@ -206,15 +206,15 @@ export default {
   overflow: hidden;
   float: center;
   margin: 0 auto 20px;
-  @include breakpoint($breakpoint-sm) {
+  @include breakpoint($break-sm) {
     float: left;
     margin: 0 10px 20px 10px;
   }
-  @include breakpoint($breakpoint-md) {
+  @include breakpoint($break-md) {
     float: left;
     margin: 0 10px 20px 10px;
   }
-  @include breakpoint($breakpoint-xl) {
+  @include breakpoint($break-xxl) {
     float: left;
     margin: 0 20px 20px 0;
   }
@@ -271,14 +271,14 @@ export default {
 
 // .track:nth-child(2n) {
 //   margin: 0 0 20px 0;
-//   @include breakpoint($medium) {
+//   @include breakpoint($break-ssm) {
 //     margin: 0 20px 20px 0;
 //   }
 // }
 
 // .track:nth-child(3n) {
 //   margin: 0 20px 20px 0;
-//   @include breakpoint($medium) {
+//   @include breakpoint($break-ssm) {
 //     margin: 0 20px 20px 0;
 //     margin: 0 0 20px 0;
 //   }
@@ -286,7 +286,9 @@ export default {
 
 input[type="range"] {
   margin: auto;
+  appearance: none;
   -webkit-appearance: none;
+  -moz-appearance: none;
   position: relative;
   overflow: hidden;
   width: 100% !important;
@@ -307,7 +309,9 @@ input[type="range"]:focus {
  * 1. Set to 0 width and remove border for a slider without a thumb
  */
 ::-webkit-slider-thumb {
+  appearance: none;
   -webkit-appearance: none;
+  -moz-appearance: none;
   width: 0;
   /* 1 */
   height: 8px;

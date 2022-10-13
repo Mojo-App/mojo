@@ -249,9 +249,6 @@ export const useStore = defineStore({
     addToCount(amount) {
       this.counter += amount;
     },
-    resetNftFiles() {
-      this.filesNft = [];
-    },
     addNftFiles(...files) {
       this.filesNft.push(...files);
     },
@@ -261,6 +258,11 @@ export const useStore = defineStore({
         return !!cid;
       });
       db.data.nftResults = [...this.nftResults];
+      db.write();
+    },
+    resetNftFiles() {
+      this.nftResults = [];
+      db.data.nftResults = [];
       db.write();
     },
     /* IPFS Uploader */
@@ -344,7 +346,6 @@ export const useStore = defineStore({
       /* Loop through our Music Categories from Tableland */
       let i = 0;
       for (i in rows) {
-        console.log(rows[i]);
         let id = rows[i][0];
         let position = rows[i][1];
         let value = rows[i][2];
@@ -352,7 +353,6 @@ export const useStore = defineStore({
         this.musicCategories.push({ id: id, position: position, value: value, label: label });
         i++;
       }
-      // console.log("this.musicCategories", this.musicCategories);
     },
 
 

@@ -19,7 +19,7 @@
       </section>
       <section id="stream-home">
         <div class="row-header">
-          <h2><span class="mint-black">fresh</span>beats</h2>
+          <h2 class="left"><span class="mint-black">fresh</span>beats</h2>
         </div>
         <div v-if="homeTokens && homeTokens.length > 0" class="row token-list">
           <template v-for="token in homeTokens" :key="token.token_id">
@@ -97,9 +97,6 @@
       <section id="sponsors">
         <div class="row">
           <div class="sponsors-logo">
-            <SpheronLogo />
-          </div>
-          <div class="sponsors-logo">
             <PolygonLogo />
           </div>
           <div class="sponsors-logo">
@@ -148,7 +145,6 @@ import { useStore } from "../store";
 
 /* Logos */
 import Tableland from "../assets/svgs/TableLand.vue";
-import SpheronLogo from "../assets/svgs/SpheronLogo.vue";
 import PolygonLogo from "../assets/svgs/PolygonLogo.vue";
 import NFTStorage from "../assets/svgs/NFTStorage.vue";
 
@@ -226,26 +222,26 @@ async function fetchData() {
   if (homeTokens.value.length === 0) {
     try {
       let homeTokens = await store.contractNftSearch(
-        "0xa0e1b198bcc877a950a29512ab5c0ce1bb964c97",
-        "ethereum",
-        "metadata",
-        "true",
-        4,
-        1
-      );
-      console.log("Home NFTs:", JSON.stringify(homeTokens, "", 4));
-      if (homeTokens.nfts) {
-        store.addHomeTokens(...homeTokens.nfts);
-      }
-      let homeTokensRowTwo = await store.contractNftSearch(
         "0xefadc46bb78b01195a1e12c82a584caf5403585c",
         "ethereum",
         "metadata",
         "true",
-        4,
+        5,
         1
       );
-      console.log("Home NFTs:", JSON.stringify(homeTokensRowTwo, "", 4));
+      console.log("Home NFTs 1:", JSON.stringify(homeTokens, "", 4));
+      if (homeTokens.nfts) {
+        store.addHomeTokens(...homeTokens.nfts);
+      }
+      let homeTokensRowTwo = await store.contractNftSearch(
+        "0x719c6d392fc659f4fe9b0576cbc46e18939687a7",
+        "ethereum",
+        "metadata",
+        "true",
+        5,
+        1
+      );
+      console.log("Home NFTs 2:", JSON.stringify(homeTokensRowTwo, "", 4));
       if (homeTokensRowTwo.nfts) {
         store.addHomeTokens(...homeTokensRowTwo.nfts);
       }
@@ -290,7 +286,7 @@ section#content {
       justify-content: space-between;
       padding: 40px 20px;
 
-      @include breakpoint($medium) {
+      @include breakpoint($break-ssm) {
         flex-direction: column;
         justify-content: center;
         padding: 20px;
@@ -304,7 +300,7 @@ section#content {
         justify-content: center;
         padding: 20px;
 
-        @include breakpoint($medium) {
+        @include breakpoint($break-ssm) {
           width: 100%;
         }
 
@@ -331,7 +327,7 @@ section#content {
         flex-direction: column;
         padding: 20px;
 
-        @include breakpoint($medium) {
+        @include breakpoint($break-ssm) {
           width: 100%;
           align-content: center;
           justify-content: center;
@@ -375,11 +371,11 @@ section#content {
       align-items: center;
       justify-content: center;
       margin: 0 auto;
-      padding: 40px;
+      padding: 40px 40px 80px 40px;
 
       .row-header {
         width: 100%;
-        max-width: 1280px;
+        max-width: $max-width;
         display: flex;
         flex-direction: row;
         align-content: flex-start;
@@ -394,8 +390,13 @@ section#content {
           font-weight: 700;
           font-size: 36px;
           line-height: 42px;
-          text-align: center;
-
+          
+          .left{
+            text-align: left;
+          }
+          .right{
+            text-align: right;
+          }
           .mint-black {
             color: $black;
           }
@@ -414,11 +415,32 @@ section#content {
       .token-list {
         width: 100%;
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(5, 1fr);
         gap: 30px;
         align-content: center;
         justify-content: center;
         align-items: flex-start;
+
+        /* Tablet Landscape */
+        @include breakpoint($break-md) {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        /* Tablet Portrait LG */
+        @include breakpoint($break-sm) {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        /* Tablet Portrait SML */
+        @include breakpoint($break-ssm) {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        /* Smartphone */
+        @include breakpoint($break-xs) {
+          grid-template-columns: repeat(1, 1fr);
+        }
+        /* Old devices */
+        @include breakpoint($break-xxs) {
+          grid-template-columns: repeat(1, 1fr);
+        }
       }
     }
 
@@ -428,27 +450,26 @@ section#content {
       flex-direction: column;
       align-content: center;
       justify-content: center;
-      padding: 10px 10px 0 10px;
 
-      @include breakpoint($breakpoint-sm) {
-        padding: 60px 20px 80px 20px;
-      }
-      @include breakpoint($breakpoint-md) {
+      padding: 60px 40px 100px 40px;
+
+      @include breakpoint($break-md) {
         padding: 60px 20px 100px 20px;
       }
-      @include breakpoint($breakpoint-xl) {
-        padding: 60px 40px 100px 40px;
+
+      @include breakpoint($break-sm) {
+        padding: 10px 10px 0 10px;
       }
 
       .row-header {
         width: 100%;
-        max-width: 1280px;
+        max-width: $max-width;
         display: flex;
         flex-direction: row;
         align-content: center;
         justify-content: center;
         align-items: center;
-        margin: 0 auto;
+        margin: 50px 0 0 0;
 
         h2 {
           width: 100%;
@@ -472,7 +493,7 @@ section#content {
         justify-content: center;
         align-items: center;
 
-        @include breakpoint($medium) {
+        @include breakpoint($break-ssm) {
           flex-direction: column;
         }
 
@@ -483,7 +504,8 @@ section#content {
           align-content: center;
           justify-content: flex;
           align-items: center;
-          @include breakpoint($medium) {
+
+          @include breakpoint($break-ssm) {
             width: 100%;
           }
 
@@ -503,7 +525,8 @@ section#content {
           justify-content: center;
           align-items: flex-start;
           padding: 30px 0;
-          @include breakpoint($medium) {
+
+          @include breakpoint($break-ssm) {
             width: 100%;
           }
         }
@@ -541,7 +564,7 @@ section#content {
         justify-content: center;
         align-items: center;
 
-        @include breakpoint($medium) {
+        @include breakpoint($break-ssm) {
           flex-direction: column;
         }
       }
@@ -554,7 +577,7 @@ section#content {
         justify-content: center;
         align-items: center;
 
-        @include breakpoint($medium) {
+        @include breakpoint($break-ssm) {
           width: 100%;
         }
       }
@@ -567,7 +590,7 @@ section#content {
         justify-content: center;
         align-items: center;
 
-        @include breakpoint($medium) {
+        @include breakpoint($break-ssm) {
           width: 100%;
         }
 
@@ -577,7 +600,7 @@ section#content {
           padding: 0;
           overflow: hidden;
 
-          @include breakpoint($medium) {
+          @include breakpoint($break-ssm) {
             padding: 0;
           }
 
@@ -605,6 +628,7 @@ section#content {
         font-size: 2.2rem;
         text-align: center;
         margin-bottom: 5px;
+
         .yellow {
           font-size: 2.1rem;
           color: #ffca28;
@@ -634,6 +658,7 @@ section#content {
         font-weight: 300;
         margin: 0 auto;
         text-align: center;
+
         .blue {
           font-size: 20px;
           font-weight: 500;
@@ -661,7 +686,7 @@ section#content {
         justify-content: center;
         align-items: center;
 
-        @include breakpoint($medium) {
+        @include breakpoint($break-ssm) {
           flex-direction: column;
         }
 
@@ -684,6 +709,7 @@ section#content {
         font-size: 2.2rem;
         text-align: center;
         margin-bottom: 5px;
+
         .yellow {
           font-size: 2.1rem;
           color: #ffca28;
@@ -711,6 +737,7 @@ section#content {
     .hide-mobile {
       display: none;
     }
+
     .show-mobile {
       display: inline;
     }
@@ -729,7 +756,7 @@ body.dark-theme {
 
 @media (min-width: 1024px) {
   .home {
-    min-height: 100vh;
+    min-height: $page-height;
     display: flex;
     align-items: center;
   }

@@ -2,7 +2,7 @@
   <section id="mint-content">
     <div class="main">
       <section id="mint">
-        <h2>Mint an Audio/Media NFT</h2>
+        <h2>Mint a Music NFT</h2>
         <!-- Top Row -->
         <div class="row">
           <!-- Left Side -->
@@ -32,7 +32,7 @@
                     <i-mdi-timer-sand v-if="isUploading" class="icon-color" />
                     <i-mdi-upload v-else class="icon-color" />
                     <!-- END Uploader Icon -->
-                    <span>Drop files here or click to select files to upload to IPFS</span>
+                    <span>Drop files here for upload to IPFS</span>
                     <div class="dropzone-is-loading" :class="{ active: isUploading }">
                       <div class="dropzone-loading--bar"></div>
                     </div>
@@ -51,17 +51,17 @@
               <!-- STEP 1 : Once user uploads an asset and the file is loaded onto IPFS, we can continue to add NFT data -->
               <div class="nft-modal-card">
                 <div v-if="getUrlProtocol(imageUrl) === 'mp4'" class="nft-video">
-                  <video width="320" height="240" controls>
+                  <video height="240" controls>
                     <source :src="imageUrl" type="video/mp4" />
                     Your browser does not support the video tag.
                   </video>
                 </div>
                 <div v-if="getUrlProtocol(imageUrl) === 'mp3'" class="nft-video">
-                  <audio ref="player" width="320" height="240">
+                  <audio ref="player" height="240">
                     <source :src="imageUrl" type="audio/mpeg" />
                   </audio>
-                  <video width="320" height="240" controls>
-                    <source :src="getUrlProtocol(imageUrl)" type="video/mp4" />
+                  <video height="240" controls>
+                    <source :src="getUrlProtocol(imageUrl)" type="video/mp3" />
                     Your browser does not support the video tag.
                   </video>
                 </div>
@@ -194,25 +194,11 @@
                     {{ !approvedMint ? "approve" : "let's mint" }}
                   </button>
                   <div v-show="!tokenId" class="file-image-link">
-                    <a :href="imageUrl" title="Open in new tab" target="_blank"> ipfs </a>
+                    <a :href="imageUrl" title="Open in new tab" target="_blank"> ipfs link </a>
                   </div>
                   <div v-show="tokenId" class="file-table-link">
-                    <!-- <a
-                  :href="`https://testnet.tableland.network/query?mode=list&s=SELECT%20json_object%28%27id%27%2Ctokenid%2C%27name%27%2Cname%2C%27description%27%2Cdescription%2C%27image%27%2Cimage%2C%27external_url%27%2Cexternal_url%2C%27attributes%27%2Cjson_group_array%28json_object%28%27icon%27%2Cicon%2C%27display_type%27%2Cdisplay_type%2C%27trait_type%27%2Ctrait_type%2C%27value%27%2Cvalue%29%29%29%20FROM%20Mint_TEA_80001_2644%20JOIN%20Mint_TEA_80001_2645%20ON%20Mint_TEA_80001_2644%2Etokenid%20%3D%20Mint_TEA_80001_2645%2Emaintable_tokenid%20WHERE%20tokenid%3D${tokenId}%20group%20by%20tokenid`"
-                  title="View Tableland table"
-                  target="_blank"
-                >
-                  tableland
-                </a> -->
-                    <!-- <a
-                  :href="`https://testnet.tableland.network/query?mode=list&s=SELECT%20json_object%28%27id%27%2Ctokenid%2C%27name%27%2Cname%2C%27description%27%2Cdescription%2C%27image%27%2Cimage%2C%27external_url%27%2Cexternal_url%2C%27attributes%27%2Cjson_group_array%28json_object%28%27icon%27%2Cicon%2C%27display_type%27%2Cdisplay_type%2C%27trait_type%27%2Ctrait_type%2C%27value%27%2Cvalue%29%29%29%20FROM%20Mint_TEA_80001_2832%20JOIN%20Mint_TEA_80001_2833%20ON%20Mint_TEA_80001_2832%2Etokenid%20%3D%20Mint_TEA_80001_2833%2Emaintable_tokenid%20WHERE%20tokenid%3D${tokenId}%20group%20by%20tokenid`"
-                  title="View Tableland data"
-                  target="_blank"
-                >
-                  tableland
-                </a> -->
                     <a
-                      :href="`https://testnet.tableland.network/query?mode=list&s=SELECT%20json_object%28%27id%27%2Ctokenid%2C%27name%27%2Cname%2C%27description%27%2Cdescription%2C%27image%27%2Cimage%2C%27external_url%27%2Cexternal_url%2C%27attributes%27%2Cjson_group_array%28json_object%28%27icon%27%2Cicon%2C%27display_type%27%2Cdisplay_type%2C%27trait_type%27%2Ctrait_type%2C%27value%27%2Cvalue%29%29%29%20FROM%20Mint_TEA_137_41%20JOIN%20Mint_TEA_137_42%20ON%20Mint_TEA_137_41%2Etokenid%20%3D%20Mint_TEA_137_42%2Emaintable_tokenid%20WHERE%20tokenid%3D${tokenId}%20group%20by%20tokenid`"
+                      :href="`https://testnet.tableland.network/query?mode=list&s=SELECT%20json_object%28%27id%27%2Ctokenid%2C%27name%27%2Cname%2C%27description%27%2Cdescription%2C%27image%27%2Cimage%2C%27image_data%27%2Cimage_data%2C%27category%27%2Ccategory%2C%27external_url%27%2Cexternal_url%2C%27background_color%27%2Cbackground_color%2C%27animation_url%27%2Canimation_url%2C%27youtube_url%27%2Cyoutube_url%2C%27attributes%27%2Cjson_group_array%28json_object%28%27locked%27%2Clocked%2C%27icon%27%2Cicon%2C%27display_type%27%2Cdisplay_type%2C%27trait_type%27%2Ctrait_type%2C%27value%27%2Cvalue%29%29%29%20FROM%20Mojo_Music_80001_3314%20JOIN%20Mojo_Music_80001_3315%20ON%20Mojo_Music_80001_3314%2Etokenid%20%3D%20Mojo_Music_80001_3315%2Emaintable_tokenid%20WHERE%20tokenid%3D${tokenId}%20group%20by%20tokenid`"
                       title="View Tableland data"
                       target="_blank"
                     >
@@ -247,10 +233,22 @@
             <!-- Tab One Main NFT Metadata -->
             <div v-if="formTab === 'one'" id="form-tab-one" class="form-container">
               <h2>1. Mint NFT</h2>
-
-              <!-- Data we receive after file upload HIDDEN -->
-              <div class="input-row hidden">
-                <input type="text" placeholder="Content ID" v-model="cid" />
+              <div class="select-row">
+                <label>Category</label>
+                <select v-model="category">
+                  <option value="" class="grey">Select a Category</option>
+                  <option v-for="cat in musicCategories" :key="cat.id" :value="cat.value">
+                    {{ cat.label }}
+                  </option>
+                </select>
+              </div>
+              <div class="input-row">
+                <label>Name</label>
+                <input type="text" v-model="name" />
+              </div>
+              <div class="input-row">
+                <label>Description</label>
+                <textarea v-model="description" rows="5" cols="50"></textarea>
               </div>
               <div class="input-row">
                 <input
@@ -263,31 +261,20 @@
               <div class="input-row">
                 <input type="text" placeholder="File Size" v-model="size" readonly />
               </div>
-              <!-- Data we receive after mint HIDDEN -->
-              <div class="input-row">
+              <!-- Data we receive after file upload HIDDEN -->
+              <div class="input-row hidden">
                 <input type="text" placeholder="Token ID" v-model="tokenId" />
+              </div>
+              <div class="input-row hidden">
+                <input type="text" placeholder="Content ID" v-model="cid" />
               </div>
               <div class="input-row hidden">
                 <input type="text" placeholder="Created" v-model="createdAt" readonly />
               </div>
-
-              <div class="input-row">
-                <input type="text" placeholder="Name" v-model="name" />
-              </div>
-              <div class="input-row">
-                <input type="text" placeholder="Enter a description" v-model="description" />
-              </div>
-              <div class="select-row">
-                <select v-model="category">
-                  <option value="" class="grey">Select a Category</option>
-                  <option v-for="cat in categories" :key="cat.id" :value="cat.value">
-                    {{ cat.label }}
-                  </option>
-                </select>
-              </div>
-              <div class="input-row">
+              <div class="input-row hidden">
                 <input type="text" placeholder="Image Url" v-model="imageUrl" readonly />
               </div>
+              <!-- END Data we receive after file upload HIDDEN -->
 
               <!-- Button Row -->
               <div v-if="account && formTab === 'one'" class="button-container">
@@ -309,13 +296,13 @@
             <!-- END Mint Form -->
 
             <!-- Show loading if we uploading a file or minting, etc. -->
-            <div v-show="loading || minting || tokenId" class="loading-message">
+            <!-- <div v-show="loading || minting || tokenId" class="loading-message">
               <div v-show="loading" class="loading">loading, please wait...</div>
               <div v-show="minting" class="loading">minting NFT, please wait...</div>
               <div v-if="!loading && !minting && tokenId" class="loading">
                 NFT brewed successfully...you can now add your additonal attributes
               </div>
-            </div>
+            </div> -->
             <!-- END Tab One Main NFT Metadata -->
 
             <!-- Tab Two NFT Metadata Attributes -->
@@ -400,7 +387,6 @@
 <script>
 import { ref, computed, onMounted } from "vue";
 import { ethers, BigNumber } from "ethers";
-// import { BigNumber } from "bignumber.js";
 import moment from "moment";
 import { Notyf } from "notyf";
 
@@ -412,8 +398,6 @@ import { useStore } from "../store";
 import { uploadBlob } from "../services/ipfs.js";
 import { fileSize, generateLink } from "../services/helpers";
 // import { nftStorage } from "../services/nftStorage.js";
-import authNFT from "../services/authNFT.js";
-import alchemyApi from "../services/alchemyApi.js";
 import JSConfetti from "js-confetti";
 
 /* Import Components */
@@ -475,17 +459,10 @@ export default {
         },
       ],
     });
+
     /* Init Pinia Store Values and Methods */
     const store = useStore();
-    const {
-      loading,
-      minting,
-      account,
-      ethereumTokens,
-      polygonTokens,
-      optimismTokens,
-      arbitrumTokens,
-    } = storeToRefs(store);
+    const { loading, minting, account, musicCategories } = storeToRefs(store);
 
     /* Set Form Tab */
     const formTab = ref("one");
@@ -546,17 +523,6 @@ export default {
     const traitUpdatedAt = ref("");
 
     const approvedMint = ref(false);
-
-    /* Track Player */
-    const categories = ref([
-      { id: 1, label: "Fresh Jams", value: "Fresh Jams" },
-      { id: 2, label: "Dance & Electronica", value: "Dance & Electronica" },
-      { id: 3, label: "Pop", value: "Pop" },
-      { id: 4, label: "Jazz & Classical", value: "Jazz & Classical" },
-      { id: 5, label: "World & Ethnic", value: "World & Ethnic" },
-      { id: 6, label: "Cinematic & Soundscapes", value: "Cinematic & Soundscapes" },
-      { id: 7, label: "More", value: "More" },
-    ]);
 
     const jsConfettiSuccess = (emojis) => {
       const jsConfetti = new JSConfetti();
@@ -632,54 +598,6 @@ export default {
       }
     };
 
-    /* Fetch NFT by Account Address */
-    const fetchTokens = async () => {
-      if (account.value) {
-        try {
-          /* Infura API */
-          const authAccount = new authNFT();
-          /* Ethereum */
-          if (ethereumTokens.value.length === 0) {
-            let ethereumTokens = await authAccount.fetchAccountNfts(1, account.value);
-            store.addEthereumTokens(...ethereumTokens);
-          }
-          /* Polygon */
-          if (polygonTokens.value.length === 0) {
-            let polygonTokens = await authAccount.fetchAccountNfts(137, account.value);
-            store.addPolygonTokens(...polygonTokens);
-          }
-
-          /* We use Alchemy API for these */
-          const authAlchemyAccount = new alchemyApi();
-          /* Optimism */
-          if (optimismTokens.value.length === 0) {
-            let optimismTokens = await authAlchemyAccount.fetchAccountNfts(10, account.value);
-            store.addOptimismTokens(...optimismTokens);
-          }
-          /* Arbitrum */
-          if (arbitrumTokens.value.length === 0) {
-            let arbitrumTokens = await authAlchemyAccount.fetchAccountNfts(42161, account.value);
-            store.addArbitrumTokens(...arbitrumTokens);
-          }
-          /* Avalanche */
-          // if (avalancheTokens.value.length === 0) {
-          //   let avalancheTokens = await authAccount.fetchAccountNfts(
-          //     42161,
-          //     account.value
-          //   );
-          //   store.addAvalancheTokens(...avalancheTokens);
-          //   let avalancheTestnetTokens = await authAccount.fetchAccountNfts(
-          //     42161,
-          //     account.value
-          //   );
-          //   store.addAvalancheTokens(...avalancheTestnetTokens);
-          // }
-        } catch (error) {
-          console.log(`Error fetching tokens, please refresh to try again!`);
-        }
-      }
-    };
-
     /**
      * Mint NFT
      */
@@ -718,9 +636,6 @@ export default {
         switchToTab("one");
         return;
       }
-      /**
-       * Some very basic form validation on a required description field
-       */
       if (!description.value) {
         notyf.error(`Please enter a description to continue!`);
         switchToTab("one");
@@ -1783,11 +1698,9 @@ export default {
         store.resetNftFiles();
         fileRef.value.value = null;
       } catch (error) {
-        console.log(`Oops! an error while processing your files.`, error.message);
         finished.value = 0;
         isUploading.value = false;
       } finally {
-        console.log("finally");
         finished.value = 0;
         isUploading.value = false;
       }
@@ -1836,6 +1749,17 @@ export default {
       }
     };
 
+    /**
+     * Fetch NFT Audio/Media category data from Tableland
+     */
+    async function fetchMusicCategories() {
+      try {
+        await store.getCategories();
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
     onMounted(async () => {
       /* Set scrollto func */
       window.scrollTo({
@@ -1846,7 +1770,7 @@ export default {
       /* First check our account */
       await getAccount();
       await checkIfWalletIsConnected();
-      await fetchTokens();
+      await fetchMusicCategories();
     });
 
     return {
@@ -1888,7 +1812,7 @@ export default {
       youtubeURL,
       resolution,
       duration,
-      categories,
+      musicCategories,
       size,
       createdAt,
       approvedMint,
@@ -1916,6 +1840,7 @@ export default {
       connectWallet,
       getAccount,
       jsConfettiSuccess,
+      fetchMusicCategories,
     };
   },
 };
@@ -1931,14 +1856,22 @@ section#mint-content {
   justify-content: center;
   height: 100%;
 
+  .bg-shape {
+    background: #fff;
+    background-image: url("./BlackCorner.png");
+    background-repeat: no-repeat;
+    background-position: center right;
+    background-size: auto;
+  }
+
   .main {
     width: 100%;
     height: 100%;
     margin: 0 auto;
     padding: 0 0 10px 0;
-    overflow: hidden;
+    overflow: scroll;
 
-    @include breakpoint($medium) {
+    @include breakpoint($break-ssm) {
       height: 99%;
     }
 
@@ -1953,8 +1886,10 @@ section#mint-content {
       padding: 10px;
       overflow: scroll;
 
-      @include breakpoint($medium) {
-        padding: 0 60px 20px;
+      @include breakpoint($break-ssm) {
+        padding: 20px;
+        align-content: center;
+        justify-content: flex-start;
       }
 
       .row {
@@ -1964,7 +1899,7 @@ section#mint-content {
         justify-content: center;
         align-items: center;
 
-        @include breakpoint($medium) {
+        @include breakpoint($break-ssm) {
           flex-direction: column;
           align-content: center;
           justify-content: center;
@@ -1980,12 +1915,13 @@ section#mint-content {
         align-content: center;
         justify-content: center;
         align-items: flex-end;
+        overflow: hidden;
 
-        @include breakpoint($breakpoint-md) {
+        @include breakpoint($break-md) {
           width: 100%;
         }
 
-        @include breakpoint($breakpoint-sm) {
+        @include breakpoint($break-sm) {
           width: 100%;
         }
 
@@ -2002,7 +1938,7 @@ section#mint-content {
           width: 100%;
           height: 100%;
 
-          @include breakpoint($medium) {
+          @include breakpoint($break-ssm) {
             margin-top: 0;
             padding-top: 0;
             border-top-left-radius: 1rem;
@@ -2121,83 +2057,42 @@ section#mint-content {
             }
           }
         }
+
         section#nft-modal {
           background-color: var(--gradient-100);
-          border-top-right-radius: 1rem;
-          border-bottom-right-radius: 0;
-          border-bottom-left-radius: 0;
-          border-top-right-radius: 1rem;
           width: 100%;
           height: 100%;
+          color: $black;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-content: center;
+          align-items: center;
+          padding: 0;
+          border-top-left-radius: 1rem;
+          border-bottom-left-radius: 1rem;
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
 
-          @include breakpoint($medium) {
-            margin-top: 0;
-            padding-top: 0;
+          @include breakpoint($break-ssm) {
             border-top-left-radius: 1rem;
             border-top-right-radius: 1rem;
             border-bottom-left-radius: 0;
           }
 
-          min-height: 720px;
-          color: $black;
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-start;
-          align-content: flex-start;
-          align-items: center;
+          @include breakpoint($break-ssm) {
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+            border-bottom-left-radius: 0;
+          }
 
-          padding: 0;
-
-          @include breakpoint($breakpoint-md) {
+          @include breakpoint($break-xs) {
             padding: 20px 0;
           }
 
-          @include breakpoint($breakpoint-sm) {
-            padding: 20px 0;
-          }
-
-          @include breakpoint($breakpoint-xs) {
-            padding: 20px 0;
-          }
-
-          .nft-modal-loading {
-            width: 600px;
-            height: 100%;
-            min-height: 720px;
-            display: flex;
-            flex-direction: column;
-            align-content: center;
-            justify-content: center;
-            align-items: center;
-            padding: 0;
-
-            @include breakpoint($breakpoint-xl) {
-              width: 100%;
-              padding: 0 auto;
-            }
-
-            @include breakpoint($breakpoint-lg) {
-              width: 100%;
-              padding: 0;
-            }
-
-            @include breakpoint($breakpoint-md) {
-              width: 100%;
-              padding: 0 auto;
-            }
-
-            @include breakpoint($breakpoint-sm) {
-              width: 100%;
-              padding: 0;
-            }
-
-            @include breakpoint($breakpoint-xs) {
-              width: 100%;
-              padding: 0;
-            }
-          }
           .nft-modal-card {
-            width: 600px;
+            width: 84%;
+            max-width: 450px;
             display: flex;
             flex-direction: column;
             align-content: center;
@@ -2208,23 +2103,22 @@ section#mint-content {
             border: 4px solid var(--gradient-100);
             box-shadow: 2px 2px 25px 6px rgba(43, 43, 43, 0.1);
             border-radius: 10px;
-            padding: 20px 20px 20px 20px;
-            margin-bottom: 20px;
+            padding: 15px;
 
-            @include breakpoint($breakpoint-lg) {
-              width: 89%;
+            @include breakpoint($break-xl) {
+              width: 84%;
             }
 
-            @include breakpoint($breakpoint-md) {
+            @include breakpoint($break-md) {
+              width: 82%;
+            }
+
+            @include breakpoint($break-sm) {
               width: 81%;
             }
 
-            @include breakpoint($breakpoint-sm) {
-              width: 81%;
-            }
-
-            @include breakpoint($breakpoint-xs) {
-              width: 100%;
+            @include breakpoint($break-xs) {
+              width: 90%;
             }
           }
 
@@ -2452,7 +2346,7 @@ section#mint-content {
 
             .approve-button {
               color: $white;
-              background-color: $mojo-blue;
+              background-color: $mojo-green;
               font-family: Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans",
                 "Helvetica Neue", sans-serif;
               font-style: normal;
@@ -2476,7 +2370,7 @@ section#mint-content {
 
             .approved-button {
               color: $black;
-              background-color: $mojo-green;
+              background-color: $mojo-blue;
               font-family: Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans",
                 "Helvetica Neue", sans-serif;
               font-style: normal;
@@ -2583,14 +2477,14 @@ section#mint-content {
         justify-content: center;
         align-items: flex-start;
 
-        @include breakpoint($breakpoint-md) {
-          width: 50%;
+        @include breakpoint($break-md) {
+          width: 100%;
         }
 
         .form-container {
           display: flex;
           width: 98%;
-          height: 505px;
+          height: 555px;
           flex-direction: column;
           justify-content: center;
           align-items: center;
@@ -2600,8 +2494,7 @@ section#mint-content {
           border-bottom-left-radius: 0;
           padding: 30px 20px;
 
-          @include breakpoint($medium) {
-            width: 100%;
+          @include breakpoint($break-sm) {
             border-top-right-radius: 0;
             border-bottom-right-radius: 0;
             border-bottom-left-radius: 1em;
@@ -2610,42 +2503,62 @@ section#mint-content {
           }
 
           h2 {
-            font-size: 1.4rem;
-            line-height: 1.5rem;
+            font-size: 1.6rem;
+            line-height: 1.7rem;
             text-align: center;
             padding-bottom: 2px;
             text-decoration: none;
             border-bottom: 1px solid;
-            margin: 0 auto 10px;
+            margin: 0 auto 20px;
 
-            @include breakpoint($medium) {
-              font-size: 1.6rem;
-              line-height: 1.7rem;
+            @include breakpoint($break-ssm) {
+              font-size: 1.4rem;
+              line-height: 1.5rem;
             }
           }
         }
 
+        .input-row {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          align-items: left;
+          margin-bottom: 10px;
+        }
+
+        label {
+          color: $mojo-blue;
+          font-style: normal;
+          font-weight: 800;
+          font-size: 20px;
+          line-height: 24px;
+          letter-spacing: 0.1em;
+          margin: 0 0 2px 5px;
+        }
+
         input {
+          width: 100%;
           color: #1a1a1a;
           background-color: #fdfdfd;
           border: 2px solid var(--gradient-100);
           border-radius: 10px;
           letter-spacing: 1px;
           font-size: 14px;
-          width: 240px;
+          width: 300px;
           margin-bottom: 10px;
           padding: 10px;
           text-align: center;
 
-          @include breakpoint($breakpoint-sm) {
+          @include breakpoint($break-sm) {
             width: 300px;
           }
 
-          @include breakpoint($breakpoint-md) {
+          @include breakpoint($break-md) {
             width: 300px;
           }
 
-          @include breakpoint($breakpoint-xl) {
+          @include breakpoint($break-xxl) {
             width: 300px;
           }
         }
@@ -2663,16 +2576,16 @@ section#mint-content {
         }
 
         input:focus {
-          border: 2px solid #2bb5f0;
+          border: 2px solid $mojo-light-blue;
           outline: none;
         }
 
         .select-row {
           position: relative;
           display: flex;
-          flex-direction: row;
+          flex-direction: column;
           justify-content: space-between;
-          align-items: center;
+          align-items: left;
           margin-bottom: 15px;
         }
 
@@ -2684,7 +2597,7 @@ section#mint-content {
           border-radius: 10px;
           letter-spacing: 1px;
           font-size: 14px;
-          width: 265px;
+          width: 328px;
           margin-bottom: 10px;
           padding: 10px;
           text-align: center;
@@ -2694,6 +2607,7 @@ section#mint-content {
           -webkit-box-sizing: border-box;
           -moz-box-sizing: border-box;
           box-sizing: border-box;
+          appearance: none;
           -webkit-appearance: none;
           -moz-appearance: none;
 
@@ -2705,15 +2619,15 @@ section#mint-content {
           background-size: 5px 5px, 5px 5px, 1px 1.5em;
           background-repeat: no-repeat;
 
-          @include breakpoint($breakpoint-sm) {
+          @include breakpoint($break-sm) {
             width: 325px;
           }
 
-          @include breakpoint($breakpoint-md) {
+          @include breakpoint($break-md) {
             width: 325px;
           }
 
-          @include breakpoint($breakpoint-xl) {
+          @include breakpoint($break-xxl) {
             width: 325px;
           }
         }
@@ -2760,17 +2674,8 @@ section#mint-content {
         }
 
         textarea:focus {
-          border: 2px solid #e9429b;
+          border: 2px solid $mojo-light-blue;
           outline: none;
-        }
-
-        .input-row {
-          position: relative;
-          display: flex;
-          flex-direction: row;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 10px;
         }
 
         .hidden {
@@ -2836,7 +2741,7 @@ section#mint-content {
         justify-content: space;
         align-items: center;
 
-        @include breakpoint($medium) {
+        @include breakpoint($break-ssm) {
           flex-direction: row;
           align-content: center;
           justify-content: center;
@@ -3007,7 +2912,7 @@ section#mint-content {
         margin-block-start: 0;
         margin-block-end: 0.2em;
 
-        @include breakpoint($medium) {
+        @include breakpoint($break-ssm) {
           font-size: 2.25rem;
           margin-block-start: 0.3em;
           margin-block-end: 0.2em;

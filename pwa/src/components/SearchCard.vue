@@ -15,7 +15,7 @@
       v-if="token.cached_file_url && getUrlProtocol(token.cached_file_url) === 'mp4'"
       class="search-nft-video"
     >
-      <video width="320" height="240" controls>
+      <video height="240" controls>
         <source :src="getUrlProtocol(token.cached_file_url)" type="video/mp4" />
         <!-- <source :src="`${token.cached_file_url}`" type="video/ogg" /> -->
         Your browser does not support the video tag.
@@ -25,8 +25,8 @@
       v-if="token.cached_file_url && getUrlProtocol(token.cached_file_url) === 'mp3'"
       class="search-nft-video"
     >
-      <video width="320" height="240" controls>
-        <source :src="getUrlProtocol(token.cached_file_url)" type="video/mp4" />
+      <video height="240" controls>
+        <source :src="getUrlProtocol(token.cached_file_url)" type="video/mp3" />
         <!-- <source :src="`${token.cached_file_url}`" type="video/ogg" /> -->
         Your browser does not support the video tag.
       </video>

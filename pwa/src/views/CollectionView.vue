@@ -1,6 +1,6 @@
 <template>
   <section id="collection-content">
-    <div class="main">
+    <div class="main bg-shape">
       <section id="collection">
         <div class="left">
           <h2>Blockchains</h2>
@@ -425,6 +425,14 @@ section#collection-content {
   height: 100%;
   overflow: scroll;
 
+  .bg-shape {
+    background: #fff;
+    background-image: url("./BlackCornerTop.png");
+    background-repeat: no-repeat;
+    background-position: center right;
+    background-size: auto;
+  }
+
   .main {
     width: 100%;
     height: 100%;
@@ -434,7 +442,7 @@ section#collection-content {
     section#collection {
       height: 100%;
       color: #212121;
-      background: #1c8bfe;
+      background: $mojo-blue;
       display: flex;
       flex-direction: row;
       align-content: center;
@@ -452,7 +460,7 @@ section#collection-content {
         align-items: flex-start;
         padding: 50px 20px 60px 60px;
 
-        @include breakpoint($medium) {
+        @include breakpoint($break-ssm) {
           width: 100%;
         }
 
@@ -532,7 +540,7 @@ section#collection-content {
           align-content: flex-start;
           justify-content: center;
           align-items: center;
-          margin: 0;
+          margin: 50px 0 0 0;
 
           h2 {
             width: 100%;
@@ -559,11 +567,32 @@ section#collection-content {
         .token-list {
           width: 100%;
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
+          grid-template-columns: repeat(4, 1fr);
           gap: 30px;
           align-content: center;
           justify-content: center;
           align-items: flex-start;
+
+          /* Tablet Landscape */
+          @include breakpoint($break-md) {
+            grid-template-columns: repeat(3, 1fr);
+          }
+          /* Tablet Portrait LG */
+          @include breakpoint($break-sm) {
+            grid-template-columns: repeat(3, 1fr);
+          }
+          /* Tablet Portrait SML */
+          @include breakpoint($break-ssm) {
+            grid-template-columns: repeat(2, 1fr);
+          }
+          /* Smartphone */
+          @include breakpoint($break-xs) {
+            grid-template-columns: repeat(1, 1fr);
+          }
+          /* Old devices */
+          @include breakpoint($break-xxs) {
+            grid-template-columns: repeat(1, 1fr);
+          }
         }
 
         .no-results {
@@ -589,7 +618,7 @@ body.dark-theme {
 
 @media (min-width: 1024px) {
   #collection {
-    min-height: 100vh;
+    min-height: $page-height;
     display: flex;
     align-items: center;
   }

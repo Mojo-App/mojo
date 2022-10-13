@@ -1,15 +1,15 @@
 <template>
   <div class="nft" v-if="image && name">
     <div v-if="image && getUrlProtocol(image) === 'mp4'" class="nft-video">
-      <video width="340" height="250" controls>
+      <video height="240" controls>
         <source :src="`${image}`" type="video/mp4" />
         <!-- <source :src="`${token.metadata.image}`" type="video/ogg" /> -->
         Your browser does not support the video tag.
       </video>
     </div>
     <div v-else-if="image && getUrlProtocol(image) === 'mp3'" class="nft-video">
-      <video width="340" height="250" controls>
-        <source :src="getUrlProtocol(image)" type="video/mp4" />
+      <video height="240" controls>
+        <source :src="getUrlProtocol(image)" type="video/mp3" />
         <!-- <source :src="`${image}`" type="video/ogg" /> -->
         Your browser does not support the video tag.
       </video>
@@ -114,7 +114,10 @@ export default {
     background: #f4f4f4;
 
     video {
-      object-fit: auto;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      overflow: hidden;
     }
   }
 

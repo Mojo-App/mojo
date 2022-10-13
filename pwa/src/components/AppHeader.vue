@@ -170,15 +170,15 @@ export default {
         transition: 0.4s;
         cursor: pointer;
         &:hover {
-          border-bottom: 1px solid $mojo-light-blue;
+          border-bottom: 1px solid $mojo-blue;
           font-weight: bold;
         }
         &:focus {
-          border-bottom: 1px solid $mojo-light-blue;
+          border-bottom: 1px solid $mojo-blue;
           font-weight: bold;
         }
         &:active {
-          border-bottom: 1px solid $mojo-light-blue;
+          border-bottom: 1px solid $mojo-blue;
           font-weight: bold;
         }
       }
