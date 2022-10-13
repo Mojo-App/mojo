@@ -19,7 +19,7 @@
       </section>
       <section id="stream-home">
         <div class="row-header">
-          <h2><span class="mint-black">fresh</span>beats</h2>
+          <h2 class="left"><span class="mint-black">fresh</span>beats</h2>
         </div>
         <div v-if="homeTokens && homeTokens.length > 0" class="row token-list">
           <template v-for="token in homeTokens" :key="token.token_id">
@@ -97,9 +97,6 @@
       <section id="sponsors">
         <div class="row">
           <div class="sponsors-logo">
-            <SpheronLogo />
-          </div>
-          <div class="sponsors-logo">
             <PolygonLogo />
           </div>
           <div class="sponsors-logo">
@@ -148,7 +145,6 @@ import { useStore } from "../store";
 
 /* Logos */
 import Tableland from "../assets/svgs/TableLand.vue";
-import SpheronLogo from "../assets/svgs/SpheronLogo.vue";
 import PolygonLogo from "../assets/svgs/PolygonLogo.vue";
 import NFTStorage from "../assets/svgs/NFTStorage.vue";
 
@@ -230,10 +226,10 @@ async function fetchData() {
         "ethereum",
         "metadata",
         "true",
-        4,
+        5,
         1
       );
-      console.log("Home NFTs:", JSON.stringify(homeTokens, "", 4));
+      console.log("Home NFTs 1:", JSON.stringify(homeTokens, "", 4));
       if (homeTokens.nfts) {
         store.addHomeTokens(...homeTokens.nfts);
       }
@@ -242,10 +238,10 @@ async function fetchData() {
         "ethereum",
         "metadata",
         "true",
-        4,
+        5,
         1
       );
-      console.log("Home NFTs:", JSON.stringify(homeTokensRowTwo, "", 4));
+      console.log("Home NFTs 2:", JSON.stringify(homeTokensRowTwo, "", 4));
       if (homeTokensRowTwo.nfts) {
         store.addHomeTokens(...homeTokensRowTwo.nfts);
       }
@@ -394,8 +390,13 @@ section#content {
           font-weight: 700;
           font-size: 36px;
           line-height: 42px;
-          text-align: center;
-
+          
+          .left{
+            text-align: left;
+          }
+          .right{
+            text-align: right;
+          }
           .mint-black {
             color: $black;
           }
@@ -414,7 +415,7 @@ section#content {
       .token-list {
         width: 100%;
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(5, 1fr);
         gap: 30px;
         align-content: center;
         justify-content: center;
