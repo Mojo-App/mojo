@@ -97,9 +97,6 @@
       <section id="sponsors">
         <div class="row">
           <div class="sponsors-logo">
-            <PolygonLogo />
-          </div>
-          <div class="sponsors-logo">
             <Tableland />
           </div>
           <div class="sponsors-logo">
@@ -107,6 +104,9 @@
           </div>
           <div class="sponsors-logo">
             <NFTStorage />
+          </div>
+          <div class="sponsors-logo">
+            <PolygonLogo />
           </div>
         </div>
       </section>
@@ -229,7 +229,7 @@ async function fetchData() {
         5,
         1
       );
-      console.log("Home NFTs 1:", JSON.stringify(homeTokens, "", 4));
+      // console.log("Home NFTs 1:", JSON.stringify(homeTokens, "", 4));
       if (homeTokens.nfts) {
         store.addHomeTokens(...homeTokens.nfts);
       }
@@ -241,7 +241,7 @@ async function fetchData() {
         5,
         1
       );
-      console.log("Home NFTs 2:", JSON.stringify(homeTokensRowTwo, "", 4));
+      // console.log("Home NFTs 2:", JSON.stringify(homeTokensRowTwo, "", 4));
       if (homeTokensRowTwo.nfts) {
         store.addHomeTokens(...homeTokensRowTwo.nfts);
       }
@@ -375,7 +375,6 @@ section#content {
 
       .row-header {
         width: 100%;
-        max-width: $max-width;
         display: flex;
         flex-direction: row;
         align-content: flex-start;
@@ -390,11 +389,12 @@ section#content {
           font-weight: 700;
           font-size: 36px;
           line-height: 42px;
-          
-          .left{
+          padding-left: 20px;
+
+          .left {
             text-align: left;
           }
-          .right{
+          .right {
             text-align: right;
           }
           .mint-black {

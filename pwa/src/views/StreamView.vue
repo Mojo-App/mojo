@@ -18,15 +18,15 @@
             </li>
           </ul>
         </div>
-        <div class="right">
+        <div class="right bg-shape">
           <div class="track-list">
             <TrackPlayer v-for="track in trackList" :track="track" :key="track.id"></TrackPlayer>
           </div>
-          <div v-if="trackList.length === 0">
+          <div class="no-track-list" v-if="trackList.length === 0">
+            <h2>Please be patient while we spin another mix...</h2>
             <div class="dj-graphic">
               <img src="../assets/images/DJ.png" alt="DJ Saved my Life" />
             </div>
-            <h2>Please be patient while we spin another mix...</h2>
           </div>
         </div>
       </section>
@@ -167,15 +167,16 @@ onMounted(async () => {
 
 section#stream-content {
   position: relative;
+  width: 100%;
   height: 100%;
   overflow: scroll;
 
   .bg-shape {
-    background: #fff;
+    // background: #fff;
     background-image: url("./BlackCorner.png");
     background-repeat: no-repeat;
     background-position: center right;
-    background-size: auto;
+    background-size: 100%;
   }
 
   .main {
@@ -193,7 +194,6 @@ section#stream-content {
       align-content: center;
       align-items: flex-start;
       justify-content: center;
-      padding: 10px;
       overflow: scroll;
 
       @include breakpoint($break-ssm) {
@@ -211,7 +211,7 @@ section#stream-content {
         align-content: center;
         justify-content: center;
         align-items: flex-start;
-        padding: 50px 20px 50px 50px;
+        padding: 40px 20px 40px 40px;
 
         @include breakpoint($break-ssm) {
           width: 100%;
@@ -240,17 +240,16 @@ section#stream-content {
           border-top: 1px solid #1a1a1a;
 
           li {
-            font-size: 22px;
+            font-size: 19px;
             font-weight: 700;
-            line-height: 1.7rem;
-            padding-top: 0.7rem;
-            padding-bottom: 0.5rem;
+            line-height: 1.4rem;
+            padding-top: 0.6rem;
+            padding-bottom: 0.3rem;
             padding-left: 1rem;
             padding-right: 1rem;
             border-bottom: 1px solid #1a1a1a;
             transition: 0.4s;
             cursor: pointer;
-
             &:hover {
               color: #fff;
               font-weight: 900;
@@ -264,15 +263,14 @@ section#stream-content {
               font-weight: 900;
             }
           }
-        }
+          .li-active {
+            color: #fff;
+            font-weight: 900;
+          }
 
-        .li-active {
-          color: #fff;
-          font-weight: 900;
-        }
-
-        .category-list-play-button {
-          margin: 0 5px -2px -15px;
+          .category-list-play-button {
+            margin: 0 5px -2px -15px;
+          }
         }
       }
 
@@ -283,7 +281,7 @@ section#stream-content {
         align-content: center;
         justify-content: center;
         align-items: center;
-        padding: 50px 20px 60px 60px;
+        padding: 40px 20px 40px 40px;
 
         @include breakpoint($break-ssm) {
           padding: 20px;
@@ -296,32 +294,41 @@ section#stream-content {
           margin: 0 auto;
         }
 
-        .dj-graphic {
+        .no-track-list {
           width: 100%;
-          margin: 20px auto 0;
-          padding: 0 10px;
-          overflow: hidden;
+          display: inline-block;
+          margin: 0 auto;
 
-          @include breakpoint($break-ssm) {
-            padding: 0;
+          h2 {
+            color: $white;
+            font-size: 2rem;
+            margin: 0;
+
+            @include breakpoint($break-ssm) {
+              font-size: 1.5rem;
+            }
           }
 
-          img,
-          svg {
-            width: 85%;
-            height: auto;
-            object-fit: cover;
+          .dj-graphic {
+            width: 100%;
+            margin: 20px auto 0;
+            padding: 0 10px;
             overflow: hidden;
-          }
-        }
 
-        h2 {
-          color: $white;
-          font-size: 2rem;
-          margin: 0;
+            @include breakpoint($break-sm) {
+              padding: 0;
+            }
 
-          @include breakpoint($break-ssm) {
-            font-size: 2.45rem;
+            img,
+            svg {
+              width: 85%;
+              height: auto;
+              object-fit: cover;
+              overflow: hidden;
+              @include breakpoint($break-sm) {
+                width: 85%;
+              }
+            }
           }
         }
       }

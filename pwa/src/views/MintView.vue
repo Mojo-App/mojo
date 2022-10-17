@@ -6,7 +6,8 @@
         <!-- Top Row -->
         <div class="row">
           <!-- Left Side -->
-          <!-- MetaMask NOT Connected -->
+
+          <!-- MetaMask is NOT Connected -->
           <div v-if="!account" class="left">
             <p class="connect-message">
               Connect your MetaMask and mint your Audio/Media NFT's for your followers and
@@ -14,9 +15,11 @@
             </p>
           </div>
           <!-- END MetaMask NOT Connected -->
-          <!-- MetaMask Connected -->
+
+          <!-- MetaMask is now Connected -->
           <div v-if="account" class="left">
-            <section v-if="!imageUrl && formTab === 'one'" id="panel-upload">
+            <!-- STEP 1 : Once user selects an asset and the file is uploaded to IPFS -->
+            <section v-if="!imageUrl" id="panel-upload">
               <div class="content panel-upload--content">
                 <div
                   class="panel-upload--dropzone"
@@ -47,141 +50,115 @@
                 </div>
               </div>
             </section>
-            <section v-if="imageUrl && formTab === 'one'" id="nft-modal">
-              <!-- STEP 1 : Once user uploads an asset and the file is loaded onto IPFS, we can continue to add NFT data -->
+
+            <!-- STEP 2 : We receive a content identifier and can show image and continue to add NFT main metadata in this window -->
+            <section v-if="imageUrl" id="nft-modal">
               <div class="nft-modal-card">
-                <div v-if="getUrlProtocol(imageUrl) === 'mp4'" class="nft-video">
-                  <video height="240" controls>
-                    <source :src="imageUrl" type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-                <div v-if="getUrlProtocol(imageUrl) === 'mp3'" class="nft-video">
-                  <audio ref="player" height="240">
-                    <source :src="imageUrl" type="audio/mpeg" />
-                  </audio>
-                  <video height="240" controls>
-                    <source :src="getUrlProtocol(imageUrl)" type="video/mp3" />
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-                <div v-else-if="imageUrl" class="nft-modal-image">
-                  <img v-if="imageUrl" :src="`${getUrlProtocol(imageUrl)}`" :alt="`${name}`" />
-                </div>
-                <div class="nft-modal-title">
-                  {{ name }}
-                </div>
-                <div class="nft-modal-description">
-                  {{ description }}
-                </div>
-                <div class="nft-modal-external-url">
-                  {{ externalUrl }}
-                </div>
-                <div class="nft-modal-description">
-                  {{ animationUrl }}
-                </div>
-                <div class="nft-modal-description">
-                  {{ youtubeUrl }}
-                </div>
-                <div v-show="attributes" class="nft-modal-edit-attributes">
-                  <template v-for="attr in attributes" :key="attr.trait_id">
-                    <div v-if="attr.trait_value" class="nft-attribute-cards">
-                      <div class="nft-attribute-card">
-                        <div class="nft-attribute-card-trait">
-                          #{{ attr.trait_id }} {{ attr.icon }} {{ attr.display_type }} /
-                          {{ attr.trait_type }} :
-                          {{ attr.trait_value }}
-                          <button
-                            v-show="attr.trait_id"
-                            class="edit-button"
-                            @click="editTrait(attr.trait_id)"
-                          >
-                            {{ showTrait.value === attr.trait_id ? "done" : "edit" }}
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </template>
-                  <template v-for="attr in attributes" :key="attr.trait_id">
-                    <div
-                      v-if="showTrait === attr.trait_id && attr.trait_value"
-                      class="nft-attribute"
-                    >
-                      Trait #{{ attr.trait_id }}
-                      <div class="nft-attribute-icon">
-                        <input
-                          type="text"
-                          name="traitIcon"
-                          v-model.lazy="attr.icon"
-                          @change="updateTraitIcon(attr)"
-                        />
-                      </div>
-                      <div class="nft-attribute-display-type">
-                        <!-- TODO This need to be a select with options from opensea -->
-                        <input
-                          type="text"
-                          name="traitDisplayType"
-                          v-model.lazy="attr.display_type"
-                          @change="updateTraitDisplayType(attr)"
-                        />
-                        <!-- TODO This need to be a select with options from opensea -->
-                      </div>
-                      <div class="nft-attribute-trait-type">
-                        <input
-                          type="text"
-                          name="traitType"
-                          v-model.lazy="attr.trait_type"
-                          @change="updateTraitType(attr)"
-                        />
-                      </div>
-                      <div class="nft-attribute-value">
-                        <input
-                          type="text"
-                          name="traitValue"
-                          v-model.lazy="attr.trait_value"
-                          @change="updateTraitValue(attr)"
-                        />
-                      </div>
-                    </div>
-                  </template>
-                </div>
-                <!-- STEP 2 : Show Add attribute form once NFT minted -->
-                <div v-show="tokenId" class="nft-modal-add-attributes">
-                  <div class="nft-attribute">
-                    <div class="nft-attribute-icon">
-                      <input
-                        type="text"
-                        name="traitIcon"
-                        placeholder="enter an icon"
-                        v-model="traitIcon"
-                      />
-                    </div>
-                    <div class="nft-attribute-display-type">
-                      <input
-                        type="text"
-                        name="traitDisplayType"
-                        placeholder="enter a display type, eg. boost_number"
-                        v-model="traitDisplayType"
-                      />
-                    </div>
-                    <div class="nft-attribute-trait-type">
-                      <input
-                        type="text"
-                        name="traitType"
-                        placeholder="enter a trait type, eg. Stamina Increase"
-                        v-model="traitType"
-                      />
-                    </div>
-                    <div class="nft-attribute-value">
-                      <input
-                        type="text"
-                        name="traitValue"
-                        placeholder="enter a trait value, eg. 10"
-                        v-model="traitValue"
-                      />
-                    </div>
+                <div class="nft-modal-card-step-one">
+                  <div v-if="getUrlProtocol(imageUrl) === 'mp4'" class="nft-video">
+                    <video height="240" controls>
+                      <source :src="imageUrl" type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                  <div v-if="getUrlProtocol(imageUrl) === 'mp3'" class="nft-video">
+                    <audio ref="player" height="240">
+                      <source :src="imageUrl" type="audio/mpeg" />
+                    </audio>
+                    <video height="240" controls>
+                      <source :src="getUrlProtocol(imageUrl)" type="video/mp3" />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                  <div v-else-if="imageUrl" class="nft-modal-image">
+                    <img v-if="imageUrl" :src="`${getUrlProtocol(imageUrl)}`" :alt="`${name}`" />
+                  </div>
+                  <div class="nft-modal-title">
+                    {{ name }}
+                  </div>
+                  <div class="nft-modal-description">
+                    {{ description }}
                   </div>
                 </div>
+                <div class="nft-modal-card-step-two">
+                  <div class="nft-modal-external-url">
+                    {{ externalUrl }}
+                  </div>
+                  <div class="nft-modal-description">
+                    {{ animationUrl }}
+                  </div>
+                  <div class="nft-modal-description">
+                    {{ youtubeUrl }}
+                  </div>
+                  <div class="nft-modal-description">
+                    {{ backgroundColor }}
+                  </div>
+                </div>
+                <div class="nft-modal-card-step-three">
+                  <div v-show="attributes" class="nft-modal-edit-attributes">
+                    <template v-for="attr in attributes" :key="attr.trait_id">
+                      <div v-if="attr.trait_value" class="nft-attribute-cards">
+                        <div class="nft-attribute-card">
+                          <div class="nft-attribute-card-trait">
+                            #{{ attr.trait_id }} {{ attr.icon }} {{ attr.display_type }} /
+                            {{ attr.trait_type }} :
+                            {{ attr.trait_value }}
+                            <button
+                              v-show="attr.trait_id"
+                              class="edit-button"
+                              @click="editTrait(attr.trait_id)"
+                            >
+                              {{ showTrait.value === attr.trait_id ? "done" : "edit" }}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </template>
+                    <template v-for="attr in attributes" :key="attr.trait_id">
+                      <div
+                        v-if="showTrait === attr.trait_id && attr.trait_value"
+                        class="nft-attribute"
+                      >
+                        Trait #{{ attr.trait_id }}
+                        <div class="nft-attribute-icon">
+                          <input
+                            type="text"
+                            name="traitIcon"
+                            v-model.lazy="attr.icon"
+                            @change="updateTraitIcon(attr)"
+                          />
+                        </div>
+                        <div class="nft-attribute-display-type">
+                          <!-- TODO This need to be a select with options from opensea -->
+                          <input
+                            type="text"
+                            name="traitDisplayType"
+                            v-model.lazy="attr.display_type"
+                            @change="updateTraitDisplayType(attr)"
+                          />
+                          <!-- TODO This need to be a select with options from opensea -->
+                        </div>
+                        <div class="nft-attribute-trait-type">
+                          <input
+                            type="text"
+                            name="traitType"
+                            v-model.lazy="attr.trait_type"
+                            @change="updateTraitType(attr)"
+                          />
+                        </div>
+                        <div class="nft-attribute-value">
+                          <input
+                            type="text"
+                            name="traitValue"
+                            v-model.lazy="attr.trait_value"
+                            @change="updateTraitValue(attr)"
+                          />
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+                <!-- Control Panel -->
                 <div class="nft-modal-approve">
                   <div v-show="tokenId" class="button-container">
                     <button class="add-button" @click="AddNewAttribute()">add new attribute</button>
@@ -196,9 +173,9 @@
                   <div v-show="!tokenId" class="file-image-link">
                     <a :href="imageUrl" title="Open in new tab" target="_blank"> ipfs link </a>
                   </div>
-                  <div v-show="tokenId" class="file-table-link">
+                  <div v-if="tokenId" class="file-table-link">
                     <a
-                      :href="`https://testnet.tableland.network/query?mode=list&s=SELECT%20json_object%28%27id%27%2Ctokenid%2C%27name%27%2Cname%2C%27description%27%2Cdescription%2C%27image%27%2Cimage%2C%27image_data%27%2Cimage_data%2C%27category%27%2Ccategory%2C%27external_url%27%2Cexternal_url%2C%27background_color%27%2Cbackground_color%2C%27animation_url%27%2Canimation_url%2C%27youtube_url%27%2Cyoutube_url%2C%27attributes%27%2Cjson_group_array%28json_object%28%27locked%27%2Clocked%2C%27icon%27%2Cicon%2C%27display_type%27%2Cdisplay_type%2C%27trait_type%27%2Ctrait_type%2C%27value%27%2Cvalue%29%29%29%20FROM%20Mojo_Music_80001_3314%20JOIN%20Mojo_Music_80001_3315%20ON%20Mojo_Music_80001_3314%2Etokenid%20%3D%20Mojo_Music_80001_3315%2Emaintable_tokenid%20WHERE%20tokenid%3D${tokenId}%20group%20by%20tokenid`"
+                      :href="`https://testnet.tableland.network/query?mode=list&s=SELECT%20json_object%28%27id%27%2Ctokenid%2C%27name%27%2Cname%2C%27description%27%2Cdescription%2C%27image%27%2Cimage%2C%27image_data%27%2Cimage_data%2C%27category%27%2Ccategory%2C%27external_url%27%2Cexternal_url%2C%27background_color%27%2Cbackground_color%2C%27animation_url%27%2Canimation_url%2C%27youtube_url%27%2Cyoutube_url%2C%27attributes%27%2Cjson_group_array%28json_object%28%27locked%27%2Clocked%2C%27icon%27%2Cicon%2C%27display_type%27%2Cdisplay_type%2C%27trait_type%27%2Ctrait_type%2C%27value%27%2Cvalue%29%29%29%20FROM%20Mojo_Music_80001_3503%20JOIN%20Mojo_Music_80001_3504%20ON%20Mojo_Music_80001_3503%2Etokenid%20%3D%20Mojo_Music_80001_3504%2Emaintable_tokenid%20WHERE%20tokenid%3D${tokenId}%20group%20by%20tokenid`"
                       title="View Tableland data"
                       target="_blank"
                     >
@@ -212,10 +189,11 @@
                     reset
                   </button>
                 </div>
+                <!-- END Control Panel -->
               </div>
             </section>
           </div>
-          <!-- END MetaMask Connected -->
+          <!-- END Step 2 -->
           <!-- END Left Side -->
 
           <!-- ------------------------------------------------------------------------------------- -->
@@ -230,7 +208,7 @@
 
           <!-- MetaMask Connected -->
           <div v-if="account" class="right">
-            <!-- Tab One Main NFT Metadata -->
+            <!-- Tab One is to add our main NFT metadata -->
             <div v-if="formTab === 'one'" id="form-tab-one" class="form-container">
               <h2>1. Mint NFT</h2>
               <div class="select-row">
@@ -249,6 +227,10 @@
               <div class="input-row">
                 <label>Description</label>
                 <textarea v-model="description" rows="5" cols="50"></textarea>
+              </div>
+              <div class="input-row hidden">
+                <label>Max Prints</label>
+                <input type="text" placeholder="default is one" v-model="maxInvocations" />
               </div>
               <div class="input-row">
                 <input
@@ -275,7 +257,6 @@
                 <input type="text" placeholder="Image Url" v-model="imageUrl" readonly />
               </div>
               <!-- END Data we receive after file upload HIDDEN -->
-
               <!-- Button Row -->
               <div v-if="account && formTab === 'one'" class="button-container">
                 <button
@@ -291,46 +272,41 @@
                 </button>
                 <button class="restart-button" @click="cancelMint()">cancel</button>
               </div>
+              <div class="input-row">
+                👷 Minting coming soon, we're still busy buidlin over here 🚧
+              </div>
               <!-- END Button Row -->
             </div>
-            <!-- END Mint Form -->
-
-            <!-- Show loading if we uploading a file or minting, etc. -->
-            <!-- <div v-show="loading || minting || tokenId" class="loading-message">
-              <div v-show="loading" class="loading">loading, please wait...</div>
-              <div v-show="minting" class="loading">minting NFT, please wait...</div>
-              <div v-if="!loading && !minting && tokenId" class="loading">
-                NFT brewed successfully...you can now add your additonal attributes
-              </div>
-            </div> -->
-            <!-- END Tab One Main NFT Metadata -->
+            <!-- END Tab 1 -->
 
             <!-- Tab Two NFT Metadata Attributes -->
             <div v-if="formTab === 'two'" id="form-tab-two" class="form-container">
-              <h2>2. Add Details</h2>
+              <h2>2. Additional Details</h2>
               <div class="input-row">
-                <input type="text" placeholder="Title" v-model="title" />
-              </div>
-              <div class="input-row">
-                <input type="text" placeholder="Website" v-model="website" />
+                <label>Animation Link</label>
+                <input type="text" v-model="animationUrl" />
               </div>
               <div class="input-row">
-                <input type="text" placeholder="License" v-model="license" />
+                <label>Youtube Link</label>
+                <input type="text" v-model="youtubeUrl" />
               </div>
               <div class="input-row">
-                <input type="text" placeholder="Royalty Fee" v-model="royaltyPercentage" />
+                <label>External link</label>
+                <input
+                  type="text"
+                  placeholder="eg. https://opensea.io/collection/mojo-music"
+                  v-model="externalUrl"
+                />
               </div>
               <div class="input-row">
-                <input type="text" placeholder="Price in ETH" v-model="price" />
+                <label>Background Color</label>
+                <input type="text" placeholder="#ffffff" v-model="backgroundColor" />
               </div>
-              <div class="input-row hidden">
-                <input type="text" placeholder="Max invocations" v-model="maxInvocations" />
-              </div>
-
               <!-- Button Row -->
               <div v-if="account && formTab === 'two'" class="button-container">
                 <button class="back-button-blue" @click="switchToTab('one')">🔙</button>
-                <button class="attr-button" @click="switchToTab('three')">Add Media</button>
+                <button class="skip-button" @click="switchToTab('three')">Skip</button>
+                <button class="attr-button" @click="addNFTMainAttributes()">Add Details</button>
               </div>
               <!-- END Button Row -->
             </div>
@@ -338,35 +314,94 @@
 
             <!-- Tab Three NFT Pricing -->
             <div v-if="formTab === 'three'" id="form-tab-three" class="form-container">
-              <h2>3. Add Media</h2>
-              <div class="input-row">
-                <textarea
-                  v-model="longDescription"
-                  placeholder="Add a full description here..."
-                  rows="4"
-                  cols="50"
-                ></textarea>
+              <h2>3. Add Video Attributes</h2>
+              <div v-show="tokenId" class="nft-modal-add-sound-attributes">
+                <div class="input-row">
+                  <label>Preview Link</label>
+                  <input type="text" placeholder="Preview Link" v-model="preview" />
+                </div>
+                <div class="input-row hidden">
+                  <label>Audio/Video Link</label>
+                  <input type="text" placeholder="Audio/Video Link" v-model="audioVideoURL" />
+                </div>
+                <div class="input-row">
+                  <label>Best Resolution</label>
+                  <input type="text" v-model="resolution" />
+                </div>
+                <div class="input-row">
+                  <label>Duration</label>
+                  <input type="text" v-model="duration" />
+                </div>
               </div>
-              <div class="input-row">
-                <input type="text" placeholder="Preview Link" v-model="preview" />
+            </div>
+
+            <div v-if="formTab === 'four'" id="form-tab-four" class="form-container">
+              <h2>3. Add Licensing Attributes</h2>
+              <div v-show="tokenId" class="nft-modal-add-license-attributes">
+                <div class="input-row">
+                  <label>Title</label>
+                  <input type="text" placeholder="Title" v-model="title" />
+                </div>
+                <div class="input-row">
+                  <label>Website</label>
+                  <input type="text" placeholder="Website" v-model="website" />
+                </div>
+                <div class="select-row">
+                  <label>License</label>
+                  <select v-model="license">
+                    <option value="" class="grey">Select a License</option>
+                    <option v-for="license in licenses" :key="license.id" :value="license.value">
+                      {{ license.label }}
+                    </option>
+                  </select>
+                </div>
+                <div class="input-row">
+                  <label>Royalty Fee</label>
+                  <input type="text" placeholder="max 5%" v-model="royaltyPercentage" />
+                </div>
+                <div class="input-row">
+                  <label>Price</label>
+                  <input type="text" v-model="price" />
+                </div>
               </div>
-              <div class="input-row hidden">
-                <input type="text" placeholder="Audio/Video Link" v-model="audioVideoURL" />
-              </div>
-              <div class="input-row hidden">
-                <input type="text" placeholder="Add an external link" v-model="externalUrl" />
-              </div>
-              <div class="input-row">
-                <input type="text" placeholder="Animation Link" v-model="animationURL" />
-              </div>
-              <div class="input-row">
-                <input type="text" placeholder="Youtube Link" v-model="youtubeURL" />
-              </div>
-              <div class="input-row">
-                <input type="text" placeholder="Resolution" v-model="resolution" />
-              </div>
-              <div class="input-row">
-                <input type="text" placeholder="Duration" v-model="duration" />
+
+              <h2>3. Add Custom Attributes</h2>
+              <!-- STEP 3 : Show Add attributes form once NFT minted and we have a token id returned -->
+              <div v-show="tokenId" class="nft-modal-add-attributes">
+                <div class="nft-attribute">
+                  <div class="nft-attribute-icon">
+                    <input
+                      type="text"
+                      name="traitIcon"
+                      placeholder="enter an icon"
+                      v-model="traitIcon"
+                    />
+                  </div>
+                  <div class="nft-attribute-display-type">
+                    <input
+                      type="text"
+                      name="traitDisplayType"
+                      placeholder="enter a display type, eg. boost_number"
+                      v-model="traitDisplayType"
+                    />
+                  </div>
+                  <div class="nft-attribute-trait-type">
+                    <input
+                      type="text"
+                      name="traitType"
+                      placeholder="enter a trait type, eg. Stamina Increase"
+                      v-model="traitType"
+                    />
+                  </div>
+                  <div class="nft-attribute-value">
+                    <input
+                      type="text"
+                      name="traitValue"
+                      placeholder="enter a trait value, eg. 10"
+                      v-model="traitValue"
+                    />
+                  </div>
+                </div>
               </div>
               <!-- Button Row -->
               <div v-if="account && formTab === 'three'" class="button-container">
@@ -406,7 +441,7 @@ import ArrowBack from "../assets/svgs/ArrowBack.vue";
 
 /* Import Smart Contract ABI and Mojo Contract Address */
 import contractAbi from "../../../artifacts/contracts/mojo_ERC721.sol/MOJO.json";
-const contractAddress = "0x6b9482bD2EEd7814EE5a88Cc93f687a3961D27Fb";
+const contractAddress = "0x50878dC8674A3738d3C1fCA76F9DB308Ed2EFE4D";
 
 /* Console log with some style */
 const stylesContract = ["color: black", "background: #e9429b"].join(";");
@@ -464,6 +499,12 @@ export default {
     const store = useStore();
     const { loading, minting, account, musicCategories } = storeToRefs(store);
 
+    const licenses = ref([
+      { id: 1, label: "", value: "" },
+      { id: 2, label: "", value: "" },
+      { id: 3, label: "", value: "" },
+    ]);
+
     /* Set Form Tab */
     const formTab = ref("one");
 
@@ -497,14 +538,12 @@ export default {
     const title = ref("");
     const license = ref("");
     const website = ref("");
-    const longDescription = ref("");
     const preview = ref("");
     const externalUrl = ref("");
     const animationUrl = ref("");
     const youtubeUrl = ref("");
     const audioVideoURL = ref("");
-    const animationURL = ref("");
-    const youtubeURL = ref("");
+    const backgroundColor = ref("");
     const resolution = ref("");
     const duration = ref("");
 
@@ -631,11 +670,6 @@ export default {
         switchToTab("one");
         return;
       }
-      if (category.value.length < 10) {
-        notyf.error(`Please select a category to continue!`);
-        switchToTab("one");
-        return;
-      }
       if (!description.value) {
         notyf.error(`Please enter a description to continue!`);
         switchToTab("one");
@@ -668,7 +702,7 @@ export default {
 
           /* Console log with some style */
           const styles = ["color: black", "background: #2bb5f0"].join(";");
-          console.log("%c🎧 Mojo Contract Address:  %s 🎧", styles, contractAddress);
+          console.log("%c🎧 Mojo Contract Address:  %s ", styles, contractAddress);
 
           /**
            *  Receive Emitted Event from Contract
@@ -699,11 +733,11 @@ export default {
           //   category.value,
           //   license.value,
           //   website.value,
-          //   longDescription.value,
           //   preview.value,
           //   audioVideoURL.value,
-          //   animationURL.value,
-          //   youtubeURL.value,
+          //   animationUrl.value,
+          //   youtubeUrl.value,
+          //   backgroundColor.value,
           //   resolution.value,
           //   duration.value
           // );
@@ -718,6 +752,11 @@ export default {
           /* Check our Transaction results */
           // if (!nftStorageTMetadataURI) return;
 
+          console.log("name :", name.value);
+          console.log("description :", description.value);
+          console.log("imageUrl :", imageUrl.value);
+          console.log("category :", category.value);
+
           const mintDate = new Date();
           const mintDateTimestamp = mintDate.getTime();
           const mintDateString = mintDateTimestamp.toString();
@@ -726,10 +765,10 @@ export default {
           /* Mint our NFT using complex Struct */
           let nftTxn = await contract.safeMint(
             signer.getAddress(),
-            name.value,
-            description.value,
-            imageUrl.value,
-            category.value,
+            name.value.toString(),
+            description.value.toString(),
+            imageUrl.value.toString(),
+            category.value.toString(),
             "https://cloudflare-ipfs.com/ipfs/bafkreibx3akdct6syqhkis3dqsnekukhh5ib5pdwepfki7hf45viv4ylp4",
             "date",
             "Created",
@@ -759,7 +798,7 @@ export default {
             /* Console log with some style */
             const stylesPolygon = ["color: white", "background: #7e44df"].join(";");
             console.log(
-              `%c🧬 NFT Minted on Polygon, see transaction: https://mumbai.polygonscan.com/tx/${nftTxn.hash} %s`,
+              `%c🧬 NFT Minted on Polygon Mumbai, see transaction: https://mumbai.polygonscan.com/tx/${nftTxn.hash} %s`,
               stylesPolygon,
               nftTxn.hash
             );
@@ -1512,7 +1551,7 @@ export default {
         message: "⏳ Please wait while we update your NFT metadata.",
       });
 
-      const createdRowId = await store.createRow(
+      const createdRowId = await store.addNFTMainAttributes(
         tokenId.value,
         cid.value,
         name.value,
@@ -1531,11 +1570,9 @@ export default {
         category.value,
         license.value,
         website.value,
-        longDescription.value,
         preview.value,
         audioVideoURL.value,
-        animationURL.value,
-        youtubeURL.value,
+        backgroundColor.value,
         resolution.value,
         duration.value
       );
@@ -1582,12 +1619,10 @@ export default {
       category.value = "";
       license.value = "";
       website.value = "";
-      longDescription.value = "";
       preview.value = "";
       audioVideoType.value = "";
       audioVideoURL.value = "";
-      animationURL.value = "";
-      youtubeURL.value = "";
+      backgroundColor.value = "";
       resolution.value = "";
       duration.value = "";
       size.value = "";
@@ -1783,6 +1818,7 @@ export default {
       result,
       isDragged,
       account,
+      licenses,
       formTab,
       tokenId,
       cid,
@@ -1804,12 +1840,10 @@ export default {
       category,
       license,
       website,
-      longDescription,
       preview,
       audioVideoType,
       audioVideoURL,
-      animationURL,
-      youtubeURL,
+      backgroundColor,
       resolution,
       duration,
       musicCategories,
@@ -2741,11 +2775,20 @@ section#mint-content {
         justify-content: space;
         align-items: center;
 
-        @include breakpoint($break-ssm) {
-          flex-direction: row;
-          align-content: center;
-          justify-content: center;
-          align-items: center;
+        .skip-button {
+          color: $white;
+          background-color: $black;
+          font-size: 18px;
+          font-weight: bold;
+          width: auto;
+          max-width: 300px;
+          height: 55px;
+          border: 2px solid $black;
+          padding-left: 20px;
+          padding-right: 20px;
+          border-radius: 10px;
+          margin-left: 1%;
+          cursor: pointer;
         }
 
         .attr-button {
@@ -2753,13 +2796,14 @@ section#mint-content {
           background-color: #8d50f5;
           font-size: 18px;
           font-weight: bold;
-          width: 100%;
+          width: auto;
           max-width: 360px;
           height: 55px;
           border: 0;
-          padding-left: 71px;
-          padding-right: 71px;
+          padding-left: 21px;
+          padding-right: 21px;
           border-radius: 10px;
+          margin-left: 2%;
           cursor: pointer;
         }
 
@@ -2774,14 +2818,14 @@ section#mint-content {
           background-color: #fff;
           font-size: 18px;
           font-weight: bold;
-          width: 100%;
+          width: auto;
           max-width: 300px;
           height: 55px;
           border: 2px solid #1c8bfe;
           padding-left: 20px;
           padding-right: 20px;
           border-radius: 10px;
-          margin-right: 10px;
+          margin-right: 1%;
           cursor: pointer;
         }
 

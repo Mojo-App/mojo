@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@tableland/evm/contracts/ITablelandTables.sol";
 
-contract MOJO is ERC721, AccessControl {
+contract MCNFT is ERC721, AccessControl {
     using Counters for Counters.Counter;
     string private _baseURIString = "https://testnet.tableland.network/query?";
 
@@ -18,7 +18,7 @@ contract MOJO is ERC721, AccessControl {
     uint256 private _attributesTableId;
     string public mainTable;
     string public attributesTable;
-    string private _tablePrefix = "Mojo_Music";
+    string private _tablePrefix = "Mojo_Creators";
 
     mapping(uint256 => uint256) private nb_of_attributes;
 
@@ -52,58 +52,49 @@ contract MOJO is ERC721, AccessControl {
         uint256 tokenId
     );
 
-    event categoryUpdated(
+    event addressUpdated(
         address indexed from,
         uint256 timestamp,
         uint256 _metadataTableId,
-        string _category,
+        string _address,
         uint256 tokenId
     );
 
-    event externalUrlUpdated(
+    event sloganUpdated(
         address indexed from,
         uint256 timestamp,
         uint256 _metadataTableId,
-        string _external_url,
+        string _slogan,
         uint256 tokenId
     );
 
-    event backgroundColorUpdated(
+    event profileImgUpdated(
         address indexed from,
         uint256 timestamp,
         uint256 _metadataTableId,
-        string _background_color,
+        string _profile_img,
         uint256 tokenId
     );
 
-    event animationUrlUpdated(
+    event bannerImgUpdated(
         address indexed from,
         uint256 timestamp,
         uint256 _metadataTableId,
-        string _animation_url,
+        string _banner_img,
         uint256 tokenId
     );
 
-    event youtubeUrlUpdated(
+    event websiteUpdated(
         address indexed from,
         uint256 timestamp,
         uint256 _metadataTableId,
-        string _youtube_url,
+        string _website,
         uint256 tokenId
     );
 
     event newAttributeAdded(
         address indexed from,
         uint256 timestamp,
-        uint256 tokenId,
-        uint256 _trait_id
-    );
-
-    event traitLockedUpdated(
-        address indexed from,
-        uint256 timestamp,
-        uint256 _attributesTableId,
-        string _locked,
         uint256 tokenId,
         uint256 _trait_id
     );
@@ -144,7 +135,7 @@ contract MOJO is ERC721, AccessControl {
         uint256 _trait_id
     );
 
-    constructor(address registry) ERC721("Mojo Music", "mNFT") {
+    constructor(address registry) ERC721("Mojo Creator", "mcNFT") {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _tableland = ITablelandTables(registry);
         _metadataTableId = _tableland.createTable(
@@ -154,7 +145,7 @@ contract MOJO is ERC721, AccessControl {
                 _tablePrefix,
                 "_",
                 Strings.toString(block.chainid),
-                " (tokenid int, name text, description text, image text, category text, external_url text, background_color text, animation_url text, youtube_url text);"
+                " (tokenid int, name text, description text, image text, address text, slogan text, profile_img text, banner_img text, website text);"
             )
         );
         mainTable = string.concat(
@@ -171,7 +162,7 @@ contract MOJO is ERC721, AccessControl {
                 _tablePrefix,
                 "_",
                 Strings.toString(block.chainid),
-                " (maintable_tokenid int, trait_id int, locked int, icon text, display_type text, trait_type text, value text);"
+                " (maintable_tokenid int, trait_id int, icon text, display_type text, trait_type text, value text);"
             )
         );
         attributesTable = string.concat(
@@ -187,7 +178,7 @@ contract MOJO is ERC721, AccessControl {
         string memory _name,
         string memory _description,
         string memory _image_url,
-        string memory _category,
+        string memory _address,
         string memory _icon,
         string memory _display_type,
         string memory _trait_type,
@@ -200,7 +191,7 @@ contract MOJO is ERC721, AccessControl {
             string.concat(
                 "INSERT INTO ",
                 mainTable,
-                " (tokenid, name, description, image, category) VALUES ('",
+                " (tokenid, name, description, image, address) VALUES ('",
                 Strings.toString(tokenId),
                 "', '",
                 _name,
@@ -209,7 +200,7 @@ contract MOJO is ERC721, AccessControl {
                 "', '",
                 _image_url,
                 "', '",
-                _category,
+                _address,
                 "')"
             )
         );
@@ -241,24 +232,6 @@ contract MOJO is ERC721, AccessControl {
         return tokenId;
     }
 
-    function update_image(uint256 tokenId, string memory _image) public {
-        require(this.ownerOf(tokenId) == msg.sender, "Invalid owner");
-        _tableland.runSQL(
-            address(this),
-            _metadataTableId,
-            string.concat(
-                "UPDATE ",
-                mainTable,
-                " SET image = '",
-                _image,
-                "' WHERE tokenid = ",
-                Strings.toString(tokenId),
-                ";"
-            )
-        );
-        emit imageUpdated(msg.sender, block.timestamp, _metadataTableId, _image, tokenId);
-    }
-
     function update_name(uint256 tokenId, string memory _name) public {
         require(this.ownerOf(tokenId) == msg.sender, "Invalid owner");
         _tableland.runSQL(
@@ -275,6 +248,24 @@ contract MOJO is ERC721, AccessControl {
             )
         );
         emit nameUpdated(msg.sender, block.timestamp, _metadataTableId, _name, tokenId);
+    }
+
+    function update_image(uint256 tokenId, string memory _image) public {
+        require(this.ownerOf(tokenId) == msg.sender, "Invalid owner");
+        _tableland.runSQL(
+            address(this),
+            _metadataTableId,
+            string.concat(
+                "UPDATE ",
+                mainTable,
+                " SET image = '",
+                _image,
+                "' WHERE tokenid = ",
+                Strings.toString(tokenId),
+                ";"
+            )
+        );
+        emit imageUpdated(msg.sender, block.timestamp, _metadataTableId, _image, tokenId);
     }
 
     function update_description(uint256 tokenId, string memory _description) public {
@@ -295,7 +286,7 @@ contract MOJO is ERC721, AccessControl {
         emit descriptionUpdated(msg.sender, block.timestamp, _metadataTableId, _description, tokenId);
     }
 
-    function update_category(uint256 tokenId, string memory _category) public {
+    function update_address(uint256 tokenId, string memory _address) public {
         require(this.ownerOf(tokenId) == msg.sender, "Invalid owner");
         _tableland.runSQL(
             address(this),
@@ -303,17 +294,17 @@ contract MOJO is ERC721, AccessControl {
             string.concat(
                 "UPDATE ",
                 mainTable,
-                " SET category = '",
-                _category,
+                " SET address = '",
+                _address,
                 "' WHERE tokenid = ",
                 Strings.toString(tokenId),
                 ";"
             )
         );
-        emit categoryUpdated(msg.sender, block.timestamp, _metadataTableId, _category, tokenId);
+        emit addressUpdated(msg.sender, block.timestamp, _metadataTableId, _address, tokenId);
     }
 
-    function update_external_url(uint256 tokenId, string memory _external_url) public {
+    function update_slogan(uint256 tokenId, string memory _slogan) public {
         require(this.ownerOf(tokenId) == msg.sender, "Invalid owner");
         _tableland.runSQL(
             address(this),
@@ -321,23 +312,23 @@ contract MOJO is ERC721, AccessControl {
             string.concat(
                 "UPDATE ",
                 mainTable,
-                " SET external_url = '",
-                _external_url,
+                " SET slogan = '",
+                _slogan,
                 "' WHERE tokenid = ",
                 Strings.toString(tokenId),
                 ";"
             )
         );
-        emit externalUrlUpdated(
+        emit sloganUpdated(
             msg.sender,
             block.timestamp,
             _metadataTableId,
-            _external_url,
+            _slogan,
             tokenId
         );
     }
 
-    function update_background_color(uint256 tokenId, string memory _background_color) public {
+    function update_profile_img(uint256 tokenId, string memory _profile_img) public {
         require(this.ownerOf(tokenId) == msg.sender, "Invalid owner");
         _tableland.runSQL(
             address(this),
@@ -345,23 +336,23 @@ contract MOJO is ERC721, AccessControl {
             string.concat(
                 "UPDATE ",
                 mainTable,
-                " SET background_color = '",
-                _background_color,
+                " SET profile_img = '",
+                _profile_img,
                 "' WHERE tokenid = ",
                 Strings.toString(tokenId),
                 ";"
             )
         );
-        emit backgroundColorUpdated(
+        emit profileImgUpdated(
             msg.sender,
             block.timestamp,
             _metadataTableId,
-            _background_color,
+            _profile_img,
             tokenId
         );
     }
 
-    function update_animation_url(uint256 tokenId, string memory _animation_url) public {
+    function update_banner_img(uint256 tokenId, string memory _banner_img) public {
         require(this.ownerOf(tokenId) == msg.sender, "Invalid owner");
         _tableland.runSQL(
             address(this),
@@ -369,23 +360,23 @@ contract MOJO is ERC721, AccessControl {
             string.concat(
                 "UPDATE ",
                 mainTable,
-                " SET animation_url = '",
-                _animation_url,
+                " SET banner_img = '",
+                _banner_img,
                 "' WHERE tokenid = ",
                 Strings.toString(tokenId),
                 ";"
             )
         );
-        emit animationUrlUpdated(
+        emit bannerImgUpdated(
             msg.sender,
             block.timestamp,
             _metadataTableId,
-            _animation_url,
+            _banner_img,
             tokenId
         );
     }
 
-    function update_youtube_url(uint256 tokenId, string memory _youtube_url) public {
+    function update_website(uint256 tokenId, string memory _website) public {
         require(this.ownerOf(tokenId) == msg.sender, "Invalid owner");
         _tableland.runSQL(
             address(this),
@@ -393,18 +384,18 @@ contract MOJO is ERC721, AccessControl {
             string.concat(
                 "UPDATE ",
                 mainTable,
-                " SET youtube_url = '",
-                _youtube_url,
+                " SET website = '",
+                _website,
                 "' WHERE tokenid = ",
                 Strings.toString(tokenId),
                 ";"
             )
         );
-        emit youtubeUrlUpdated(
+        emit websiteUpdated(
             msg.sender,
             block.timestamp,
             _metadataTableId,
-            _youtube_url,
+            _website,
             tokenId
         );
     }
@@ -424,12 +415,10 @@ contract MOJO is ERC721, AccessControl {
             string.concat(
                 "INSERT INTO ",
                 attributesTable,
-                " (maintable_tokenid, trait_id, locked, icon, display_type, trait_type, value) VALUES ('",
+                " (maintable_tokenid, trait_id, icon, display_type, trait_type, value) VALUES ('",
                 Strings.toString(_tokenId),
                 "', '",
                 Strings.toString(counter_trait + 1),
-                "', '",
-                "0",
                 "', '",
                 _icon,
                 "', '",
@@ -446,37 +435,6 @@ contract MOJO is ERC721, AccessControl {
         return counter_trait + 1;
     }
 
-    function update_locked(
-        uint256 tokenId,
-        uint256 _trait_id,
-        string memory _locked
-    ) public {
-        require(this.ownerOf(tokenId) == msg.sender, "Invalid owner");
-        require(nb_of_attributes[tokenId] >= _trait_id && _trait_id > 0, "trait_id not found ");
-        _tableland.runSQL(
-            address(this),
-            _attributesTableId,
-            string.concat(
-                "UPDATE ",
-                attributesTable,
-                " SET locked = '",
-                _locked,
-                "' WHERE maintable_tokenid = ",
-                Strings.toString(tokenId),
-                " AND trait_id = ",
-                Strings.toString(_trait_id),
-                ";"
-            )
-        );
-        emit traitLockedUpdated(
-            msg.sender,
-            block.timestamp,
-            _attributesTableId,
-            _locked,
-            tokenId,
-            _trait_id
-        );
-    }
 
     function update_icon(
         uint256 tokenId,
@@ -637,7 +595,7 @@ contract MOJO is ERC721, AccessControl {
 
         string memory query = string(
             abi.encodePacked(
-                "SELECT%20json_object%28%27id%27%2Ctokenid%2C%27name%27%2Cname%2C%27description%27%2Cdescription%2C%27image%27%2Cimage%2C%27category%27%2Ccategory%2C%27external_url%27%2Cexternal_url%2C%27background_color%27%2Cbackground_color%2C%27animation_url%27%2Canimation_url%2C%27youtube_url%27%2Cyoutube_url%2C%27attributes%27%2Cjson_group_array%28json_object%28%27locked%27%2Clocked%2C%27icon%27%2Cicon%2C%27display_type%27%2Cdisplay_type%2C%27trait_type%27%2Ctrait_type%2C%27value%27%2Cvalue%29%29%29%20FROM%20",
+                "SELECT%20json_object%28%27id%27%2Ctokenid%2C%27name%27%2Cname%2C%27description%27%2Cdescription%2C%27image%27%2Cimage%2C%27address%27%2Caddress%2C%27slogan%27%2Cslogan%2C%27profile_img%27%2Cprofile_img%2C%27banner_img%27%2Cbanner_img%2C%27website%27%2Cwebsite%2C%27attributes%27%2Cjson_group_array%28json_object%28%27icon%27%2Cicon%2C%27display_type%27%2Cdisplay_type%2C%27trait_type%27%2Ctrait_type%2C%27value%27%2Cvalue%29%29%29%20FROM%20",
                 mainTable,
                 "%20JOIN%20",
                 attributesTable,

@@ -32,7 +32,7 @@
         <div class="right">
           <ConnectWalletButton v-model="account" btnSize="small" />
         </div>
-        <i :title="`Let's Jam ${isDark ? 'Light' : 'Dark'} Mode`">
+        <i class="toggle-icon" :title="`Let's Jam ${isDark ? 'Light' : 'Dark'} Mode`">
           <i-mdi-brightness-7 v-if="isDark" class="icon-color" @click="toggleTheme" />
           <i-mdi-brightness-4 v-else class="icon-color" @click="toggleTheme" />
         </i>
@@ -118,10 +118,26 @@ export default {
   border-bottom: 1px solid #1a1a1a;
   padding: 0 64px 0 64px;
 
+  @include breakpoint($break-ssm) {
+    padding: 0;
+    border-bottom: none;
+    flex-direction: column;
+  }
+
   .header-title {
     display: flex;
     justify-content: center;
     align-items: flex-end;
+    @include breakpoint($break-ssm) {
+      width: 100%;
+
+      h1 {
+        font-size: 1.5em;
+      }
+      span {
+        font-size: 0.8em;
+      }
+    }
 
     .header-logo {
       border: 1px solid #000000;
@@ -153,13 +169,30 @@ export default {
   }
 
   .header-menu {
+    width: 100%;
     display: flex;
+    flex-direction: row wrap;
+    align-content: center;
+    justify-content: flex-end;
     align-items: center;
+    @include breakpoint($break-ssm) {
+      width: 100%;
+      height: auto;
+      flex-direction: row wrap;
+    }
 
     nav {
       display: flex;
       align-items: center;
       text-align: right;
+      @include breakpoint($break-ssm) {
+        text-align: right;
+        padding: 8px 0;
+        width: 100%;
+        height: auto;
+        display: flex;
+        flex-direction: row wrap;
+      }
 
       a {
         color: var(--contrast-color);
@@ -182,10 +215,45 @@ export default {
           font-weight: bold;
         }
       }
+      @include breakpoint($break-ssm) {
+        > a {
+          font-size: 0.8em;
+          margin-right: 11px;
 
-      svg {
-        cursor: pointer;
-        font-size: 1.7em;
+          flex: auto;
+          display: flex;
+          justify-content: flex-end;
+
+          &.active {
+            font-weight: bold;
+          }
+        }
+        .right {
+          flex: 1;
+          display: flex;
+          justify-content: flex-end;
+        }
+        > i {
+          display: flex;
+          justify-content: flex-end;
+        }
+      }
+
+      .toggle-icon {
+        svg {
+          cursor: pointer;
+          font-size: 1.6em;
+        }
+        @include breakpoint($break-xs) {
+          display: none;
+        }
+      }
+      @include breakpoint($break-ssm) {
+        .icon.icon-lg {
+          position: fixed;
+          top: 1em;
+          right: 1em;
+        }
       }
     }
   }

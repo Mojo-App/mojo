@@ -192,57 +192,8 @@ code {
 
 @media only screen and (max-width: 768px) {
   #app {
-    padding: 1rem;
-    height: calc(100% - 2rem);
-
-    #header {
-      padding: 0 0 0.7em 0;
-      border-bottom: none;
-      flex-direction: column;
-
-      .header-title {
-        width: 100%;
-        margin-bottom: 8px;
-
-        h1 {
-          font-size: 1.5em;
-        }
-
-        span {
-          font-size: 0.8em;
-        }
-      }
-
-      .header-menu {
-        width: 100%;
-
-        nav {
-          text-align: left;
-          padding: 8px 0;
-          width: 100%;
-
-          > a {
-            font-size: 0.83em;
-            margin-right: 12px;
-
-            &.active {
-              font-weight: bold;
-            }
-          }
-          > i {
-            flex: 1;
-            display: flex;
-            justify-content: flex-end;
-          }
-        }
-
-        .icon.icon-lg {
-          position: fixed;
-          top: 1em;
-          right: 1em;
-        }
-      }
-    }
+    padding: 0;
+    height: calc(100%);
 
     #content {
       height: auto;

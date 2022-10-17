@@ -17,7 +17,6 @@ export const nftStorage = async (
   category,
   license,
   website,
-  longDescription,
   preview,
   audioVideoURL,
   animationURL,
@@ -41,10 +40,7 @@ export const nftStorage = async (
     image: blob,
     properties: {
       type: "mNFT",
-      authors: [{ name: "Mojo NFT" }],
-      content: {
-        "text/markdown": longDescription,
-      },
+      authors: [{ name: "Mojo Music NFT" }],
     },
     attributes: [
       {

@@ -1,6 +1,6 @@
 <template>
   <section id="collection-content">
-    <div class="main bg-shape">
+    <div class="main">
       <section id="collection">
         <div class="left">
           <h2>Blockchains</h2>
@@ -21,7 +21,7 @@
         <div class="right">
           <div v-if="chainSelected === 'all' || chainSelected === 'ethereum'" class="row">
             <div class="row-header">
-              <h2>ethereum</h2>
+              <h2>Ethereum</h2>
             </div>
             <div v-if="ethereumTokens && ethereumTokens.length > 0" class="row token-list">
               <template v-for="token in ethereumTokens" :key="token.tokenId">
@@ -66,7 +66,7 @@
           </div>
           <div v-if="chainSelected === 'all' || chainSelected === 'polygon'" class="row">
             <div class="row-header">
-              <h2>polygon</h2>
+              <h2>Polygon</h2>
             </div>
             <div v-if="polygonTokens && polygonTokens.length > 0" class="row token-list">
               <template v-for="token in polygonTokens" :key="token.tokenId">
@@ -111,7 +111,7 @@
           </div>
           <div v-if="chainSelected === 'all' || chainSelected === 'optimism'" class="row">
             <div class="row-header">
-              <h2>optimism</h2>
+              <h2>Optimism</h2>
             </div>
             <div v-if="optimismTokens && optimismTokens.length > 0" class="row token-list">
               <template v-for="token in optimismTokens" :key="token.tokenId">
@@ -156,7 +156,7 @@
           </div>
           <div v-if="chainSelected === 'all' || chainSelected === 'arbitrum'" class="row">
             <div class="row-header">
-              <h2>arbitrum</h2>
+              <h2>Arbitrum</h2>
             </div>
             <div v-if="arbitrumTokens && arbitrumTokens.length > 0" class="row token-list">
               <template v-for="token in arbitrumTokens" :key="token.tokenId">
@@ -201,7 +201,7 @@
           </div>
           <div v-if="chainSelected === 'all' || chainSelected === 'avalanche'" class="row">
             <div class="row-header">
-              <h2>avalanche</h2>
+              <h2>Avalanche</h2>
             </div>
             <div v-if="avalancheTokens && avalancheTokens.length > 0" class="row token-list">
               <template v-for="token in avalancheTokens" :key="token.tokenId">
@@ -424,15 +424,6 @@ section#collection-content {
   position: relative;
   height: 100%;
   overflow: scroll;
-
-  .bg-shape {
-    background: #fff;
-    background-image: url("./BlackCornerTop.png");
-    background-repeat: no-repeat;
-    background-position: center right;
-    background-size: auto;
-  }
-
   .main {
     width: 100%;
     height: 100%;
@@ -440,28 +431,38 @@ section#collection-content {
     padding: 0;
 
     section#collection {
+      width: 100%;
       height: 100%;
       color: #212121;
       background: $mojo-blue;
+      margin: 0;
+      padding: 0;
       display: flex;
       flex-direction: row;
       align-content: center;
       align-items: flex-start;
       justify-content: center;
-      padding: 0 10px;
       overflow: scroll;
 
+      @include breakpoint($break-ssm) {
+        flex-direction: column;
+        align-content: center;
+        align-items: center;
+        justify-content: flex-start;
+      }
+
       .left {
-        width: 30%;
+        width: 27%;
         display: flex;
         flex-direction: column;
         align-content: center;
         justify-content: center;
         align-items: flex-start;
-        padding: 50px 20px 60px 60px;
+        padding: 45px 0 40px 30px;
 
         @include breakpoint($break-ssm) {
           width: 100%;
+          padding: 40px 0 40px 40px;
         }
 
         h2 {
@@ -477,7 +478,7 @@ section#collection-content {
         }
 
         ul.blockchain-list {
-          min-width: 300px;
+          min-width: 260px;
           list-style-type: none;
           list-style-position: outside;
           margin-block-start: 0.5em;
@@ -531,7 +532,7 @@ section#collection-content {
         align-content: center;
         justify-content: center;
         align-items: center;
-        padding: 50px 20px 60px 60px;
+        padding: 0 20px 40px;
 
         .row-header {
           width: 100%;
