@@ -65,12 +65,14 @@ LinkedIn: (<https://www.linkedin.com/in/craig-moss-21822628/>)
 This project is deployed to Polygon Mumbai Testnet.
 
 Tableland Address :  0x4b48841d4b32C4650E4ABc117A03FE8B51f38F68
-Mojo Music NFTs contract deployed on polygon-mumbai at addresss: 0x41B02B29CE0B8E2f13A3ff189D18E87f78d8E236
-Main Table: Mojo_Music_80001_3314
-Attributes Table : Mojo_Music_80001_3315
 
-<https://testnets.opensea.io/assets/mumbai/0x4b48841d4b32c4650e4abc117a03fe8b51f38f68/3314>
-<https://testnets.opensea.io/assets/mumbai/0x4b48841d4b32c4650e4abc117a03fe8b51f38f68/3315>
+Mojo Music NFTs contract deployed on polygon-mumbai at addresss: 0x50878dC8674A3738d3C1fCA76F9DB308Ed2EFE4D
+
+Main Table: Mojo_Music_80001_3503
+Attributes Table : Mojo_Music_80001_3504
+
+<https://testnets.opensea.io/assets/mumbai/0x4b48841d4b32c4650e4abc117a03fe8b51f38f68/3503>
+<https://testnets.opensea.io/assets/mumbai/0x4b48841d4b32c4650e4abc117a03fe8b51f38f68/3504>
 
 ```shell
 npx hardhat run scripts/deploy.js --network polygon-mumbai
@@ -79,7 +81,12 @@ npx hardhat run scripts/deploy.js --network polygon-mumbai
 ## Verify Contracts Note
 
 Successfully verified contract MOJO on Etherscan.
-<https://mumbai.polygonscan.com/address/0x41B02B29CE0B8E2f13A3ff189D18E87f78d8E236#code>
+Successfully submitted source code for contract
+contracts/mojo_ERC721.sol:MOJO at 0x50878dC8674A3738d3C1fCA76F9DB308Ed2EFE4D
+for verification on the block explorer. Waiting for verification result...
+
+Successfully verified contract MOJO on Etherscan.
+<https://mumbai.polygonscan.com/address/0x50878dC8674A3738d3C1fCA76F9DB308Ed2EFE4D#code>
 
 You will need to verify your contracts as below.
 

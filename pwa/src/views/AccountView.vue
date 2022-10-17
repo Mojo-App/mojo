@@ -1,27 +1,50 @@
 <template>
   <section id="account">
-    <h2>account</h2>
-    <div v-if="!account" class="row">
-      <p>Welcome to Mojo, please connect your account to access your membership NFT</p>
-      <p>
-        <ConnectWalletButton v-model="account" btnSize="large" />
-      </p>
+    <div class="left">
+      <div v-if="!account && !isAuthenticated" class="account-connect-card">
+        <h2>Account</h2>
+        <p>Welcome to Mojo, please connect your Metamask to access your account.</p>
+        <p>
+          <ConnectWalletButton v-model="account" btnSize="small" />
+        </p>
+      </div>
+      <div v-if="account && !isAuthenticated" class="account-connect-card">
+        <h2>Profile</h2>
+        <p>Welcome to Mojo, you can now update your profile and storefront.</p>
+        <p>
+          <!-- <ConnectWalletButton v-model="account" btnSize="small" /> -->
+        </p>
+      </div>
+      <div v-if="account && isAuthenticated" class="account-connect-card">
+        <h2>Authenticated</h2>
+        <p>Welcome to Mojo, your account is authenticated.</p>
+        <p>
+          <!-- <ConnectWalletButton v-model="account" btnSize="small" /> -->
+        </p>
+      </div>
     </div>
-    <div v-if="account && !isAuthenticated" class="row">
-      <p>
-        You don't have an authorized Mojo NFT in your wallet to gain access.
-        <br />Please check your account for an NFT with the following contract address:
-        <br />
-        <a :href="`https://etherscan.io/address/${mojoContractAddress}`" target="blank">
-          {{ mojoContractAddress }}
-        </a>
-      </p>
-      <p>
-        <button class="home-button" @click="$router.push({ name: 'home' })">home</button>
-      </p>
-    </div>
-    <div v-if="account && isAuthenticated" class="row">
-      <p>Thank you for authenticating with a Mojo NFT. Browse your Music NFT Collection below!</p>
+    <div class="right">
+      <div class="account-card">
+        <div v-if="account && !isAuthenticated" class="row">
+          <p>
+            You don't have an authorized Mojo Creators NFT in your wallet?
+            <br />Please check your account for an NFT with the following contract address:
+            <br />
+            <a :href="`https://etherscan.io/address/${mojoContractAddress}`" target="blank">
+              {{ mojoContractAddress }}
+            </a>
+          </p>
+          <p>
+            <button class="home-button" @click="$router.push({ name: 'home' })">home</button>
+          </p>
+        </div>
+        <div v-if="account && isAuthenticated" class="row">
+          <p>
+            Thank you for authenticating with a Mojo NFT. Please make sure your profile is completed
+            for your storefront.
+          </p>
+        </div>
+      </div>
     </div>
   </section>
 </template>
@@ -83,7 +106,7 @@ var notyf = new Notyf({
 const store = useStore();
 const { account, isAuthenticated } = storeToRefs(store);
 /* Mojo Contract Address */
-const mojoContractAddress = "0x41B02B29CE0B8E2f13A3ff189D18E87f78d8E236";
+const mojoContractAddress = "0x50878dC8674A3738d3C1fCA76F9DB308Ed2EFE4D";
 /**
  * Check if our Wallet is Connected to 🦊 Metamask
  */
@@ -144,18 +167,25 @@ onMounted(async () => {
 @import "../assets/styles/mixins.scss";
 
 section#account {
-  color: #212121;
-  background: #fff;
   width: 100%;
   height: 100%;
+  color: #212121;
+  background: $mojo-blue;
   margin: 0;
   padding: 0;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-content: center;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   overflow: scroll;
+
+  @include breakpoint($break-ssm) {
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+    justify-content: flex-start;
+  }
 
   .bg-shape {
     background: #fff;
@@ -165,75 +195,182 @@ section#account {
     background-size: auto;
   }
 
-  .row {
+  .left {
+    width: 30%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-content: center;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    padding: 0;
-  }
-
-  .token-list {
-    width: 100%;
-    max-width: 1029px;
-    display: inline-block;
-    margin: 0 auto;
-  }
-
-  h2 {
-    font-size: 1.8rem;
-    text-align: center;
-    margin-block-start: 0;
-    margin-block-end: 0.2em;
+    padding: 40px;
 
     @include breakpoint($break-ssm) {
-      font-size: 2.25rem;
-      margin-block-start: 0.3em;
-      margin-block-end: 0.2em;
+      width: 100%;
+      padding: 20px;
+    }
+
+    .account-connect-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      align-content: center;
+      background: #fff;
+      border: 4px solid var(--gradient-100);
+      box-shadow: 2px 2px 25px 6px rgba(43, 43, 43, 0.1);
+      border-radius: 10px;
+      margin: 0 auto 15px;
+      padding: 30px 40px 20px;
+      z-index: 999;
+
+      h2 {
+        width: 100%;
+        color: $black;
+        font-size: 34px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 42px;
+        text-align: center;
+        margin: 0;
+      }
+      a {
+        color: #1a1a1a;
+        font-weight: bold;
+        border-bottom: 1px solid #1a1a1a;
+        text-decoration: none;
+
+        &.author {
+          padding: 6px 12px;
+          border-radius: 8px;
+          background-color: var(--gradient-100);
+          color: var(--icon-color);
+          font-size: 0.85rem;
+
+          border-bottom: none;
+        }
+      }
+
+      p {
+        line-height: 1.7;
+        margin-bottom: 20px;
+        text-align: center;
+      }
     }
   }
+  .right {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 40px 20px 40px 0;
 
-  .home-button {
-    color: #fff;
-    background-color: $mojo-green;
-    font-size: 18px;
-    font-weight: bold;
-    max-width: 360px;
-    height: 55px;
-    border: 0;
-    border-radius: 30px;
-    padding-left: 57px;
-    padding-right: 57px;
-    transition: 0.4s;
-    cursor: pointer;
-
-    &:hover {
-      color: $black;
+    @include breakpoint($break-ssm) {
+      width: 100%;
+      padding: 20px;
     }
-  }
 
-  a {
-    color: #1a1a1a;
-    font-weight: bold;
-    border-bottom: 1px solid #1a1a1a;
-    text-decoration: none;
+    .account-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      align-content: center;
+      background: #fff;
+      border: 4px solid var(--gradient-100);
+      box-shadow: 2px 2px 25px 6px rgba(43, 43, 43, 0.1);
+      border-radius: 10px;
+      margin: 0 auto 15px;
+      padding: 30px 40px 20px;
+      z-index: 999;
 
-    &.author {
-      padding: 6px 12px;
-      border-radius: 8px;
-      background-color: var(--gradient-100);
-      color: var(--icon-color);
-      font-size: 0.85rem;
+      .row-header {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-content: flex-start;
+        justify-content: center;
+        align-items: center;
+        margin: 50px 0 0 0;
 
-      border-bottom: none;
+        h2 {
+          font-size: 1.8rem;
+          text-align: center;
+          margin-block-start: 0;
+          margin-block-end: 0.2em;
+
+          @include breakpoint($break-ssm) {
+            font-size: 2.25rem;
+            margin-block-start: 0.3em;
+            margin-block-end: 0.2em;
+          }
+        }
+        h2 {
+          width: 100%;
+          color: $black;
+          font-size: 34px;
+          font-style: normal;
+          font-weight: 700;
+          line-height: 42px;
+          text-align: left;
+          margin: 0;
+        }
+        a {
+          color: #1a1a1a;
+          font-weight: bold;
+          border-bottom: 1px solid #1a1a1a;
+          text-decoration: none;
+
+          &.author {
+            padding: 6px 12px;
+            border-radius: 8px;
+            background-color: var(--gradient-100);
+            color: var(--icon-color);
+            font-size: 0.85rem;
+
+            border-bottom: none;
+          }
+        }
+
+        p {
+          line-height: 1.7;
+          margin-bottom: 20px;
+          text-align: center;
+        }
+      }
+
+      .row {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 0;
+      }
+
+      .home-button {
+        color: #fff;
+        background-color: $mojo-green;
+        font-size: 18px;
+        font-weight: bold;
+        max-width: 360px;
+        height: 55px;
+        border: 0;
+        border-radius: 30px;
+        padding-left: 57px;
+        padding-right: 57px;
+        transition: 0.4s;
+        cursor: pointer;
+
+        &:hover {
+          color: $black;
+        }
+      }
     }
-  }
-
-  p {
-    line-height: 1.7;
-    margin-bottom: 20px;
-    text-align: center;
   }
 }
 

@@ -19,7 +19,7 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
-interface MOJOInterface extends ethers.utils.Interface {
+interface MCNFTInterface extends ethers.utils.Interface {
   functions: {
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
     "add_new_attribute(uint256,string,string,string,string)": FunctionFragment;
@@ -46,19 +46,18 @@ interface MOJOInterface extends ethers.utils.Interface {
     "symbol()": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
-    "update_animation_url(uint256,string)": FunctionFragment;
-    "update_background_color(uint256,string)": FunctionFragment;
-    "update_category(uint256,string)": FunctionFragment;
+    "update_address(uint256,string)": FunctionFragment;
+    "update_banner_img(uint256,string)": FunctionFragment;
     "update_description(uint256,string)": FunctionFragment;
     "update_display_type(uint256,uint256,string)": FunctionFragment;
-    "update_external_url(uint256,string)": FunctionFragment;
     "update_icon(uint256,uint256,string)": FunctionFragment;
     "update_image(uint256,string)": FunctionFragment;
-    "update_locked(uint256,uint256,string)": FunctionFragment;
     "update_name(uint256,string)": FunctionFragment;
+    "update_profile_img(uint256,string)": FunctionFragment;
+    "update_slogan(uint256,string)": FunctionFragment;
     "update_trait_type(uint256,uint256,string)": FunctionFragment;
     "update_value(uint256,uint256,string)": FunctionFragment;
-    "update_youtube_url(uint256,string)": FunctionFragment;
+    "update_website(uint256,string)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -157,15 +156,11 @@ interface MOJOInterface extends ethers.utils.Interface {
     values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "update_animation_url",
+    functionFragment: "update_address",
     values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "update_background_color",
-    values: [BigNumberish, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "update_category",
+    functionFragment: "update_banner_img",
     values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
@@ -177,10 +172,6 @@ interface MOJOInterface extends ethers.utils.Interface {
     values: [BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "update_external_url",
-    values: [BigNumberish, string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "update_icon",
     values: [BigNumberish, BigNumberish, string]
   ): string;
@@ -189,11 +180,15 @@ interface MOJOInterface extends ethers.utils.Interface {
     values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "update_locked",
-    values: [BigNumberish, BigNumberish, string]
+    functionFragment: "update_name",
+    values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "update_name",
+    functionFragment: "update_profile_img",
+    values: [BigNumberish, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "update_slogan",
     values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
@@ -205,7 +200,7 @@ interface MOJOInterface extends ethers.utils.Interface {
     values: [BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "update_youtube_url",
+    functionFragment: "update_website",
     values: [BigNumberish, string]
   ): string;
 
@@ -274,15 +269,11 @@ interface MOJOInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "update_animation_url",
+    functionFragment: "update_address",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "update_background_color",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "update_category",
+    functionFragment: "update_banner_img",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -294,10 +285,6 @@ interface MOJOInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "update_external_url",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "update_icon",
     data: BytesLike
   ): Result;
@@ -306,11 +293,15 @@ interface MOJOInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "update_locked",
+    functionFragment: "update_name",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "update_name",
+    functionFragment: "update_profile_img",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "update_slogan",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -322,7 +313,7 @@ interface MOJOInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "update_youtube_url",
+    functionFragment: "update_website",
     data: BytesLike
   ): Result;
 
@@ -334,20 +325,19 @@ interface MOJOInterface extends ethers.utils.Interface {
     "RoleGranted(bytes32,address,address)": EventFragment;
     "RoleRevoked(bytes32,address,address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
-    "animationUrlUpdated(address,uint256,uint256,string,uint256)": EventFragment;
-    "backgroundColorUpdated(address,uint256,uint256,string,uint256)": EventFragment;
-    "categoryUpdated(address,uint256,uint256,string,uint256)": EventFragment;
+    "addressUpdated(address,uint256,uint256,string,uint256)": EventFragment;
+    "bannerImgUpdated(address,uint256,uint256,string,uint256)": EventFragment;
     "descriptionUpdated(address,uint256,uint256,string,uint256)": EventFragment;
-    "externalUrlUpdated(address,uint256,uint256,string,uint256)": EventFragment;
     "imageUpdated(address,uint256,uint256,string,uint256)": EventFragment;
     "nameUpdated(address,uint256,uint256,string,uint256)": EventFragment;
     "newAttributeAdded(address,uint256,uint256,uint256)": EventFragment;
+    "profileImgUpdated(address,uint256,uint256,string,uint256)": EventFragment;
+    "sloganUpdated(address,uint256,uint256,string,uint256)": EventFragment;
     "traitDisplayTypeUpdated(address,uint256,uint256,string,uint256,uint256)": EventFragment;
     "traitIconUpdated(address,uint256,uint256,string,uint256,uint256)": EventFragment;
-    "traitLockedUpdated(address,uint256,uint256,string,uint256,uint256)": EventFragment;
     "traitTypeUpdated(address,uint256,uint256,string,uint256,uint256)": EventFragment;
     "valueUpdated(address,uint256,uint256,string,uint256,uint256)": EventFragment;
-    "youtubeUrlUpdated(address,uint256,uint256,string,uint256)": EventFragment;
+    "websiteUpdated(address,uint256,uint256,string,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
@@ -357,20 +347,19 @@ interface MOJOInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "animationUrlUpdated"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "backgroundColorUpdated"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "categoryUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "addressUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "bannerImgUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "descriptionUpdated"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "externalUrlUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "imageUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "nameUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "newAttributeAdded"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "profileImgUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "sloganUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "traitDisplayTypeUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "traitIconUpdated"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "traitLockedUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "traitTypeUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "valueUpdated"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "youtubeUrlUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "websiteUpdated"): EventFragment;
 }
 
 export type ApprovalEvent = TypedEvent<
@@ -417,32 +406,22 @@ export type TransferEvent = TypedEvent<
   [string, string, BigNumber] & { from: string; to: string; tokenId: BigNumber }
 >;
 
-export type animationUrlUpdatedEvent = TypedEvent<
+export type addressUpdatedEvent = TypedEvent<
   [string, BigNumber, BigNumber, string, BigNumber] & {
     from: string;
     timestamp: BigNumber;
     _metadataTableId: BigNumber;
-    _animation_url: string;
+    _address: string;
     tokenId: BigNumber;
   }
 >;
 
-export type backgroundColorUpdatedEvent = TypedEvent<
+export type bannerImgUpdatedEvent = TypedEvent<
   [string, BigNumber, BigNumber, string, BigNumber] & {
     from: string;
     timestamp: BigNumber;
     _metadataTableId: BigNumber;
-    _background_color: string;
-    tokenId: BigNumber;
-  }
->;
-
-export type categoryUpdatedEvent = TypedEvent<
-  [string, BigNumber, BigNumber, string, BigNumber] & {
-    from: string;
-    timestamp: BigNumber;
-    _metadataTableId: BigNumber;
-    _category: string;
+    _banner_img: string;
     tokenId: BigNumber;
   }
 >;
@@ -453,16 +432,6 @@ export type descriptionUpdatedEvent = TypedEvent<
     timestamp: BigNumber;
     _metadataTableId: BigNumber;
     _description: string;
-    tokenId: BigNumber;
-  }
->;
-
-export type externalUrlUpdatedEvent = TypedEvent<
-  [string, BigNumber, BigNumber, string, BigNumber] & {
-    from: string;
-    timestamp: BigNumber;
-    _metadataTableId: BigNumber;
-    _external_url: string;
     tokenId: BigNumber;
   }
 >;
@@ -496,6 +465,26 @@ export type newAttributeAddedEvent = TypedEvent<
   }
 >;
 
+export type profileImgUpdatedEvent = TypedEvent<
+  [string, BigNumber, BigNumber, string, BigNumber] & {
+    from: string;
+    timestamp: BigNumber;
+    _metadataTableId: BigNumber;
+    _profile_img: string;
+    tokenId: BigNumber;
+  }
+>;
+
+export type sloganUpdatedEvent = TypedEvent<
+  [string, BigNumber, BigNumber, string, BigNumber] & {
+    from: string;
+    timestamp: BigNumber;
+    _metadataTableId: BigNumber;
+    _slogan: string;
+    tokenId: BigNumber;
+  }
+>;
+
 export type traitDisplayTypeUpdatedEvent = TypedEvent<
   [string, BigNumber, BigNumber, string, BigNumber, BigNumber] & {
     from: string;
@@ -513,17 +502,6 @@ export type traitIconUpdatedEvent = TypedEvent<
     timestamp: BigNumber;
     _attributesTableId: BigNumber;
     _icon: string;
-    tokenId: BigNumber;
-    _trait_id: BigNumber;
-  }
->;
-
-export type traitLockedUpdatedEvent = TypedEvent<
-  [string, BigNumber, BigNumber, string, BigNumber, BigNumber] & {
-    from: string;
-    timestamp: BigNumber;
-    _attributesTableId: BigNumber;
-    _locked: string;
     tokenId: BigNumber;
     _trait_id: BigNumber;
   }
@@ -551,17 +529,17 @@ export type valueUpdatedEvent = TypedEvent<
   }
 >;
 
-export type youtubeUrlUpdatedEvent = TypedEvent<
+export type websiteUpdatedEvent = TypedEvent<
   [string, BigNumber, BigNumber, string, BigNumber] & {
     from: string;
     timestamp: BigNumber;
     _metadataTableId: BigNumber;
-    _youtube_url: string;
+    _website: string;
     tokenId: BigNumber;
   }
 >;
 
-export class MOJO extends BaseContract {
+export class MCNFT extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -602,7 +580,7 @@ export class MOJO extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: MOJOInterface;
+  interface: MCNFTInterface;
 
   functions: {
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
@@ -681,7 +659,7 @@ export class MOJO extends BaseContract {
       _name: string,
       _description: string,
       _image_url: string,
-      _category: string,
+      _address: string,
       _icon: string,
       _display_type: string,
       _trait_type: string,
@@ -734,21 +712,15 @@ export class MOJO extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    update_animation_url(
+    update_address(
       tokenId: BigNumberish,
-      _animation_url: string,
+      _address: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    update_background_color(
+    update_banner_img(
       tokenId: BigNumberish,
-      _background_color: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    update_category(
-      tokenId: BigNumberish,
-      _category: string,
+      _banner_img: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -765,12 +737,6 @@ export class MOJO extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    update_external_url(
-      tokenId: BigNumberish,
-      _external_url: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     update_icon(
       tokenId: BigNumberish,
       _trait_id: BigNumberish,
@@ -784,16 +750,21 @@ export class MOJO extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    update_locked(
-      tokenId: BigNumberish,
-      _trait_id: BigNumberish,
-      _locked: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     update_name(
       tokenId: BigNumberish,
       _name: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    update_profile_img(
+      tokenId: BigNumberish,
+      _profile_img: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    update_slogan(
+      tokenId: BigNumberish,
+      _slogan: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -811,9 +782,9 @@ export class MOJO extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    update_youtube_url(
+    update_website(
       tokenId: BigNumberish,
-      _youtube_url: string,
+      _website: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
@@ -891,7 +862,7 @@ export class MOJO extends BaseContract {
     _name: string,
     _description: string,
     _image_url: string,
-    _category: string,
+    _address: string,
     _icon: string,
     _display_type: string,
     _trait_type: string,
@@ -941,21 +912,15 @@ export class MOJO extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  update_animation_url(
+  update_address(
     tokenId: BigNumberish,
-    _animation_url: string,
+    _address: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  update_background_color(
+  update_banner_img(
     tokenId: BigNumberish,
-    _background_color: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  update_category(
-    tokenId: BigNumberish,
-    _category: string,
+    _banner_img: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -972,12 +937,6 @@ export class MOJO extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  update_external_url(
-    tokenId: BigNumberish,
-    _external_url: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   update_icon(
     tokenId: BigNumberish,
     _trait_id: BigNumberish,
@@ -991,16 +950,21 @@ export class MOJO extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  update_locked(
-    tokenId: BigNumberish,
-    _trait_id: BigNumberish,
-    _locked: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   update_name(
     tokenId: BigNumberish,
     _name: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  update_profile_img(
+    tokenId: BigNumberish,
+    _profile_img: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  update_slogan(
+    tokenId: BigNumberish,
+    _slogan: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1018,9 +982,9 @@ export class MOJO extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  update_youtube_url(
+  update_website(
     tokenId: BigNumberish,
-    _youtube_url: string,
+    _website: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1098,7 +1062,7 @@ export class MOJO extends BaseContract {
       _name: string,
       _description: string,
       _image_url: string,
-      _category: string,
+      _address: string,
       _icon: string,
       _display_type: string,
       _trait_type: string,
@@ -1148,21 +1112,15 @@ export class MOJO extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    update_animation_url(
+    update_address(
       tokenId: BigNumberish,
-      _animation_url: string,
+      _address: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    update_background_color(
+    update_banner_img(
       tokenId: BigNumberish,
-      _background_color: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    update_category(
-      tokenId: BigNumberish,
-      _category: string,
+      _banner_img: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1179,12 +1137,6 @@ export class MOJO extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    update_external_url(
-      tokenId: BigNumberish,
-      _external_url: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     update_icon(
       tokenId: BigNumberish,
       _trait_id: BigNumberish,
@@ -1198,16 +1150,21 @@ export class MOJO extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    update_locked(
-      tokenId: BigNumberish,
-      _trait_id: BigNumberish,
-      _locked: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     update_name(
       tokenId: BigNumberish,
       _name: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    update_profile_img(
+      tokenId: BigNumberish,
+      _profile_img: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    update_slogan(
+      tokenId: BigNumberish,
+      _slogan: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1225,9 +1182,9 @@ export class MOJO extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    update_youtube_url(
+    update_website(
       tokenId: BigNumberish,
-      _youtube_url: string,
+      _website: string,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -1359,11 +1316,11 @@ export class MOJO extends BaseContract {
       { from: string; to: string; tokenId: BigNumber }
     >;
 
-    "animationUrlUpdated(address,uint256,uint256,string,uint256)"(
+    "addressUpdated(address,uint256,uint256,string,uint256)"(
       from?: string | null,
       timestamp?: null,
       _metadataTableId?: null,
-      _animation_url?: null,
+      _address?: null,
       tokenId?: null
     ): TypedEventFilter<
       [string, BigNumber, BigNumber, string, BigNumber],
@@ -1371,16 +1328,16 @@ export class MOJO extends BaseContract {
         from: string;
         timestamp: BigNumber;
         _metadataTableId: BigNumber;
-        _animation_url: string;
+        _address: string;
         tokenId: BigNumber;
       }
     >;
 
-    animationUrlUpdated(
+    addressUpdated(
       from?: string | null,
       timestamp?: null,
       _metadataTableId?: null,
-      _animation_url?: null,
+      _address?: null,
       tokenId?: null
     ): TypedEventFilter<
       [string, BigNumber, BigNumber, string, BigNumber],
@@ -1388,16 +1345,16 @@ export class MOJO extends BaseContract {
         from: string;
         timestamp: BigNumber;
         _metadataTableId: BigNumber;
-        _animation_url: string;
+        _address: string;
         tokenId: BigNumber;
       }
     >;
 
-    "backgroundColorUpdated(address,uint256,uint256,string,uint256)"(
+    "bannerImgUpdated(address,uint256,uint256,string,uint256)"(
       from?: string | null,
       timestamp?: null,
       _metadataTableId?: null,
-      _background_color?: null,
+      _banner_img?: null,
       tokenId?: null
     ): TypedEventFilter<
       [string, BigNumber, BigNumber, string, BigNumber],
@@ -1405,16 +1362,16 @@ export class MOJO extends BaseContract {
         from: string;
         timestamp: BigNumber;
         _metadataTableId: BigNumber;
-        _background_color: string;
+        _banner_img: string;
         tokenId: BigNumber;
       }
     >;
 
-    backgroundColorUpdated(
+    bannerImgUpdated(
       from?: string | null,
       timestamp?: null,
       _metadataTableId?: null,
-      _background_color?: null,
+      _banner_img?: null,
       tokenId?: null
     ): TypedEventFilter<
       [string, BigNumber, BigNumber, string, BigNumber],
@@ -1422,41 +1379,7 @@ export class MOJO extends BaseContract {
         from: string;
         timestamp: BigNumber;
         _metadataTableId: BigNumber;
-        _background_color: string;
-        tokenId: BigNumber;
-      }
-    >;
-
-    "categoryUpdated(address,uint256,uint256,string,uint256)"(
-      from?: string | null,
-      timestamp?: null,
-      _metadataTableId?: null,
-      _category?: null,
-      tokenId?: null
-    ): TypedEventFilter<
-      [string, BigNumber, BigNumber, string, BigNumber],
-      {
-        from: string;
-        timestamp: BigNumber;
-        _metadataTableId: BigNumber;
-        _category: string;
-        tokenId: BigNumber;
-      }
-    >;
-
-    categoryUpdated(
-      from?: string | null,
-      timestamp?: null,
-      _metadataTableId?: null,
-      _category?: null,
-      tokenId?: null
-    ): TypedEventFilter<
-      [string, BigNumber, BigNumber, string, BigNumber],
-      {
-        from: string;
-        timestamp: BigNumber;
-        _metadataTableId: BigNumber;
-        _category: string;
+        _banner_img: string;
         tokenId: BigNumber;
       }
     >;
@@ -1491,40 +1414,6 @@ export class MOJO extends BaseContract {
         timestamp: BigNumber;
         _metadataTableId: BigNumber;
         _description: string;
-        tokenId: BigNumber;
-      }
-    >;
-
-    "externalUrlUpdated(address,uint256,uint256,string,uint256)"(
-      from?: string | null,
-      timestamp?: null,
-      _metadataTableId?: null,
-      _external_url?: null,
-      tokenId?: null
-    ): TypedEventFilter<
-      [string, BigNumber, BigNumber, string, BigNumber],
-      {
-        from: string;
-        timestamp: BigNumber;
-        _metadataTableId: BigNumber;
-        _external_url: string;
-        tokenId: BigNumber;
-      }
-    >;
-
-    externalUrlUpdated(
-      from?: string | null,
-      timestamp?: null,
-      _metadataTableId?: null,
-      _external_url?: null,
-      tokenId?: null
-    ): TypedEventFilter<
-      [string, BigNumber, BigNumber, string, BigNumber],
-      {
-        from: string;
-        timestamp: BigNumber;
-        _metadataTableId: BigNumber;
-        _external_url: string;
         tokenId: BigNumber;
       }
     >;
@@ -1627,6 +1516,74 @@ export class MOJO extends BaseContract {
       }
     >;
 
+    "profileImgUpdated(address,uint256,uint256,string,uint256)"(
+      from?: string | null,
+      timestamp?: null,
+      _metadataTableId?: null,
+      _profile_img?: null,
+      tokenId?: null
+    ): TypedEventFilter<
+      [string, BigNumber, BigNumber, string, BigNumber],
+      {
+        from: string;
+        timestamp: BigNumber;
+        _metadataTableId: BigNumber;
+        _profile_img: string;
+        tokenId: BigNumber;
+      }
+    >;
+
+    profileImgUpdated(
+      from?: string | null,
+      timestamp?: null,
+      _metadataTableId?: null,
+      _profile_img?: null,
+      tokenId?: null
+    ): TypedEventFilter<
+      [string, BigNumber, BigNumber, string, BigNumber],
+      {
+        from: string;
+        timestamp: BigNumber;
+        _metadataTableId: BigNumber;
+        _profile_img: string;
+        tokenId: BigNumber;
+      }
+    >;
+
+    "sloganUpdated(address,uint256,uint256,string,uint256)"(
+      from?: string | null,
+      timestamp?: null,
+      _metadataTableId?: null,
+      _slogan?: null,
+      tokenId?: null
+    ): TypedEventFilter<
+      [string, BigNumber, BigNumber, string, BigNumber],
+      {
+        from: string;
+        timestamp: BigNumber;
+        _metadataTableId: BigNumber;
+        _slogan: string;
+        tokenId: BigNumber;
+      }
+    >;
+
+    sloganUpdated(
+      from?: string | null,
+      timestamp?: null,
+      _metadataTableId?: null,
+      _slogan?: null,
+      tokenId?: null
+    ): TypedEventFilter<
+      [string, BigNumber, BigNumber, string, BigNumber],
+      {
+        from: string;
+        timestamp: BigNumber;
+        _metadataTableId: BigNumber;
+        _slogan: string;
+        tokenId: BigNumber;
+      }
+    >;
+
     "traitDisplayTypeUpdated(address,uint256,uint256,string,uint256,uint256)"(
       from?: string | null,
       timestamp?: null,
@@ -1698,44 +1655,6 @@ export class MOJO extends BaseContract {
         timestamp: BigNumber;
         _attributesTableId: BigNumber;
         _icon: string;
-        tokenId: BigNumber;
-        _trait_id: BigNumber;
-      }
-    >;
-
-    "traitLockedUpdated(address,uint256,uint256,string,uint256,uint256)"(
-      from?: string | null,
-      timestamp?: null,
-      _attributesTableId?: null,
-      _locked?: null,
-      tokenId?: null,
-      _trait_id?: null
-    ): TypedEventFilter<
-      [string, BigNumber, BigNumber, string, BigNumber, BigNumber],
-      {
-        from: string;
-        timestamp: BigNumber;
-        _attributesTableId: BigNumber;
-        _locked: string;
-        tokenId: BigNumber;
-        _trait_id: BigNumber;
-      }
-    >;
-
-    traitLockedUpdated(
-      from?: string | null,
-      timestamp?: null,
-      _attributesTableId?: null,
-      _locked?: null,
-      tokenId?: null,
-      _trait_id?: null
-    ): TypedEventFilter<
-      [string, BigNumber, BigNumber, string, BigNumber, BigNumber],
-      {
-        from: string;
-        timestamp: BigNumber;
-        _attributesTableId: BigNumber;
-        _locked: string;
         tokenId: BigNumber;
         _trait_id: BigNumber;
       }
@@ -1817,11 +1736,11 @@ export class MOJO extends BaseContract {
       }
     >;
 
-    "youtubeUrlUpdated(address,uint256,uint256,string,uint256)"(
+    "websiteUpdated(address,uint256,uint256,string,uint256)"(
       from?: string | null,
       timestamp?: null,
       _metadataTableId?: null,
-      _youtube_url?: null,
+      _website?: null,
       tokenId?: null
     ): TypedEventFilter<
       [string, BigNumber, BigNumber, string, BigNumber],
@@ -1829,16 +1748,16 @@ export class MOJO extends BaseContract {
         from: string;
         timestamp: BigNumber;
         _metadataTableId: BigNumber;
-        _youtube_url: string;
+        _website: string;
         tokenId: BigNumber;
       }
     >;
 
-    youtubeUrlUpdated(
+    websiteUpdated(
       from?: string | null,
       timestamp?: null,
       _metadataTableId?: null,
-      _youtube_url?: null,
+      _website?: null,
       tokenId?: null
     ): TypedEventFilter<
       [string, BigNumber, BigNumber, string, BigNumber],
@@ -1846,7 +1765,7 @@ export class MOJO extends BaseContract {
         from: string;
         timestamp: BigNumber;
         _metadataTableId: BigNumber;
-        _youtube_url: string;
+        _website: string;
         tokenId: BigNumber;
       }
     >;
@@ -1932,7 +1851,7 @@ export class MOJO extends BaseContract {
       _name: string,
       _description: string,
       _image_url: string,
-      _category: string,
+      _address: string,
       _icon: string,
       _display_type: string,
       _trait_type: string,
@@ -1985,21 +1904,15 @@ export class MOJO extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    update_animation_url(
+    update_address(
       tokenId: BigNumberish,
-      _animation_url: string,
+      _address: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    update_background_color(
+    update_banner_img(
       tokenId: BigNumberish,
-      _background_color: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    update_category(
-      tokenId: BigNumberish,
-      _category: string,
+      _banner_img: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -2016,12 +1929,6 @@ export class MOJO extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    update_external_url(
-      tokenId: BigNumberish,
-      _external_url: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     update_icon(
       tokenId: BigNumberish,
       _trait_id: BigNumberish,
@@ -2035,16 +1942,21 @@ export class MOJO extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    update_locked(
-      tokenId: BigNumberish,
-      _trait_id: BigNumberish,
-      _locked: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     update_name(
       tokenId: BigNumberish,
       _name: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    update_profile_img(
+      tokenId: BigNumberish,
+      _profile_img: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    update_slogan(
+      tokenId: BigNumberish,
+      _slogan: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -2062,9 +1974,9 @@ export class MOJO extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    update_youtube_url(
+    update_website(
       tokenId: BigNumberish,
-      _youtube_url: string,
+      _website: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -2156,7 +2068,7 @@ export class MOJO extends BaseContract {
       _name: string,
       _description: string,
       _image_url: string,
-      _category: string,
+      _address: string,
       _icon: string,
       _display_type: string,
       _trait_type: string,
@@ -2209,21 +2121,15 @@ export class MOJO extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    update_animation_url(
+    update_address(
       tokenId: BigNumberish,
-      _animation_url: string,
+      _address: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    update_background_color(
+    update_banner_img(
       tokenId: BigNumberish,
-      _background_color: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    update_category(
-      tokenId: BigNumberish,
-      _category: string,
+      _banner_img: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -2240,12 +2146,6 @@ export class MOJO extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    update_external_url(
-      tokenId: BigNumberish,
-      _external_url: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     update_icon(
       tokenId: BigNumberish,
       _trait_id: BigNumberish,
@@ -2259,16 +2159,21 @@ export class MOJO extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    update_locked(
-      tokenId: BigNumberish,
-      _trait_id: BigNumberish,
-      _locked: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     update_name(
       tokenId: BigNumberish,
       _name: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    update_profile_img(
+      tokenId: BigNumberish,
+      _profile_img: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    update_slogan(
+      tokenId: BigNumberish,
+      _slogan: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -2286,9 +2191,9 @@ export class MOJO extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    update_youtube_url(
+    update_website(
       tokenId: BigNumberish,
-      _youtube_url: string,
+      _website: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

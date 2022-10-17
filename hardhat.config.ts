@@ -60,7 +60,6 @@ const config: HardhatUserConfig = {
       polygonMumbai: process.env.POLYSCAN_API_KEY || "",
     },
   },
-  defaultNetwork: "polygon-mumbai",
   networks: {
     /* Main Networks */
     ethereum: {
@@ -81,36 +80,7 @@ const config: HardhatUserConfig = {
           ? [process.env.POLYGON_PRIVATE_KEY]
           : [],
     },
-    optimism: {
-      url: `https://opt-mainnet.g.alchemy.com/v2/${
-        process.env.OPTIMISM_API_KEY ?? ""
-      }`,
-      accounts:
-        process.env.OPTIMISM_PRIVATE_KEY !== undefined
-          ? [process.env.OPTIMISM_PRIVATE_KEY]
-          : [],
-    },
     /* Test Networks */
-    "ethereum-goerli": {
-      url: `https://eth-goerli.alchemyapi.io/v2/${
-        process.env.ETHEREUM_GOERLI_API_KEY ?? ""
-      }`,
-      accounts:
-        process.env.ETHEREUM_GOERLI_PRIVATE_KEY !== undefined
-          ? [process.env.ETHEREUM_GOERLI_PRIVATE_KEY]
-          : [],
-    },
-    "optimism-kovan": {
-      url: `https://opt-kovan.g.alchemy.com/v2/${
-        process.env.OPTIMISM_GOERLI_API_KEY ?? ""
-      }`,
-      accounts:
-        process.env.OPTIMISM_GOERLI_PRIVATE_KEY !== undefined
-          ? [process.env.OPTIMISM_GOERLI_PRIVATE_KEY]
-          : [],
-      gas: 2100000,
-      gasPrice: 8000000000
-    },
     "polygon-mumbai": {
       url: `https://polygon-mumbai.g.alchemy.com/v2/${
         process.env.POLYGON_MUMBAI_API_KEY ?? ""
@@ -119,20 +89,6 @@ const config: HardhatUserConfig = {
         process.env.POLYGON_MUMBAI_PRIVATE_KEY !== undefined
           ? [process.env.POLYGON_MUMBAI_PRIVATE_KEY]
           : [],
-      gas: 2100000,
-      gasPrice: 8000000000
-    },
-    /* Development Networks */
-    "optimism-kovan-staging": {
-      url: `https://opt-kovan.g.alchemy.com/v2/${
-        process.env.OPTIMISM_GOERLI_STAGING_API_KEY ?? ""
-      }`,
-      accounts:
-        process.env.OPTIMISM_GOERLI_STAGING_PRIVATE_KEY !== undefined
-          ? [process.env.OPTIMISM_GOERLI_STAGING_PRIVATE_KEY]
-          : [],
-      gas: 2100000,
-      gasPrice: 8000000000
     },
     hardhat: {
       mining: {

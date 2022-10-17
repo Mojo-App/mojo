@@ -17,18 +17,18 @@
 <script>
 /* LFG */
 export default {
-  name: 'SearchResult',
+  name: "SearchResult",
   props: {
     search: {
       type: String,
-      default: '',
+      default: "",
     },
     count: {
       type: Number,
       default: 0,
     },
   },
-  emits: ['onChanged'],
+  emits: ["onChanged"],
 };
 </script>
 <style lang="scss">

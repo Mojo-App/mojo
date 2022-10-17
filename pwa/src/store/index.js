@@ -10,7 +10,7 @@ import nftPort from "../services/nftPort.js";
 
 /* Import Smart Contract ABI and Mojo Contract Address */
 // import contractAbi from "../../../artifacts/contracts/mojo_ERC721.sol/MOJO.json";
-// const mojoContractAddress = "0x41B02B29CE0B8E2f13A3ff189D18E87f78d8E236";
+// const mojoContractAddress = "0x50878dC8674A3738d3C1fCA76F9DB308Ed2EFE4D";
 
 /* Setup Offline Storage */
 const db = new Storage("app");
@@ -469,7 +469,6 @@ export const useStore = defineStore({
       category,
       license,
       website,
-      longDescription,
       preview,
       audioVideoURL,
       animationURL,
@@ -493,7 +492,6 @@ export const useStore = defineStore({
       console.log("category :", category);
       console.log("license :", license);
       console.log("website :", website);
-      console.log("longDescription :", longDescription);
       console.log("preview :", preview);
       console.log("audioVideoURL :", audioVideoURL);
       console.log("animationURL :", animationURL);

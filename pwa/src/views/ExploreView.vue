@@ -1616,7 +1616,7 @@ section#explore-content {
       align-content: center;
       align-items: center;
       justify-content: flex-start;
-      padding: 3em 0;
+      padding: 0 0 40px 0;
       border-top: 1px solid $black;
 
       .row-header {
@@ -1647,8 +1647,8 @@ section#explore-content {
           font-weight: 700;
           font-size: 36px;
           line-height: 42px;
-          text-align: right;
-          margin: 20px 0 0 0;
+          margin: 10px 0 0 0;
+          padding: 0 0 0 10px;
           .mojo-black {
             color: $black;
           }
