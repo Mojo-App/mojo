@@ -228,9 +228,13 @@
                 <label>Description</label>
                 <textarea v-model="description" rows="5" cols="50"></textarea>
               </div>
-              <div class="input-row hidden">
-                <label>Max Prints</label>
-                <input type="text" placeholder="default is one" v-model="maxInvocations" />
+              <div class="input-row">
+                <label>External link</label>
+                <input
+                  type="text"
+                  placeholder="eg. https://opensea.io/collection/mojo-music"
+                  v-model="externalUrl"
+                />
               </div>
               <div class="input-row">
                 <input
@@ -239,9 +243,6 @@
                   v-model="audioVideoType"
                   readonly
                 />
-              </div>
-              <div class="input-row">
-                <input type="text" placeholder="File Size" v-model="size" readonly />
               </div>
               <!-- Data we receive after file upload HIDDEN -->
               <div class="input-row hidden">
@@ -255,6 +256,9 @@
               </div>
               <div class="input-row hidden">
                 <input type="text" placeholder="Image Url" v-model="imageUrl" readonly />
+              </div>
+              <div class="input-row hidden">
+                <input type="text" placeholder="File Size" v-model="size" readonly />
               </div>
               <!-- END Data we receive after file upload HIDDEN -->
               <!-- Button Row -->
@@ -290,14 +294,7 @@
                 <label>Youtube Link</label>
                 <input type="text" v-model="youtubeUrl" />
               </div>
-              <div class="input-row">
-                <label>External link</label>
-                <input
-                  type="text"
-                  placeholder="eg. https://opensea.io/collection/mojo-music"
-                  v-model="externalUrl"
-                />
-              </div>
+
               <div class="input-row">
                 <label>Background Color</label>
                 <input type="text" placeholder="#ffffff" v-model="backgroundColor" />
@@ -317,20 +314,24 @@
               <h2>3. Add Video Attributes</h2>
               <div v-show="tokenId" class="nft-modal-add-sound-attributes">
                 <div class="input-row">
+                  <div class="input-row">
+                    <label>Title</label>
+                    <input type="text" v-model="title" />
+                  </div>
+                  <div class="input-row">
+                    <label>Website</label>
+                    <input type="text" v-model="website" />
+                  </div>
                   <label>Preview Link</label>
-                  <input type="text" placeholder="Preview Link" v-model="preview" />
+                  <input type="text" v-model="preview" />
                 </div>
                 <div class="input-row hidden">
                   <label>Audio/Video Link</label>
-                  <input type="text" placeholder="Audio/Video Link" v-model="audioVideoURL" />
+                  <input type="text" v-model="audioVideoURL" />
                 </div>
                 <div class="input-row">
                   <label>Best Resolution</label>
                   <input type="text" v-model="resolution" />
-                </div>
-                <div class="input-row">
-                  <label>Duration</label>
-                  <input type="text" v-model="duration" />
                 </div>
               </div>
             </div>
@@ -338,14 +339,6 @@
             <div v-if="formTab === 'four'" id="form-tab-four" class="form-container">
               <h2>3. Add Licensing Attributes</h2>
               <div v-show="tokenId" class="nft-modal-add-license-attributes">
-                <div class="input-row">
-                  <label>Title</label>
-                  <input type="text" placeholder="Title" v-model="title" />
-                </div>
-                <div class="input-row">
-                  <label>Website</label>
-                  <input type="text" placeholder="Website" v-model="website" />
-                </div>
                 <div class="select-row">
                   <label>License</label>
                   <select v-model="license">
@@ -354,6 +347,10 @@
                       {{ license.label }}
                     </option>
                   </select>
+                </div>
+                <div class="input-row hidden">
+                  <label>Max Prints</label>
+                  <input type="text" placeholder="default is one" v-model="maxInvocations" />
                 </div>
                 <div class="input-row">
                   <label>Royalty Fee</label>
@@ -545,7 +542,6 @@ export default {
     const audioVideoURL = ref("");
     const backgroundColor = ref("");
     const resolution = ref("");
-    const duration = ref("");
 
     /* Updating Traits Form
      * Traits start at 0 on mint, the date of mint is the first trait added
@@ -739,7 +735,6 @@ export default {
           //   youtubeUrl.value,
           //   backgroundColor.value,
           //   resolution.value,
-          //   duration.value
           // );
           /* Console log with some style */
           // const stylesNFTStorage = ["color: black", "background: #f23f3f"].join(";");
@@ -756,20 +751,22 @@ export default {
           console.log("description :", description.value);
           console.log("imageUrl :", imageUrl.value);
           console.log("category :", category.value);
+          console.log("externalUrl :", externalUrl.value);
 
           const mintDate = new Date();
           const mintDateTimestamp = mintDate.getTime();
           const mintDateString = mintDateTimestamp.toString();
           console.log("Mint Date String :", mintDateString);
 
-          /* Mint our NFT using complex Struct */
+          /* Mint our NFT */
           let nftTxn = await contract.safeMint(
             signer.getAddress(),
             name.value.toString(),
             description.value.toString(),
             imageUrl.value.toString(),
             category.value.toString(),
-            "https://cloudflare-ipfs.com/ipfs/bafkreibx3akdct6syqhkis3dqsnekukhh5ib5pdwepfki7hf45viv4ylp4",
+            externalUrl.value.toString(),
+            "https://cloudflare-ipfs.com/ipfs/QmRrfbnwUtz6THu63wNHtCPnHRc7htxDsjTJfhStGFtnqR",
             "date",
             "Created",
             mintDateString
@@ -1573,8 +1570,7 @@ export default {
         preview.value,
         audioVideoURL.value,
         backgroundColor.value,
-        resolution.value,
-        duration.value
+        resolution.value
       );
       if (createdRowId) {
         /* Console log with some style */
@@ -1624,7 +1620,6 @@ export default {
       audioVideoURL.value = "";
       backgroundColor.value = "";
       resolution.value = "";
-      duration.value = "";
       size.value = "";
       createdAt.value = "";
       attributes.value = [];
@@ -1845,7 +1840,6 @@ export default {
       audioVideoURL,
       backgroundColor,
       resolution,
-      duration,
       musicCategories,
       size,
       createdAt,
