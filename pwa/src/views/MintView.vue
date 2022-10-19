@@ -276,9 +276,6 @@
                 </button>
                 <button class="restart-button" @click="cancelMint()">cancel</button>
               </div>
-              <div class="input-row">
-                👷 Minting coming soon, we're still busy buidlin over here 🚧
-              </div>
               <!-- END Button Row -->
             </div>
             <!-- END Tab 1 -->
@@ -438,7 +435,7 @@ import ArrowBack from "../assets/svgs/ArrowBack.vue";
 
 /* Import Smart Contract ABI and Mojo Contract Address */
 import contractAbi from "../../../artifacts/contracts/mojo_ERC721.sol/MOJO.json";
-const contractAddress = "0x50878dC8674A3738d3C1fCA76F9DB308Ed2EFE4D";
+const contractAddress = "0x13B9DF4c7C97563fAD045251FCA95a9E61c9Dc85";
 
 /* Console log with some style */
 const stylesContract = ["color: black", "background: #e9429b"].join(";");
@@ -751,7 +748,6 @@ export default {
           console.log("description :", description.value);
           console.log("imageUrl :", imageUrl.value);
           console.log("category :", category.value);
-          console.log("externalUrl :", externalUrl.value);
 
           const mintDate = new Date();
           const mintDateTimestamp = mintDate.getTime();
@@ -765,7 +761,6 @@ export default {
             description.value.toString(),
             imageUrl.value.toString(),
             category.value.toString(),
-            externalUrl.value.toString(),
             "https://cloudflare-ipfs.com/ipfs/QmRrfbnwUtz6THu63wNHtCPnHRc7htxDsjTJfhStGFtnqR",
             "date",
             "Created",
@@ -1895,10 +1890,9 @@ section#mint-content {
   .main {
     width: 100%;
     height: 100%;
-    margin: 0 auto;
-    padding: 0 0 10px 0;
+    margin: 0;
+    padding: 0;
     overflow: scroll;
-
     @include breakpoint($break-ssm) {
       height: 99%;
     }
@@ -1906,32 +1900,25 @@ section#mint-content {
     section#mint {
       height: 100%;
       color: #1a1a1a;
-      background: $white;
+      background: $mojo-blue;
       display: flex;
       flex-direction: column;
       align-content: center;
       justify-content: center;
-      padding: 10px;
       overflow: scroll;
-
       @include breakpoint($break-ssm) {
-        padding: 20px;
-        align-content: center;
         justify-content: flex-start;
       }
 
       .row {
+        width: 100%;
         display: flex;
         flex-direction: row;
         align-content: center;
         justify-content: center;
         align-items: center;
-
         @include breakpoint($break-ssm) {
           flex-direction: column;
-          align-content: center;
-          justify-content: center;
-          align-items: center;
         }
       }
 
@@ -1944,11 +1931,9 @@ section#mint-content {
         justify-content: center;
         align-items: flex-end;
         overflow: hidden;
-
         @include breakpoint($break-md) {
           width: 100%;
         }
-
         @include breakpoint($break-sm) {
           width: 100%;
         }
@@ -2504,6 +2489,7 @@ section#mint-content {
         align-content: center;
         justify-content: center;
         align-items: flex-start;
+        padding: 0;
 
         @include breakpoint($break-md) {
           width: 100%;
@@ -2511,37 +2497,40 @@ section#mint-content {
 
         .form-container {
           display: flex;
-          width: 98%;
-          height: 555px;
+          width: 100%;
+          height: auto;
           flex-direction: column;
           justify-content: center;
           align-items: center;
-          border: 4px solid var(--gradient-100);
+          border: 2px solid var(--gradient-100);
           border-top-right-radius: 1rem;
           border-bottom-right-radius: 1rem;
           border-bottom-left-radius: 0;
-          padding: 30px 20px;
+          padding: 20px 0 10px 10px;
+          background-color: $white;
 
           @include breakpoint($break-sm) {
             border-top-right-radius: 0;
             border-bottom-right-radius: 0;
             border-bottom-left-radius: 1em;
             border-bottom-right-radius: 1em;
-            padding: 30px 0 30px 0;
+            padding: 15px 0 10px 0;
           }
 
           h2 {
-            font-size: 1.6rem;
-            line-height: 1.7rem;
+            font-size: 34px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: 42px;
             text-align: center;
             padding-bottom: 2px;
             text-decoration: none;
             border-bottom: 1px solid;
-            margin: 0 auto 20px;
+            margin: 0 auto 10px;
 
             @include breakpoint($break-ssm) {
-              font-size: 1.4rem;
-              line-height: 1.5rem;
+              font-size: 1.3rem;
+              line-height: 1.4rem;
             }
           }
         }
@@ -2945,10 +2934,14 @@ section#mint-content {
       }
 
       h2 {
-        font-size: 1.8rem;
+        color: $white;
+        font-size: 34px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 42px;
         text-align: center;
         margin-block-start: 0;
-        margin-block-end: 0.2em;
+        margin-block-end: 0.3em;
 
         @include breakpoint($break-ssm) {
           font-size: 2.25rem;

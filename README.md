@@ -66,32 +66,56 @@ This project is deployed to Polygon Mumbai Testnet.
 
 Tableland Address :  0x4b48841d4b32C4650E4ABc117A03FE8B51f38F68
 
-Mojo Music NFTs contract deployed on polygon-mumbai at addresss: 0x50878dC8674A3738d3C1fCA76F9DB308Ed2EFE4D
+Mojo Creators NFTs contract deployed on polygon-mumbai at: 0x22Dbbb789aE924dCA4C2366Fc4d34f269e2fC3B3
 
-Main Table: Mojo_Music_80001_3503
-Attributes Table : Mojo_Music_80001_3504
+Mojo Creators Main Table: Mojo_Creators_80001_3524
+Mojo Creators Attributes Table : Mojo_Creators_80001_3525
 
-<https://testnets.opensea.io/assets/mumbai/0x4b48841d4b32c4650e4abc117a03fe8b51f38f68/3503>
-<https://testnets.opensea.io/assets/mumbai/0x4b48841d4b32c4650e4abc117a03fe8b51f38f68/3504>
+Mojo Music NFTs contract deployed on polygon-mumbai at addresss: 0x13B9DF4c7C97563fAD045251FCA95a9E61c9Dc85
+
+Main Table: Mojo_Music_80001_3522
+Attributes Table : Mojo_Music_80001_3523
 
 ```shell
 npx hardhat run scripts/deploy.js --network polygon-mumbai
+npx hardhat run scripts/deployMCNFT.js --network polygon-mumbai
 ```
 
 ## Verify Contracts Note
 
-Successfully verified contract MOJO on Etherscan.
-Successfully submitted source code for contract
-contracts/mojo_ERC721.sol:MOJO at 0x50878dC8674A3738d3C1fCA76F9DB308Ed2EFE4D
-for verification on the block explorer. Waiting for verification result...
+Mojo Creators
 
+```shell
+npx hardhat run scripts/verifyMCNFT.js --network polygon-mumbai
+Nothing to compile
+No need to generate any newer typings.
+
+Successfully submitted source code for contract
+contracts/mojo_mc_ERC721.sol:MCNFT at 0x22Dbbb789aE924dCA4C2366Fc4d34f269e2fC3B3
+for verification on the block explorer. Waiting for verification result...
+Successfully verified contract MCNFT on Etherscan.
+https://mumbai.polygonscan.com/address/0x22Dbbb789aE924dCA4C2366Fc4d34f269e2fC3B3#code
+```
+
+Mojo Music NFTS
+
+```shell
+npx hardhat run scripts/verify.js --network polygon-mumbai
+Nothing to compile
+No need to generate any newer typings.
+
+Successfully submitted source code for contract
+contracts/mojo_ERC721.sol:MOJO at 0x13B9DF4c7C97563fAD045251FCA95a9E61c9Dc85
+for verification on the block explorer. Waiting for verification result...
 Successfully verified contract MOJO on Etherscan.
-<https://mumbai.polygonscan.com/address/0x50878dC8674A3738d3C1fCA76F9DB308Ed2EFE4D#code>
+https://mumbai.polygonscan.com/address/0x13B9DF4c7C97563fAD045251FCA95a9E61c9Dc85#code
+```
 
 You will need to verify your contracts as below.
 
 ```shell
 npx hardhat run scripts/verify.js --network polygon-mumbai
+npx hardhat run scripts/verifyMCNFT.js --network polygon-mumbai
 ```
 
 ## Hardhat Project Setup

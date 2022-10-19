@@ -273,8 +273,8 @@ import authNFT from "../services/authNFT.js";
 import ConnectWalletButton from "../components/ConnectWalletButton.vue";
 
 /* Import Smart Contract ABI and Mojo Contract Address */
-import contractAbi from "../../../artifacts/contracts/mojo_ERC721.sol/MOJO.json";
-const mojoCreatorsContractAddress = "0x50878dC8674A3738d3C1fCA76F9DB308Ed2EFE4D";
+import contractAbi from "../../../artifacts/contracts/mojo_mc_ERC721.sol/MCNFT.json";
+const mojoCreatorsContractAddress = "0x22Dbbb789aE924dCA4C2366Fc4d34f269e2fC3B3";
 
 /* Console log with some style */
 const stylesContract = ["color: black", "background: #e9429b"].join(";");
@@ -1533,8 +1533,10 @@ section#account {
         padding: 30px 20px;
 
         h2 {
-          font-size: 1.6rem;
-          line-height: 1.7rem;
+          font-size: 30px;
+          font-style: normal;
+          font-weight: 700;
+          line-height: 42px;
           text-align: center;
           padding-bottom: 2px;
           text-decoration: none;

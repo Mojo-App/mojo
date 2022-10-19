@@ -188,7 +188,6 @@ contract MOJO is ERC721, AccessControl {
         string memory _description,
         string memory _image_url,
         string memory _category,
-        string memory _external_url,
         string memory _icon,
         string memory _display_type,
         string memory _trait_type,
@@ -201,7 +200,7 @@ contract MOJO is ERC721, AccessControl {
             string.concat(
                 "INSERT INTO ",
                 mainTable,
-                " (tokenid, name, description, image, category, external_url) VALUES ('",
+                " (tokenid, name, description, image, category) VALUES ('",
                 Strings.toString(tokenId),
                 "', '",
                 _name,
@@ -211,8 +210,6 @@ contract MOJO is ERC721, AccessControl {
                 _image_url,
                 "', '",
                 _category,
-                "', '",
-                _external_url,
                 "')"
             )
         );

@@ -10,7 +10,7 @@ import nftPort from "../services/nftPort.js";
 
 /* Import Smart Contract ABI and Mojo Contract Address */
 // import contractAbi from "../../../artifacts/contracts/mojo_ERC721.sol/MOJO.json";
-// const mojoContractAddress = "0x50878dC8674A3738d3C1fCA76F9DB308Ed2EFE4D";
+// const mojoContractAddress = "0x13B9DF4c7C97563fAD045251FCA95a9E61c9Dc85";
 
 /* Setup Offline Storage */
 const db = new Storage("app");

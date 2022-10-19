@@ -7,7 +7,7 @@ const infuraKey = import.meta.env.VITE_INFURA_API_KEY;
 const infuraSecret = import.meta.env.VITE_INFURA_API_SECRET;
 
 /* Get our Mojo Contract Address */
-const mojoContractAddress = "0x50878dC8674A3738d3C1fCA76F9DB308Ed2EFE4D";
+const mojoContractAddress = "0x13B9DF4c7C97563fAD045251FCA95a9E61c9Dc85";
 const tablelandRigsContractAddress = "0x8eaa9ae1ac89b1c8c8a8104d08c045f78aadb42d";
 
 export default class authNFT {

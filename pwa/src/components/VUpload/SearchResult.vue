@@ -5,6 +5,7 @@
       type="text"
       id="search"
       class="search-input"
+      placeholder="Search uploaded ipfs files"
       :value="search"
       @input="$emit('onChanged', $event)"
     />

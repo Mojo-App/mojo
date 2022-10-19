@@ -46,33 +46,33 @@
   </section>
 </template>
 <script>
-import { ref, computed, inject } from 'vue';
+import { ref, computed, inject } from "vue";
 /* Import our Pinia Store */
-import { useStore } from '../../store';
+import { useStore } from "../../store";
 /* Import our helpers */
-import { fileSize, copyToClipboard, generateLink } from '../../services/helpers';
+import { fileSize, copyToClipboard, generateLink } from "../../services/helpers";
 /* Components */
-import SearchResult from '../../components/VUpload/SearchResult.vue';
+import SearchResult from "../../components/VUpload/SearchResult.vue";
 /* LFG */
 export default {
-  name: 'PanelResult',
+  name: "PanelResult",
   components: {
     SearchResult,
   },
   setup() {
     /* Inject Notyf */
-    const notyf = inject('notyf');
+    const notyf = inject("notyf");
     // Init Store
     const store = useStore();
     // Variables
-    const search = ref('');
+    const search = ref("");
     /**
      * Copy to Clipboard function
      */
     const copyFileLink = (item) => {
       const url = generateLink(item);
       copyToClipboard(url);
-      notyf.success('Link copied to clipboard!');
+      notyf.success("Link copied to clipboard!");
     };
     /* Update search value */
     const onSearchChanged = ($event) => {
@@ -85,7 +85,7 @@ export default {
         .reverse()
         .filter((item) => !!item.cid)
         .filter((item) => {
-          if (search.value === '') return true;
+          if (search.value === "") return true;
 
           return item.file.name.indexOf(search.value) >= 0;
         })

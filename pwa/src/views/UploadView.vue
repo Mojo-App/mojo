@@ -77,7 +77,9 @@ section#content {
       position: absolute;
       z-index: 3;
       display: flex;
-      border-radius: 0.8em;
+      border-radius: 1em;
+      border: 0.5px solid #ffffff;
+      box-shadow: 2px 2px 25px 6px rgba(43, 43, 43, 0.1);
 
       section {
         color: #fff;

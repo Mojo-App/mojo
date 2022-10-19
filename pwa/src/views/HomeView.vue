@@ -385,9 +385,9 @@ section#content {
         h2 {
           width: 100%;
           color: $white;
+          font-size: 34px;
           font-style: normal;
           font-weight: 700;
-          font-size: 36px;
           line-height: 42px;
           padding-left: 20px;
 
@@ -474,9 +474,9 @@ section#content {
         h2 {
           width: 100%;
           color: $black;
+          font-size: 34px;
           font-style: normal;
           font-weight: 700;
-          font-size: 36px;
           line-height: 42px;
           text-align: center;
 
@@ -625,7 +625,10 @@ section#content {
       }
 
       h2 {
-        font-size: 2.2rem;
+        font-size: 34px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 42px;
         text-align: center;
         margin-bottom: 5px;
 
@@ -706,7 +709,10 @@ section#content {
       }
 
       h2 {
-        font-size: 2.2rem;
+        font-size: 34px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 42px;
         text-align: center;
         margin-bottom: 5px;
 
