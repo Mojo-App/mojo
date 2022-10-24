@@ -62,9 +62,7 @@ LinkedIn: (<https://www.linkedin.com/in/craig-moss-21822628/>)
 
 ## Deployments Note
 
-This project is deployed to Polygon Mumbai Testnet.
-
-Tableland Address :  0x4b48841d4b32C4650E4ABc117A03FE8B51f38F68
+This project is deployed on the Polygon Mumbai Testnet Tableland Contract Address :  0x4b48841d4b32C4650E4ABc117A03FE8B51f38F68
 
 Mojo Creators NFTs contract deployed on polygon-mumbai at: 0x22Dbbb789aE924dCA4C2366Fc4d34f269e2fC3B3
 
