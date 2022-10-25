@@ -46,7 +46,7 @@
     <div class="right">
       <div class="account-card">
         <!-- Step 1: Mint a Mojo Creators Membership NFT -->
-        <!-- <div v-if="account && !isAuthenticated" class="form-container">
+        <div v-if="account && !isAuthenticated" class="form-container">
           <h2>Mint Creator NFT</h2>
           <div
             class="panel-upload--dropzone"
@@ -102,173 +102,177 @@
             </button>
             <button class="restart-button" @click="cancelMint()">cancel</button>
           </div>
-        </div> -->
+        </div>
 
         <!-- Step 2: Account Details -->
 
-        <!-- <div v-if="tokenId && isAuthenticated" class="nft-modal-card"> -->
-        <div class="nft-banner-image">
-          <img :src="`${getUrlProtocol(banner_img)}`" :alt="`${name}`" />
-          <button class="nft-banner-image-edit-button" @click="updateBannerImg(banner_img)">
-            {{ "edit" }}
-          </button>
-        </div>
-        <div class="nft-modal-card">
-          <div class="row">
-            <div class="nft-profile-image">
-              <img :src="`${getUrlProtocol(profile_img)}`" :alt="`${name}`" />
-              <button class="nft-profile-image-edit-button" @click="updateProfileImg(profile_img)">
-                {{ "edit" }}
-              </button>
-            </div>
-            <div class="column">
-              <div class="nft-modal-title">
-                <input type="text" name="name" v-model="name" @change="updateName(name)" />
-              </div>
-              <div class="nft-modal-address">
-                <input
-                  type="text"
-                  name="address"
-                  v-model="accountAddress"
-                  @change="updateAddress(accountAddress)"
-                />
-              </div>
-              <div class="nft-modal-website">
-                <input
-                  type="text"
-                  name="website"
-                  v-model="website"
-                  @change="updateWebsite(website)"
-                />
-              </div>
-              <div class="nft-modal-slogan">
-                <input type="text" name="slogan" v-model="slogan" @change="updateSlogan(slogan)" />
-              </div>
-              <div class="nft-modal-description">
-                <input
-                  type="text"
-                  name="description"
-                  v-model="description"
-                  @change="updateDescription(description)"
-                />
-              </div>
-            </div>
+        <div v-if="tokenId && isAuthenticated" class="nft-modal-card">
+          <div class="nft-banner-image">
+            <img v-if="banner_img" :src="`${getUrlProtocol(banner_img)}`" :alt="`${name}`" />
+            <button
+              :class="banner_img ? 'nft-banner-image-edit-button' : 'nft-banner-image-add-button'"
+              @click="updateBannerImg(banner_img)"
+            >
+              {{ banner_img ? "edit" : "add" }}
+            </button>
           </div>
-          <div class="row">
-            <div class="column">
-              <div v-if="getUrlProtocol(imageUrl) === 'mp4'" class="nft-video">
-                <video height="240" controls>
-                  <source :src="imageUrl" type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
+          <div class="nft-modal-card">
+            <div class="row">
+              <div class="nft-profile-image">
+                <img :src="`${getUrlProtocol(profile_img)}`" :alt="`${name}`" />
+                <button
+                  class="nft-profile-image-edit-button"
+                  @click="updateProfileImg(profile_img)"
+                >
+                  {{ "edit" }}
+                </button>
               </div>
-              <div v-if="getUrlProtocol(imageUrl) === 'mp3'" class="nft-video">
-                <audio ref="player" height="240">
-                  <source :src="imageUrl" type="audio/mpeg" />
-                </audio>
-                <video height="240" controls>
-                  <source :src="getUrlProtocol(imageUrl)" type="video/mp3" />
-                  Your browser does not support the video tag.
-                </video>
+              <div class="column">
+                <div class="nft-modal-title">
+                  <input type="text" name="name" v-model="name" @change="updateName(name)" />
+                </div>
+                <div class="nft-modal-address">
+                  <input
+                    type="text"
+                    name="address"
+                    v-model="accountAddress"
+                    @change="updateAddress(accountAddress)"
+                  />
+                </div>
+                <div class="nft-modal-website">
+                  <input
+                    type="text"
+                    name="website"
+                    v-model="website"
+                    @change="updateWebsite(website)"
+                  />
+                </div>
+                <div class="nft-modal-slogan">
+                  <input
+                    type="text"
+                    name="slogan"
+                    v-model="slogan"
+                    @change="updateSlogan(slogan)"
+                  />
+                </div>
+                <div class="nft-modal-description">
+                  <textarea
+                    v-model="description"
+                    rows="5"
+                    cols="50"
+                    @change="updateDescription(description)"
+                  ></textarea>
+                </div>
               </div>
-              <div v-else-if="imageUrl" class="nft-modal-image">
-                <img :src="`${getUrlProtocol(imageUrl)}`" :alt="`${name}`" />
-              </div>
-              <button class="nft-modal-image-edit-button" @click="updateImage(imageUrl)">
-                {{ "edit" }}
-              </button>
             </div>
-          </div>
+            <div class="row">
+              <div class="column">
+                <div v-if="getUrlProtocol(imageUrl) === 'mp4'" class="nft-modal-video">
+                  <video height="240" controls>
+                    <source :src="imageUrl" type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                  <button class="nft-modal-image-edit-button" @click="updateImage(imageUrl)">
+                    {{ "edit" }}
+                  </button>
+                </div>
+                <div v-if="getUrlProtocol(imageUrl) === 'mp3'" class="nft-modal-video">
+                  <audio ref="player" height="240">
+                    <source :src="imageUrl" type="audio/mpeg" />
+                  </audio>
+                  <video height="240" controls>
+                    <source :src="getUrlProtocol(imageUrl)" type="video/mp3" />
+                    Your browser does not support the video tag.
+                  </video>
+                  <button class="nft-modal-image-edit-button" @click="updateImage(imageUrl)">
+                    {{ "edit" }}
+                  </button>
+                </div>
+                <div v-else-if="imageUrl" class="nft-modal-image">
+                  <img :src="`${getUrlProtocol(imageUrl)}`" :alt="`${name}`" />
+                  <button class="nft-modal-image-edit-button" @click="updateImage(imageUrl)">
+                    {{ "edit" }}
+                  </button>
+                </div>
+              </div>
+            </div>
 
-          <!-- NFT Metadata Attributes -->
-          <div v-show="attributes" class="nft-modal-edit-attributes">
-            <template v-for="attr in attributes" :key="attr.trait_id">
-              <div v-if="attr.trait_value" class="nft-attribute-cards">
-                <div class="nft-attribute-card">
-                  <div class="nft-attribute-card-trait">
-                    #{{ attr.trait_id }} {{ attr.icon }} {{ attr.display_type }} /
-                    {{ attr.trait_type }} :
-                    {{ attr.trait_value }}
-                    <button
-                      v-show="attr.trait_id"
-                      class="edit-button"
-                      @click="editTrait(attr.trait_id)"
-                    >
-                      {{ showTrait.value === attr.trait_id ? "done" : "edit" }}
-                    </button>
+            <!-- NFT Metadata Attributes -->
+            <div v-show="attributes" class="nft-modal-edit-attributes">
+              <template v-for="attr in attributes" :key="attr.trait_id">
+                <div v-if="attr.trait_value" class="nft-attribute-cards">
+                  <div class="nft-attribute-card">
+                    <div class="nft-attribute-card-trait">
+                      #{{ attr.trait_id }} {{ attr.icon }} {{ attr.display_type }} /
+                      {{ attr.trait_type }} :
+                      {{ attr.trait_value }}
+                      <button
+                        v-show="attr.trait_id"
+                        class="edit-button"
+                        @click="editTrait(attr.trait_id)"
+                      >
+                        {{ showTrait.value === attr.trait_id ? "done" : "edit" }}
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </template>
-            <template v-for="attr in attributes" :key="attr.trait_id">
-              <div v-if="showTrait === attr.trait_id && attr.trait_value" class="nft-attribute">
-                Trait #{{ attr.trait_id }}
-                <div class="nft-attribute-icon">
-                  <input
-                    type="text"
-                    name="traitIcon"
-                    v-model.lazy="attr.icon"
-                    @change="updateTraitIcon(attr)"
-                  />
+              </template>
+              <template v-for="attr in attributes" :key="attr.trait_id">
+                <div v-if="showTrait === attr.trait_id && attr.trait_value" class="nft-attribute">
+                  Trait #{{ attr.trait_id }}
+                  <div class="nft-attribute-icon">
+                    <input
+                      type="text"
+                      name="traitIcon"
+                      v-model.lazy="attr.icon"
+                      @change="updateTraitIcon(attr)"
+                    />
+                  </div>
+                  <div class="nft-attribute-display-type">
+                    <!-- TODO This need to be a select with options from opensea -->
+                    <input
+                      type="text"
+                      name="traitDisplayType"
+                      v-model.lazy="attr.display_type"
+                      @change="updateTraitDisplayType(attr)"
+                    />
+                    <!-- TODO This need to be a select with options from opensea -->
+                  </div>
+                  <div class="nft-attribute-trait-type">
+                    <input
+                      type="text"
+                      name="traitType"
+                      v-model.lazy="attr.trait_type"
+                      @change="updateTraitType(attr)"
+                    />
+                  </div>
+                  <div class="nft-attribute-value">
+                    <input
+                      type="text"
+                      name="traitValue"
+                      v-model.lazy="attr.trait_value"
+                      @change="updateTraitValue(attr)"
+                    />
+                  </div>
                 </div>
-                <div class="nft-attribute-display-type">
-                  <!-- TODO This need to be a select with options from opensea -->
-                  <input
-                    type="text"
-                    name="traitDisplayType"
-                    v-model.lazy="attr.display_type"
-                    @change="updateTraitDisplayType(attr)"
-                  />
-                  <!-- TODO This need to be a select with options from opensea -->
-                </div>
-                <div class="nft-attribute-trait-type">
-                  <input
-                    type="text"
-                    name="traitType"
-                    v-model.lazy="attr.trait_type"
-                    @change="updateTraitType(attr)"
-                  />
-                </div>
-                <div class="nft-attribute-value">
-                  <input
-                    type="text"
-                    name="traitValue"
-                    v-model.lazy="attr.trait_value"
-                    @change="updateTraitValue(attr)"
-                  />
-                </div>
-              </div>
-            </template>
-          </div>
+              </template>
+            </div>
 
-          <!-- Control Panel -->
-          <div class="nft-modal-approve">
-            <div v-show="tokenId" class="button-container">
-              <button class="add-button" @click="AddNewAttribute()">add new attribute</button>
-            </div>
-            <button
-              v-show="!tokenId"
-              :class="!approvedMint ? 'approve-button' : 'approved-button'"
-              @click="ConfirmApprovedMint(true)"
-            >
-              {{ !approvedMint ? "approve" : "let's mint" }}
-            </button>
-            <div v-show="!tokenId" class="file-image-link">
-              <a :href="imageUrl" title="Open in new tab" target="_blank"> ipfs link </a>
-            </div>
-            <div v-if="tokenId" class="file-table-link">
-              <a
-                :href="`https://testnet.tableland.network/query?mode=list&s=SELECT%20json_object%28%27id%27%2Ctokenid%2C%27name%27%2Cname%2C%27description%27%2Cdescription%2C%27image%27%2Cimage%2C%27address%27%2Caddress%2C%27slogan%27%2Cslogan%2C%27profile_img%27%2Cprofile_img%2C%27banner_img%27%2Cbanner_img%2C%27website%27%2Cwebsite%2C%27attributes%27%2Cjson_group_array%28json_object%28%27icon%27%2Cicon%2C%27display_type%27%2Cdisplay_type%2C%27trait_type%27%2Ctrait_type%2C%27value%27%2Cvalue%29%29%29%20FROM%20Mojo_Creators_80001_3524%20JOIN%20Mojo_Creators_80001_3525%20ON%20Mojo_Creators_80001_3524%2Etokenid%20%3D%20Mojo_Creators_80001_3525%2Emaintable_tokenid%20WHERE%20tokenid%3D${tokenId}%20group%20by%20tokenid`"
-                title="View Tableland data"
-                target="_blank"
+            <!-- Control Panel -->
+            <div class="nft-modal-approve">
+              <div v-show="tokenId" class="button-container">
+                <button class="add-button" @click="AddNewAttribute()">add new attribute</button>
+              </div>
+              <button
+                v-show="!tokenId"
+                :class="!approvedMint ? 'approve-button' : 'approved-button'"
+                @click="ConfirmApprovedMint(true)"
               >
-                tableland
-              </a>
+                Update
+              </button>
             </div>
-            <button v-show="!tokenId" class="cancel-button" @click="cancelMint()">cancel</button>
-            <button v-show="tokenId" class="cancel-button" @click="cancelMint()">reset</button>
+            <!-- END Control Panel -->
           </div>
-          <!-- END Control Panel -->
         </div>
       </div>
     </div>
@@ -358,13 +362,13 @@ const isUploading = ref(false);
 const cid = ref("");
 
 /* Mojo Creators NFT Form Metadata fields */
-const tokenId = ref("");
+const tokenId = ref("1");
 const name = ref("Test Name");
 const description = ref("This is a long description");
 const imageUrl = ref(
   "https://cloudflare-ipfs.com/ipfs/bafkreigx5zsieblmrrcwpqzdrskhcnznvqiam7ifiwa2ma5oykd4bnfpam"
 );
-const slogan = ref("SLOGAN");
+const slogan = ref("This is a long slogan name");
 const accountAddress = ref("0xWEbMoss.eth");
 const website = ref("https://website.com");
 const profile_img = ref(
@@ -2155,7 +2159,7 @@ section#account {
       border: 4px solid var(--gradient-100);
       box-shadow: 2px 2px 25px 6px rgba(43, 43, 43, 0.1);
       border-radius: 10px;
-      padding: 0;
+      padding: 0 0 10px 0;
       z-index: 999;
 
       .row-header {
@@ -2726,7 +2730,9 @@ section#account {
       }
 
       .nft-banner-image {
+        position: relative;
         width: 100%;
+        min-height: 30px;
         margin: 0 auto;
         padding: 0;
         overflow: hidden;
@@ -2739,6 +2745,9 @@ section#account {
           overflow: hidden;
         }
         .nft-banner-image-edit-button {
+          position: absolute;
+          top: 5px;
+          left: 5px;
           color: $mojo-blue;
           background-color: $white;
           font-family: Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans",
@@ -2747,12 +2756,37 @@ section#account {
           font-weight: 800;
           font-size: 11px;
           line-height: 14px;
-          text-align: right;
-          width: 30px;
-          padding: 4px 5px;
+          text-align: center;
+          padding: 4px 6px;
           height: auto;
           border: 0;
-          margin: 0 0 0 5px;
+          border-radius: 10px;
+          margin: 0;
+          transition: 0.4s;
+          cursor: pointer;
+
+          &:hover {
+            color: $black;
+          }
+        }
+        .nft-banner-image-add-button {
+          position: absolute;
+          top: 5px;
+          left: 5px;
+          color: $mojo-blue;
+          background-color: $white;
+          font-family: Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans",
+            "Helvetica Neue", sans-serif;
+          font-style: normal;
+          font-weight: 800;
+          font-size: 11px;
+          line-height: 14px;
+          text-align: center;
+          padding: 4px 6px;
+          height: auto;
+          border: 1px solid $mojo-blue;
+          border-radius: 10px;
+          margin: 0;
           transition: 0.4s;
           cursor: pointer;
 
@@ -2772,21 +2806,6 @@ section#account {
         box-sizing: border-box;
         padding: 0;
 
-        @include breakpoint($break-xl) {
-          width: 84%;
-        }
-
-        @include breakpoint($break-md) {
-          width: 82%;
-        }
-
-        @include breakpoint($break-sm) {
-          width: 81%;
-        }
-
-        @include breakpoint($break-xs) {
-          width: 90%;
-        }
         .row {
           width: 100%;
           display: flex;
@@ -2803,7 +2822,8 @@ section#account {
             border: 2px solid var(--gradient-100);
             box-shadow: 2px 2px 25px 6px rgba(43, 43, 43, 0.1);
             border-radius: 10px;
-            margin: 20px 10px 2px 0;
+            margin: 0 10px 2px 0;
+            overflow: hidden;
             img,
             svg {
               width: 100%;
@@ -2812,9 +2832,9 @@ section#account {
               overflow: hidden;
             }
             .nft-profile-image-edit-button {
-              position: relative;
-              top: 0;
-              right: 0;
+              position: absolute;
+              top: 5px;
+              left: 5px;
               color: $mojo-blue;
               background-color: $white;
               font-family: Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans",
@@ -2823,15 +2843,14 @@ section#account {
               font-weight: 800;
               font-size: 11px;
               line-height: 14px;
-              text-align: right;
-              width: 30px;
-              padding: 4px 5px;
+              text-align: center;
+              padding: 4px 6px;
               height: auto;
               border: 0;
-              margin: 0 0 0 5px;
+              border-radius: 10px;
+              margin: 0;
               transition: 0.4s;
               cursor: pointer;
-
               &:hover {
                 color: $black;
               }
@@ -2840,6 +2859,7 @@ section#account {
 
           .column {
             width: 100%;
+            position: relative;
             display: flex;
             flex-direction: column;
             align-content: flex-start;
@@ -2847,66 +2867,185 @@ section#account {
             align-items: flex-start;
 
             .nft-modal-title {
-              width: auto;
-              color: $black;
-              font-size: 1.6rem;
-              font-weight: 400;
-              text-align: left;
-              margin: 10px 0 0 10px;
+              width: 100%;
+              margin: 0 0 10px 0;
+              input {
+                width: 94%;
+                color: $black;
+                background-color: #fff;
+                border: 1px solid $black;
+                letter-spacing: 1px;
+                font-size: 12px;
+                line-height: 20px;
+                margin-bottom: 5px;
+                padding: 7px 0 0 7px;
+                text-align: left;
+              }
+
+              input::placeholder {
+                color: #a8a8a8;
+                letter-spacing: 1px;
+              }
+
+              input:focus {
+                border: 1px solid $mojo-light-blue;
+                outline: none;
+              }
             }
             .nft-modal-address {
-              color: $black;
-              width: auto;
-              font-size: 12px;
-              font-weight: normal;
-              text-align: left;
-              text-transform: uppercase;
-              margin: 10px 0 0 10px;
+              width: 100%;
+              margin: 0 0 10px 0;
+              input {
+                width: 94%;
+                color: $black;
+                background-color: #fff;
+                border: 1px solid $black;
+                letter-spacing: 1px;
+                font-size: 12px;
+                line-height: 20px;
+                margin-bottom: 5px;
+                padding: 7px 0 0 7px;
+                text-align: left;
+                text-transform: uppercase;
+              }
+
+              input::placeholder {
+                color: #a8a8a8;
+                letter-spacing: 1px;
+              }
+
+              input:focus {
+                border: 1px solid $mojo-light-blue;
+                outline: none;
+              }
             }
 
             .nft-modal-website {
-              color: $black;
               width: 100%;
-              font-size: 12px;
-              font-weight: normal;
-              text-align: left;
-              margin: 10px 0 0 10px;
+              margin: 0 0 10px 0;
+              input {
+                width: 94%;
+                color: $black;
+                background-color: #fff;
+                border: 1px solid $black;
+                letter-spacing: 1px;
+                font-size: 12px;
+                line-height: 20px;
+                margin-bottom: 5px;
+                padding: 7px 0 0 7px;
+                text-align: left;
+              }
+
+              input::placeholder {
+                color: #a8a8a8;
+                letter-spacing: 1px;
+              }
+
+              input:focus {
+                border: 1px solid $mojo-light-blue;
+                outline: none;
+              }
             }
 
             .nft-modal-slogan {
-              color: #1a1a1a;
               width: 100%;
-              font-size: 14px;
-              font-weight: normal;
-              text-align: left;
-              margin: 10px 0 0 10px;
+              margin: 0 0 10px 0;
+              input {
+                width: 94%;
+                height: 30px;
+                color: $black;
+                background-color: #fff;
+                border: 1px solid $black;
+                letter-spacing: 1px;
+                font-size: 12px;
+                line-height: 20px;
+                margin-bottom: 5px;
+                padding: 7px 0 0 7px;
+                text-align: left;
+              }
+
+              input::placeholder {
+                color: #a8a8a8;
+                letter-spacing: 1px;
+              }
+
+              input:focus {
+                border: 1px solid $mojo-light-blue;
+                outline: none;
+              }
             }
 
             .nft-modal-description {
-              color: $black;
               width: 100%;
-              font-size: 14px;
-              font-weight: normal;
-              text-align: left;
-              margin: 10px 0 0 10px;
+              margin: 0 0 10px 0;
+              textarea {
+                width: 94%;
+                color: $black;
+                background-color: #fff;
+                border: 1px solid $black;
+                letter-spacing: 1px;
+                font-size: 12px;
+                line-height: 20px;
+                margin-bottom: 5px;
+                padding: 7px 0 0 7px;
+                text-align: left;
+              }
+
+              textarea::placeholder {
+                color: #a8a8a8;
+                letter-spacing: 1px;
+              }
+
+              textarea:focus {
+                border: 1px solid $mojo-light-blue;
+                outline: none;
+              }
             }
           }
         }
 
         .nft-modal-video {
+          position: relative;
           width: 100%;
-          margin: 0;
+          max-width: 500px;
+          margin: 0 auto;
           padding: 0;
           overflow: hidden;
           box-sizing: border-box;
           background: #f4f4f4;
           border-radius: 10px;
+          .nft-modal-image-edit-button {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            color: $mojo-blue;
+            background-color: $white;
+            font-family: Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans",
+              "Helvetica Neue", sans-serif;
+            font-style: normal;
+            font-weight: 800;
+            font-size: 11px;
+            line-height: 14px;
+            text-align: center;
+            padding: 4px 6px;
+            height: auto;
+            border: 0;
+            border-radius: 10px;
+            margin: 0;
+            transition: 0.4s;
+            cursor: pointer;
+
+            &:hover {
+              color: $black;
+            }
+          }
         }
 
         .nft-modal-image {
+          position: relative;
           width: 100%;
-          max-width: 400px;
-          margin: 0;
+          max-width: 410px;
+          margin: 0 auto;
           padding: 0;
           overflow: hidden;
           box-sizing: border-box;
@@ -2920,27 +3059,30 @@ section#account {
             object-fit: contain;
             overflow: hidden;
           }
-        }
-        .nft-modal-image-edit-button {
-          color: $mojo-blue;
-          background-color: $white;
-          font-family: Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans",
-            "Helvetica Neue", sans-serif;
-          font-style: normal;
-          font-weight: 800;
-          font-size: 11px;
-          line-height: 14px;
-          text-align: right;
-          width: 30px;
-          padding: 4px 5px;
-          height: auto;
-          border: 0;
-          margin: 0 0 0 5px;
-          transition: 0.4s;
-          cursor: pointer;
+          .nft-modal-image-edit-button {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            color: $mojo-blue;
+            background-color: $white;
+            font-family: Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans",
+              "Helvetica Neue", sans-serif;
+            font-style: normal;
+            font-weight: 800;
+            font-size: 11px;
+            line-height: 14px;
+            text-align: center;
+            padding: 4px 6px;
+            height: auto;
+            border: 0;
+            border-radius: 10px;
+            margin: 0;
+            transition: 0.4s;
+            cursor: pointer;
 
-          &:hover {
-            color: $black;
+            &:hover {
+              color: $black;
+            }
           }
         }
 
