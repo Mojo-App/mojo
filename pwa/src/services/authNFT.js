@@ -8,6 +8,7 @@ const infuraSecret = import.meta.env.VITE_INFURA_API_SECRET;
 
 /* Get our Mojo Contract Address */
 const mojoContractAddress = "0x13B9DF4c7C97563fAD045251FCA95a9E61c9Dc85";
+const mojoCreatorsContractAddress = "0x22Dbbb789aE924dCA4C2366Fc4d34f269e2fC3B3";
 const tablelandRigsContractAddress = "0x8eaa9ae1ac89b1c8c8a8104d08c045f78aadb42d";
 
 export default class authNFT {
@@ -70,7 +71,71 @@ export default class authNFT {
    * @param {String} tokenId
    * @returns {Promise<String|Error>}
    */
-  async authAccountAddress(accountAddress = "", tokenIds = null) {
+  async authMojoCreatorAccountAddress(accountAddress = "", tokenIds = null) {
+    // We need to specifically check for the OpenSea contract
+    // this contract doesn't show up on etherscan
+    // OpenSea used 1 contract for all NFTs minted on their site
+    // so we need to do an extra check for a specific token id as well
+    if (accountAddress === "0x495f947276749Ce646f68AC8c248420045cb7b5e" && tokenIds) {
+      const response = await axios.get("https://api.opensea.io/api/v1/assets", {
+        headers: {
+          "X-API-KEY": "",
+        },
+        params: {
+          owner: accountAddress,
+          asset_contract_address: mojoCreatorsContractAddress,
+          token_ids: tokenIds,
+        },
+      });
+      const data = response.data;
+      console.log("Opensea Response Data: ", data);
+      console.log("Opensea Response Status: ", response.status(200));
+      return response.status(200).json({
+        isAuthenticated: data.assets && data.assets.length > 0,
+      });
+    } else {
+      /**
+       * @dev TODO: Need to add a check here for the chain and switch the api
+       */
+
+      console.log("polygonScapAPI", polygonScapAPI);
+      const polyResponse = await axios.get("https://api-testnet.polygonscan.com/api", {
+        params: {
+          module: "account",
+          action: "tokenbalance",
+          contractaddress: mojoCreatorsContractAddress,
+          address: accountAddress,
+          tag: "latest",
+          apikey: polygonScapAPI,
+        },
+      });
+      const polyData = polyResponse.data;
+      console.log("Polygon Scan Response Data: ", polyData);
+
+      console.log("etherScapAPI", etherScapAPI);
+      const response = await axios.get("https://api.etherscan.io/api", {
+        params: {
+          module: "account",
+          action: "tokenbalance",
+          contractaddress: mojoCreatorsContractAddress,
+          address: accountAddress,
+          tag: "latest",
+          apikey: etherScapAPI,
+        },
+      });
+      const data = response.data;
+      console.log("Etherscan Response Data: ", data);
+
+      return polyData.result > 0 || data.result > 0 ? true : false;
+    }
+  }
+
+  /**
+   * @param {String} accountAddress
+   * @param {String} tokenId
+   * @returns {Promise<String|Error>}
+   */
+  async authMojoMusicAccountAddress(accountAddress = "", tokenIds = null) {
     // We need to specifically check for the OpenSea contract
     // this contract doesn't show up on etherscan
     // OpenSea used 1 contract for all NFTs minted on their site
@@ -110,7 +175,6 @@ export default class authNFT {
       });
       const polyData = polyResponse.data;
       console.log("Polygon Scan Response Data: ", polyData);
-      console.log("Polygon Scan Response Data Result: ", polyData.result);
 
       console.log("etherScapAPI", etherScapAPI);
       const response = await axios.get("https://api.etherscan.io/api", {
@@ -125,7 +189,6 @@ export default class authNFT {
       });
       const data = response.data;
       console.log("Etherscan Response Data: ", data);
-      console.log("Etherscan Response Data Result: ", data.result);
 
       return polyData.result > 0 || data.result > 0 ? true : false;
     }

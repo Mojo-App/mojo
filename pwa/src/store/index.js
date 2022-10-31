@@ -24,6 +24,7 @@ export const useStore = defineStore({
     return {
       walletConnectionAttempted: false,
       isAuthenticated: false,
+      isRigHolder: false,
       errorMessage: false,
       walletAddress: "",
       errorCode: null,
@@ -63,6 +64,9 @@ export const useStore = defineStore({
     isErrorCode(state) {
       return state.errorCode;
     },
+    isErrorCode(state) {
+      return state.errorCode;
+    },
     isErrorStatus(state) {
       return state.errorStatus;
     },
@@ -80,6 +84,15 @@ export const useStore = defineStore({
     },
     isFileLoading(state) {
       return state.fileLoading;
+    },
+    getWalletConnectionAttempted(state) {
+      return state.walletConnectionAttempted;
+    },
+    getIsAuthenticated(state) {
+      return state.isAuthenticated;
+    },
+    getIsRigHolder(value) {
+      return state.isRigHolder;
     },
     getAccount(state) {
       return state.account;
@@ -149,17 +162,14 @@ export const useStore = defineStore({
     },
   },
   actions: {
-    /**
-     * Set walletConnectionAttempted value in store
-     */
     setWalletConnectionAttempted(value) {
       this.walletConnectionAttempted = value;
     },
-    /**
-     * Set isAuthenticated value in store
-     */
     setIsAuthenticated(value) {
       this.isAuthenticated = value;
+    },
+    setIsRigHolder(value) {
+      this.isRigHolder = value;
     },
     setErrorCode(value) {
       this.errorCode = value;

@@ -65,15 +65,20 @@ async function connectWallet() {
 
       /* Authenticate user */
       const authAccount = new authNFT();
+
       /* Mojo Music NFT holder */
-      const authed = await authAccount.authAccountAddress(accountAddress);
+      const authed = await authAccount.authMojoCreatorAccountAddress(accountAddress);
+      console.log("Authed Mojo NFT Holder", authed);
+
       if (authed) {
         store.setIsAuthenticated(authed);
       }
       /* or Tableland Rig NFT holders */
       const rigRider = await authAccount.authTablelandContractAddress(accountAddress);
+      console.log("Authed Tableland Rig Holder", rigRider);
+
       if (rigRider) {
-        store.setIsAuthenticated(rigRider);
+        store.setIsRigHolder(rigRider);
       }
       /* Emit our account back to parent */
       emit("update:modelValue", accountAddress);
@@ -86,10 +91,20 @@ async function connectWallet() {
   }
 }
 </script>
-
 <style lang="scss" scoped>
 @import "../assets/styles/variables.scss";
 @import "../assets/styles/mixins.scss";
+
+.connect-wallet-container {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  max-width: 550px;
+}
+
+.connect-wallet-container img {
+  padding-bottom: 20px;
+}
 
 .connect-wallet-button {
   color: $black;
