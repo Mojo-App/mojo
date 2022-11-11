@@ -188,7 +188,7 @@ section#stream-content {
     section#stream {
       height: 100%;
       color: #212121;
-      background: #1c8bfe;
+      background: $mojo-blue;
       display: flex;
       flex-direction: row;
       align-content: center;

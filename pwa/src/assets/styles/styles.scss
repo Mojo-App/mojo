@@ -17,7 +17,7 @@ body {
   --contrast-color: black;
   --liniear-gradient-color-1: linear-gradient(to bottom right, #db2777, #db2777);
   --liniear-gradient-color-2: linear-gradient(to bottom right, #facc15, #f97316);
-  --icon-color: #f97316;
+  --icon-color: #153b6a;
 
   --gradient-50: rgb(255, 242, 203);
   --gradient-100: rgb(254, 236, 181);
@@ -43,7 +43,7 @@ body {
     --contrast-color: white;
     --liniear-gradient-color-1: linear-gradient(to bottom right, #08d0a5, #2ad4f5);
     --liniear-gradient-color-2: linear-gradient(to bottom right, #a855f7, #6366f1);
-    --icon-color: #08d0a5;
+    --icon-color: #fed966;
 
     --gradient-100: rgb(234, 240, 255);
     --gradient-200: rgb(224, 230, 252);
@@ -111,56 +111,6 @@ code {
 
 .content-container {
   background-color: #a200d6;
-}
-
-
-
-.stream-button {
-  min-width: 320px;
-  color: #fff;
-  background-color: #a200d6;
-  font-size: 18px;
-  font-weight: bold;
-  width: auto;
-  height: 55px;
-  border: 0;
-  padding-left: 60px;
-  padding-right: 60px;
-  border-radius: 10px;
-  margin-bottom: 15px;
-  cursor: pointer;
-}
-
-.upload-button {
-  min-width: 320px;
-  color: #fff;
-  background-color: #1c8bfe;
-  font-size: 18px;
-  font-weight: bold;
-  width: auto;
-  height: 55px;
-  border: 0;
-  padding-left: 60px;
-  padding-right: 60px;
-  border-radius: 10px;
-  margin-bottom: 15px;
-  cursor: pointer;
-}
-
-.mint-media-button {
-  min-width: 320px;
-  color: #fff;
-  background-color: #08d0a5;
-  font-size: 18px;
-  font-weight: bold;
-  width: auto;
-  height: 55px;
-  border: 0;
-  padding-left: 60px;
-  padding-right: 60px;
-  border-radius: 10px;
-  margin-bottom: 15px;
-  cursor: pointer;
 }
 
 .mint-row {

@@ -9,6 +9,9 @@
         <span class="red-hover">&nbsp;&nbsp;on</span><br />
         <span class="purple-hover">&nbsp;&nbsp;&nbsp;&nbsp;blocks</span>
       </div>
+      <div class="mobile-connect">
+        <ConnectWalletButton v-model="account" btnSize="small" />
+      </div>
     </div>
     <div class="header-menu">
       <nav class="header-navbar">
@@ -115,7 +118,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   transition: border-bottom 0.5s ease;
-  border-bottom: 0.5px solid #1a1a1a;
+  border-bottom: 0.5px solid $mojo-dark-blue;
   padding: 0 44px;
 
   @include breakpoint($break-ssm) {
@@ -129,8 +132,22 @@ export default {
     justify-content: center;
     align-items: flex-end;
 
+    @include breakpoint($break-md) {
+      width: 98%;
+      justify-content: flex-start;
+      align-items: center;
+      padding-left: 2%;
+    }
+    @include breakpoint($break-ssm) {
+      width: 98%;
+      justify-content: flex-start;
+      align-items: center;
+      padding-left: 2%;
+    }
     @include breakpoint($break-ssm) {
       width: 100%;
+      justify-content: flex-start;
+      align-items: center;
 
       h1 {
         font-size: 1.5em;
@@ -142,7 +159,7 @@ export default {
     }
 
     .header-logo {
-      // border: 0.5px solid #000000;
+      border: 2px solid $mojo-blue;
       margin: 10px 10px 5px 0;
       border-radius: 50%;
     }
@@ -172,6 +189,21 @@ export default {
         }
       }
     }
+    .mobile-connect {
+      display: none;
+      @include breakpoint($break-sm) {
+        display: inline;
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
+      }
+      @include breakpoint($break-ssm) {
+        display: inline;
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
+      }
+    }
   }
 
   .header-menu {
@@ -198,11 +230,10 @@ export default {
 
       @include breakpoint($break-ssm) {
         text-align: left;
-        padding: 6px 8px;
-        width: 100%;
+        padding: 0 8px 6px;
         height: auto;
-        display: flex;
-        flex-direction: row wrap;
+        justify-content: center;
+        align-items: center;
       }
 
       a {
@@ -215,17 +246,17 @@ export default {
         cursor: pointer;
 
         &:hover {
-          border-bottom: 1px solid $mojo-blue;
+          border-bottom: 1px solid $mojo-yellow;
           font-weight: bold;
         }
 
         &:focus {
-          border-bottom: 1px solid $mojo-blue;
+          border-bottom: 1px solid $mojo-yellow;
           font-weight: bold;
         }
 
         &:active {
-          border-bottom: 1px solid $mojo-blue;
+          border-bottom: 1px solid $mojo-yellow;
           font-weight: bold;
         }
       }
@@ -237,7 +268,7 @@ export default {
 
           flex: row;
           display: flex;
-          justify-content: flex-end;
+          justify-content: center;
 
           &.active {
             font-weight: bold;
@@ -245,9 +276,15 @@ export default {
         }
 
         .right {
-          flex: 1;
-          display: flex;
-          justify-content: flex-end;
+          // flex: 1;
+          // display: flex;
+          // justify-content: flex-end;
+          @include breakpoint($break-sm) {
+            display: none;
+          }
+          @include breakpoint($break-ssm) {
+            display: none;
+          }
         }
 
         > i {
@@ -280,15 +317,16 @@ export default {
 
 body.dark-theme {
   #header {
+    background: $mojo-dark-blue;
     border-bottom: 0.5px solid #ffffff;
 
     .header-title h1 {
       color: #ffffff;
     }
 
-    // .header-logo {
-    //   border: 0.5px solid #ffffff;
-    // }
+    .header-logo {
+      border: 2px solid $mojo-blue;
+    }
 
     .slogan {
       font-size: 1.1rem;

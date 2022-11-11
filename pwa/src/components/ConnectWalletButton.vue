@@ -113,7 +113,7 @@ async function connectWallet() {
   font-weight: bold;
   width: auto;
   height: 55px;
-  border: 2px solid $mojo-green;
+  border: 2px solid $mojo-yellow;
   border-radius: 30px;
   padding-left: 60px;
   padding-right: 60px;
@@ -132,7 +132,7 @@ async function connectWallet() {
   font-weight: bold;
   width: auto;
   height: 35px;
-  border: 2px solid $mojo-green;
+  border: 2px solid $mojo-yellow;
   border-radius: 30px;
   padding-left: 20px;
   padding-right: 20px;
@@ -160,7 +160,7 @@ async function connectWallet() {
   cursor: pointer;
 
   &:hover {
-    color: $mojo-light-blue;
+    color: $mojo-blue;
   }
 }
 
@@ -180,19 +180,19 @@ async function connectWallet() {
   cursor: pointer;
 
   &:hover {
-    color: $mojo-light-blue;
+    color: $mojo-blue;
   }
 }
 
 body.dark-theme {
   .connect-wallet-button {
-    color: $mojo-green;
+    color: $mojo-yellow;
     background-color: $white;
     font-size: 18px;
     font-weight: bold;
     width: auto;
     height: 55px;
-    border: 2px solid $mojo-green;
+    border: 2px solid $mojo-yellow;
     border-radius: 30px;
     padding-left: 60px;
     padding-right: 60px;
@@ -205,13 +205,13 @@ body.dark-theme {
   }
 
   .connect-wallet-small-button {
-    color: $mojo-green;
+    color: $mojo-yellow;
     background-color: $black;
     font-size: 14px;
     font-weight: bold;
     width: auto;
     height: 35px;
-    border: 2px solid $mojo-green;
+    border: 2px solid $mojo-yellow;
     border-radius: 30px;
     padding-left: 20px;
     padding-right: 20px;
@@ -239,7 +239,7 @@ body.dark-theme {
     cursor: pointer;
 
     &:hover {
-      color: $mojo-green;
+      color: $mojo-yellow;
     }
   }
 
@@ -259,7 +259,7 @@ body.dark-theme {
     cursor: pointer;
 
     &:hover {
-      color: $mojo-green;
+      color: $mojo-yellow;
     }
   }
 }

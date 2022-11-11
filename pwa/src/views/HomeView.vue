@@ -3,18 +3,21 @@
     <div class="main">
       <section id="home">
         <div class="left">
+          <h1>Hear it, See it, Live it.</h1>
+          <p>
+            Stream audio, video &amp; media directly from your favourite artists and musicians on
+            the blockchain. Subscribe and follow your favourite digital content creators for
+            rewards. Purchase your Mojo Creators NFT to unlock additional content and so much
+            more...
+            <br />
+            <br />
+            <strong class="cool-text">Get your mojo on today!</strong>
+          </p>
+        </div>
+        <div class="right">
           <div class="player-graphic">
             <img src="../assets/images/DJ.png" alt="DJ Saved my Life" />
           </div>
-        </div>
-        <div class="right">
-          <h1>Hear it, See it, Live it.</h1>
-          <p>
-            Stream audio, video &amp; media directly from your favorite artists and musicians on the
-            blockchain. Subscribe, watch and follow digital content creators for rewards. Purchase a
-            creators music NFT to unlock additional content and so much more...
-            <strong>Get your Mojo on today!</strong>
-          </p>
         </div>
       </section>
       <section id="stream-home">
@@ -59,39 +62,49 @@
           </template>
         </div>
       </section>
-      <section id="connect" class="multi-bg-header">
-        <div class="row-header">
-          <h2>connect</h2>
-        </div>
+      <section id="connect">
         <div class="row">
           <div class="left">
+            <button @click="$router.push('mint')" v-if="account" class="mint-media-button">
+              connect
+            </button>
             <p>
-              Upload all your audio &amp; media files directly to the Interplanetary File System (<a
-                href="https://infura.io/product/ipfs"
-                alt="Interplanetary File System"
-                target="_blank"
-                rel="noopener"
-                >IPFS</a
-              >) Network. <br /><br />
-              Pin your data so it will never get deleted, edited or hacked and will never get saved
-              to any server - <strong>100% decentralized</strong>.<br /><br />
-              Create, add and edit NFT metadata attributes giving your different NFT formats unique
-              features, tailored to your audience. Pimp out old NFT's with new mutable metadata,
-              stored on
-              <a href="http://tableland.xyz/" alt="Tableland" target="_blank" rel="noopener"
-                >Tableland</a
-              >.
+              Creating an NFT is very easy, once you've created your profile and connected your
+              MetaMask wallet, just unleash your creativity and we'll take care of the rest. You
+              will be able to associate to your NFT any digital file, even simultaneously: jpeg,
+              wav, mp4, mov, mp3, gif, pdf, txt.
             </p>
           </div>
+          <div class="right"></div>
+        </div>
+      </section>
+      <section id="stream">
+        <div class="row">
+          <div class="left"></div>
           <div class="right">
-            <button @click="$router.push('stream')" className="stream-button">Stream</button>
-            <button @click="$router.push('upload')" v-if="account" className="upload-button">
-              Upload
-            </button>
-            <button @click="$router.push('mint')" v-if="account" className="mint-media-button">
-              Mint
-            </button>
+            <button @click="$router.push('stream')" class="stream-button">stream</button>
+            <p>
+              You are worth much more than a number of views. Streaming has led to a quick and light
+              consumption of music that doesn't return the proper value, both financial and
+              emotional, to the artist. NFTs can give music back its true value and create deeper
+              connections between artists and fans.
+            </p>
           </div>
+        </div>
+      </section>
+      <section id="upload">
+        <div class="row">
+          <div class="left">
+            <button @click="$router.push('upload')" v-if="account" class="upload-button">
+              upload
+            </button>
+            <p>
+              Upload all your audio &amp; media files directly to the Interplanetary File System
+              (IPFS) Network. Pin your data so it will never get deleted, edited or hacked and will
+              never get saved to any server - <strong>100% decentralized</strong>.
+            </p>
+          </div>
+          <div class="right"></div>
         </div>
       </section>
       <section id="sponsors">
@@ -110,7 +123,7 @@
           </div>
         </div>
       </section>
-      <section id="royalties">
+      <!-- <section id="royalties">
         <div class="row">
           <div class="left">
             <h1>Royalties</h1>
@@ -131,7 +144,7 @@
             </div>
           </div>
         </div>
-      </section>
+      </section> -->
     </div>
   </section>
 </template>
@@ -142,6 +155,9 @@ import { Notyf } from "notyf";
 /* Import our Pinia Store */
 import { storeToRefs } from "pinia";
 import { useStore } from "../store";
+
+/* Components */
+import NftCard from "@/components/NftCard.vue";
 
 /* Logos */
 import Tableland from "../assets/svgs/TableLand.vue";
@@ -277,8 +293,8 @@ section#content {
 
     section#home {
       color: $white;
-      background: #ffca28;
-      border-bottom: 1px solid #212121;
+      background: $mojo-yellow;
+      border-bottom: 1px solid $mojo-dark-blue;
       display: flex;
       flex-direction: row;
       align-content: center;
@@ -293,34 +309,19 @@ section#content {
       }
 
       .left {
-        width: 55%;
+        width: 45%;
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         align-content: center;
         justify-content: center;
         padding: 20px;
-
         @include breakpoint($break-ssm) {
           width: 100%;
-        }
-
-        .player-graphic {
-          width: 100%;
-          margin: 0 auto;
-          padding: 0;
-          overflow: hidden;
-
-          img,
-          svg {
-            width: 90%;
-            object-fit: cover;
-            overflow: hidden;
-          }
         }
       }
 
       .right {
-        width: 45%;
+        width: 55%;
         display: flex;
         align-content: flex-start;
         justify-content: flex-start;
@@ -332,32 +333,55 @@ section#content {
           align-content: center;
           justify-content: center;
         }
+      }
 
-        h1 {
-          font-size: 4.25rem;
-          margin-bottom: 20px;
+      h1 {
+        color: $mojo-dark-blue;
+        font-size: 4.25rem;
+        margin-bottom: 20px;
+      }
+
+      .cool-text {
+        color: $mojo-dark-blue;
+        font-size: 1.4rem;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      a {
+        color: var(--contrast-color);
+        font-weight: bold;
+        border-bottom: 1px solid var(--contrast-color);
+        text-decoration: none;
+
+        &.author {
+          padding: 6px 12px;
+          border-radius: 8px;
+          background-color: var(--gradient-100);
+          color: var(--icon-color);
+          font-size: 0.85rem;
+
+          border-bottom: none;
         }
+      }
 
-        a {
-          color: var(--contrast-color);
-          font-weight: bold;
-          border-bottom: 1px solid var(--contrast-color);
-          text-decoration: none;
+      p {
+        color: $mojo-dark-blue;
+        line-height: 1.7;
+        margin-bottom: 20px;
+      }
 
-          &.author {
-            padding: 6px 12px;
-            border-radius: 8px;
-            background-color: var(--gradient-100);
-            color: var(--icon-color);
-            font-size: 0.85rem;
+      .player-graphic {
+        width: 100%;
+        margin: 0 auto;
+        padding: 0;
+        overflow: hidden;
 
-            border-bottom: none;
-          }
-        }
-
-        p {
-          line-height: 1.7;
-          margin-bottom: 20px;
+        img,
+        svg {
+          width: 90%;
+          object-fit: cover;
+          overflow: hidden;
         }
       }
     }
@@ -445,13 +469,14 @@ section#content {
     }
 
     section#connect {
-      color: #1a1a1a;
+      color: $mojo-yellow;
+      background: $mojo-dark-blue;
       display: flex;
       flex-direction: column;
       align-content: center;
       justify-content: center;
-
-      padding: 60px 40px 100px 40px;
+      padding: 60px 40px;
+      transition: 0.6s;
 
       @include breakpoint($break-md) {
         padding: 60px 20px 100px 20px;
@@ -461,29 +486,9 @@ section#content {
         padding: 10px 10px 0 10px;
       }
 
-      .row-header {
-        width: 100%;
-        max-width: $max-width;
-        display: flex;
-        flex-direction: row;
-        align-content: center;
-        justify-content: center;
-        align-items: center;
-        margin: 50px 0 0 0;
-
-        h2 {
-          width: 100%;
-          color: $black;
-          font-size: 34px;
-          font-style: normal;
-          font-weight: 700;
-          line-height: 42px;
-          text-align: center;
-
-          .mint-black {
-            color: $black;
-          }
-        }
+      &:hover {
+        color: $mojo-dark-blue;
+        background: $mojo-yellow;
       }
 
       .row {
@@ -498,9 +503,9 @@ section#content {
         }
 
         .left {
-          width: 60%;
+          width: 65%;
           display: flex;
-          flex-direction: row;
+          flex-direction: column;
           align-content: center;
           justify-content: flex;
           align-items: center;
@@ -509,16 +514,44 @@ section#content {
             width: 100%;
           }
 
-          p {
-            max-width: 520px;
-            line-height: 1.7;
-            margin: 0 auto;
+          h2 {
+            width: 100%;
+            font-size: 34px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: 42px;
             text-align: center;
+          }
+
+          p {
+            line-height: 1.7;
+            margin: 0 auto 20px;
+            text-align: center;
+          }
+          .mint-media-button {
+            width: auto;
+            color: $mojo-yellow;
+            background-color: $mojo-dark-blue;
+            font-size: 18px;
+            font-weight: bold;
+            max-width: 360px;
+            height: 55px;
+            border: 0;
+            border-radius: 30px;
+            padding-left: 60px;
+            padding-right: 60px;
+            margin-bottom: 15px;
+            transition: 0.4s;
+            cursor: pointer;
+
+            &:hover {
+              color: $mojo-blue;
+            }
           }
         }
 
         .right {
-          width: 40%;
+          width: 35%;
           display: flex;
           flex-direction: column;
           align-content: center;
@@ -528,29 +561,226 @@ section#content {
 
           @include breakpoint($break-ssm) {
             width: 100%;
+            align-items: center;
           }
         }
       }
+    }
 
-      a {
-        color: #1a1a1a;
-        font-weight: bold;
-        border-bottom: 1px solid #1a1a1a;
-        text-decoration: none;
+    section#stream {
+      color: $mojo-yellow;
+      background: $mojo-dark-blue;
+      display: flex;
+      flex-direction: column;
+      align-content: center;
+      justify-content: center;
+      padding: 60px 40px;
+      transition: 0.6s;
+
+      &:hover {
+        color: $mojo-dark-blue;
+        background: $mojo-blue;
+      }
+
+      @include breakpoint($break-md) {
+        padding: 60px 20px 100px 20px;
+      }
+
+      @include breakpoint($break-sm) {
+        padding: 10px 10px 0 10px;
+      }
+
+      .row {
+        display: flex;
+        flex-direction: row;
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+
+        @include breakpoint($break-ssm) {
+          flex-direction: column;
+        }
+
+        .left {
+          width: 35%;
+          display: flex;
+          flex-direction: column;
+          align-content: center;
+          justify-content: flex;
+          align-items: center;
+
+          @include breakpoint($break-ssm) {
+            width: 100%;
+          }
+        }
+
+        .right {
+          width: 65%;
+          display: flex;
+          flex-direction: column;
+          align-content: center;
+          justify-content: center;
+          align-items: center;
+          padding: 30px 0;
+
+          @include breakpoint($break-ssm) {
+            width: 100%;
+            align-items: center;
+          }
+
+          h2 {
+            width: 100%;
+            font-size: 34px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: 42px;
+            text-align: center;
+
+            .mint-black {
+              color: $black;
+            }
+          }
+
+          p {
+            line-height: 1.7;
+            margin: 0 auto 20px;
+            text-align: center;
+          }
+
+          .stream-button {
+            width: auto;
+            color: $mojo-blue;
+            background-color: $mojo-dark-blue;
+            font-size: 18px;
+            font-weight: bold;
+            max-width: 360px;
+            height: 55px;
+            border: 0;
+            border-radius: 30px;
+            padding-left: 60px;
+            padding-right: 60px;
+            margin-bottom: 15px;
+            transition: 0.4s;
+            cursor: pointer;
+
+            &:hover {
+              color: $mojo-yellow;
+            }
+          }
+        }
       }
     }
 
-    .multi-bg-header {
-      background: #fff;
-      background-image: url("./GreenCorner.png");
-      background-repeat: no-repeat;
-      background-position: center left;
-      background-size: auto;
+    section#upload {
+      color: $mojo-yellow;
+      background: $mojo-dark-blue;
+      display: flex;
+      flex-direction: column;
+      align-content: center;
+      justify-content: center;
+      padding: 60px 40px;
+      transition: 0.6s;
+
+      &:hover {
+        color: $mojo-dark-blue;
+        background-color: $mojo-yellow;
+      }
+
+      @include breakpoint($break-md) {
+        padding: 60px 20px 100px 20px;
+      }
+
+      @include breakpoint($break-sm) {
+        padding: 10px 10px 0 10px;
+      }
+
+      .row {
+        display: flex;
+        flex-direction: row;
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+
+        @include breakpoint($break-ssm) {
+          flex-direction: column;
+        }
+
+        .left {
+          width: 65%;
+          display: flex;
+          flex-direction: column;
+          align-content: center;
+          justify-content: flex;
+          align-items: center;
+
+          @include breakpoint($break-ssm) {
+            width: 100%;
+          }
+
+          h2 {
+            width: 100%;
+            font-size: 34px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: 42px;
+            text-align: center;
+          }
+
+          p {
+            line-height: 1.7;
+            margin: 0 auto 20px;
+            text-align: center;
+          }
+
+          a {
+            color: $mojo-dark-blue;
+            font-weight: bold;
+            border-bottom: 1px solid $mojo-dark-blue;
+            text-decoration: none;
+          }
+
+          .upload-button {
+            width: auto;
+            color: $mojo-yellow;
+            background-color: $mojo-dark-blue;
+            font-size: 18px;
+            font-weight: bold;
+            max-width: 360px;
+            height: 55px;
+            border: 0;
+            border-radius: 30px;
+            padding-left: 60px;
+            padding-right: 60px;
+            margin-bottom: 15px;
+            transition: 0.4s;
+            cursor: pointer;
+
+            &:hover {
+              color: $mojo-blue;
+            }
+          }
+        }
+
+        .right {
+          width: 35%;
+          display: flex;
+          flex-direction: column;
+          align-content: center;
+          justify-content: center;
+          align-items: flex-start;
+          padding: 30px 0;
+
+          @include breakpoint($break-ssm) {
+            width: 100%;
+            align-items: center;
+          }
+        }
+      }
     }
 
     section#royalties {
       color: #fff;
-      background: #000000;
+      background: $mojo-dark-blue;
       display: flex;
       flex-direction: column;
       align-content: center;
@@ -615,7 +845,7 @@ section#content {
       }
 
       h1 {
-        color: #2bb5f0;
+        color: $mojo-blue;
         font-size: 2.85rem;
         text-align: center;
         margin-bottom: 0;
@@ -634,7 +864,7 @@ section#content {
 
         .yellow {
           font-size: 2.1rem;
-          color: #ffca28;
+          color: $mojo-yellow;
         }
       }
 
@@ -668,14 +898,14 @@ section#content {
           text-decoration: underline;
           text-decoration-thickness: 1px;
           text-underline-offset: 2px;
-          color: #2bb5f0;
+          color: $mojo-blue;
         }
       }
     }
 
     section#sponsors {
       color: #000000;
-      background: #fff;
+      background: $mojo-dark-blue;
       display: flex;
       flex-direction: column;
       align-content: center;
@@ -699,7 +929,7 @@ section#content {
       }
 
       h1 {
-        color: #2bb5f0;
+        color: $mojo-blue;
         font-size: 2.85rem;
         text-align: center;
         margin-bottom: 0;
@@ -752,7 +982,7 @@ section#content {
 
 body.dark-theme {
   section#content .main section#home {
-    border-bottom: 1px solid #ffffff;
+    border-bottom: 1px solid $mojo-dark-blue;
   }
 
   section#content .main section#home .author {

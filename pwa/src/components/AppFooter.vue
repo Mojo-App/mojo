@@ -81,10 +81,10 @@ export default {
         }
         &:hover {
           font-weight: bold;
-          border-bottom: 0.5px solid $mojo-light-blue;
+          border-bottom: 0.5px solid $mojo-blue;
         }
         &:focus {
-          border-bottom: 0.5px solid $mojo-light-blue;
+          border-bottom: 0.5px solid $mojo-blue;
         }
       }
     }
@@ -121,10 +121,10 @@ export default {
         }
         &:hover {
           font-weight: bold;
-          border-bottom: 0.5px solid $mojo-light-blue;
+          border-bottom: 0.5px solid $mojo-blue;
         }
         &:focus {
-          border-bottom: 0.5px solid $mojo-light-blue;
+          border-bottom: 0.5px solid $mojo-blue;
         }
       }
 
@@ -139,7 +139,7 @@ export default {
 body.dark-theme {
   #footer {
     color: #fff;
-    background: #000000;
+    background: $mojo-dark-blue;
     border-top: 0.5px solid #ffffff;
 
     .footer-title h1 {
