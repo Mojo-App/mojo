@@ -18,7 +18,7 @@
           <i-mdi-timer-sand v-if="isUploading" class="icon-color" />
           <i-mdi-upload v-else class="icon-color" />
           <!-- END Uploader Icon -->
-          <span>Drop files here or select to upload</span>
+          <span>Drop files here or click to upload</span>
           <div class="dropzone-is-loading" :class="{ active: isUploading }">
             <div class="dropzone-loading--bar"></div>
           </div>

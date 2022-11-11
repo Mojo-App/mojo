@@ -546,9 +546,9 @@ section#collection-content {
           h2 {
             width: 100%;
             color: $white;
+            font-size: 34px;
             font-style: normal;
             font-weight: 700;
-            font-size: 36px;
             line-height: 42px;
             text-align: left;
             margin: 0;

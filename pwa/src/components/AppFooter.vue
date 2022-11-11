@@ -41,8 +41,8 @@ export default {
   justify-content: space-between;
   align-items: center;
   transition: border-top 0.5s ease;
-  border-top: 1px solid #000000;
-  padding: 1em 64px;
+  border-top: 0.5px solid #000000;
+  padding: 1em 44px;
 
   @include breakpoint($break-ssm) {
     padding: 10px 0;
@@ -81,10 +81,10 @@ export default {
         }
         &:hover {
           font-weight: bold;
-          border-bottom: 0.5px solid $mojo-light-blue;
+          border-bottom: 0.5px solid $mojo-blue;
         }
         &:focus {
-          border-bottom: 0.5px solid $mojo-light-blue;
+          border-bottom: 0.5px solid $mojo-blue;
         }
       }
     }
@@ -121,10 +121,10 @@ export default {
         }
         &:hover {
           font-weight: bold;
-          border-bottom: 0.5px solid $mojo-light-blue;
+          border-bottom: 0.5px solid $mojo-blue;
         }
         &:focus {
-          border-bottom: 0.5px solid $mojo-light-blue;
+          border-bottom: 0.5px solid $mojo-blue;
         }
       }
 
@@ -139,8 +139,8 @@ export default {
 body.dark-theme {
   #footer {
     color: #fff;
-    background: #000000;
-    border-top: 1px solid #1a1a1a;
+    background: $mojo-dark-blue;
+    border-top: 0.5px solid #ffffff;
 
     .footer-title h1 {
       color: #ffffff;

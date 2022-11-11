@@ -1,19 +1,11 @@
 /* Mojo Colours */
 $mojo-red: #f23f3f;
 $mojo-pink: #e9429b;
-$mojo-yellow: #ffdb1e;
+$mojo-yellow: #fed966;
 $mojo-green: #08d0a5;
-$mojo-blue: #2c67ff;
-$mojo-light-blue: #2bb5f0;
+$mojo-blue: #33bdf1;
+$mojo-dark-blue: #153b6a;
 $mojo-purple: #8d50f5;
-
-/* Tableland Colours */
-$tableland-black: #1a1a1a;
-$tableland-pink: #ff2f5b;
-$tableland-green: #0be291;
-$tableland-blue: #6067eb;
-$tableland-dark-blue: #141034;
-$tableland-purple: #232041;
 
 /* Greys, Blacks & Whites */
 $black: #000000;
@@ -44,6 +36,6 @@ $max-width: 1280px;
 $page-height: 100vh;
 
 /* Gradients */
-$gradient-one: linear-gradient(283.66deg, #e9429b 37.69%, #ffdb1e 100.73%);
-$gradient-two: linear-gradient(283.16deg, #e9429b 21.19%, #2bb5f0 100.56%);
-$gradient-three: linear-gradient(285.43deg, #2bb5f0 40.19%, #32c33a 101.31%);
+$gradient-one: linear-gradient(283.66deg, #33bdf1 37.69%, #fed966 100.73%);
+$gradient-two: linear-gradient(283.16deg, #153b6a 21.19%, #33bdf1 100.56%);
+$gradient-three: linear-gradient(285.43deg, #153b6a 40.19%, #fed966 101.31%);

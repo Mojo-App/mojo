@@ -53,12 +53,7 @@ export const getTxInfo = () => {
  * @param {number} chainIdTo
  * @returns {Promise<String|Error>}
  */
-export const bridge = async (
-  nftContractAddress,
-  tokenId,
-  chainIdFrom,
-  chainIdTo
-) => {
+export const bridge = async (nftContractAddress, tokenId, chainIdFrom, chainIdTo) => {
   const { ethereum } = window;
   if (!ethereum) {
     throw Error();
@@ -89,10 +84,7 @@ export const bridge = async (
   );
 
   const approvedAddresss = await targetNFT.getApproved(tokenId);
-  if (
-    approvedAddresss.toHexString().toLowerCase() !==
-    NFT_BRIDGE_ADDRESS.toLowerCase()
-  ) {
+  if (approvedAddresss.toHexString().toLowerCase() !== NFT_BRIDGE_ADDRESS.toLowerCase()) {
     const approveTx = await targetNFT.approve(NFT_BRIDGE_ADDRESS, tokenId);
     await approveTx.wait();
   }

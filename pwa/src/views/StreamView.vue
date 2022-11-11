@@ -188,7 +188,7 @@ section#stream-content {
     section#stream {
       height: 100%;
       color: #212121;
-      background: #1c8bfe;
+      background: $mojo-blue;
       display: flex;
       flex-direction: row;
       align-content: center;
@@ -220,7 +220,7 @@ section#stream-content {
         h2 {
           width: 100%;
           color: $white;
-          font-size: 31px;
+          font-size: 34px;
           font-style: normal;
           font-weight: 700;
           line-height: 42px;
@@ -301,7 +301,10 @@ section#stream-content {
 
           h2 {
             color: $white;
-            font-size: 2rem;
+            font-size: 34px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: 42px;
             margin: 0;
 
             @include breakpoint($break-ssm) {

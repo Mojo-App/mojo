@@ -10,7 +10,7 @@ import nftPort from "../services/nftPort.js";
 
 /* Import Smart Contract ABI and Mojo Contract Address */
 // import contractAbi from "../../../artifacts/contracts/mojo_ERC721.sol/MOJO.json";
-// const mojoContractAddress = "0x50878dC8674A3738d3C1fCA76F9DB308Ed2EFE4D";
+// const mojoContractAddress = "0x13B9DF4c7C97563fAD045251FCA95a9E61c9Dc85";
 
 /* Setup Offline Storage */
 const db = new Storage("app");
@@ -24,6 +24,7 @@ export const useStore = defineStore({
     return {
       walletConnectionAttempted: false,
       isAuthenticated: false,
+      isRigHolder: false,
       errorMessage: false,
       walletAddress: "",
       errorCode: null,
@@ -49,6 +50,7 @@ export const useStore = defineStore({
       trendingTokens: [],
       topTokens: [],
       latestTokens: [],
+      mojoMCNFTTokens: [],
       trackList: [],
       musicCategories: [],
       counter: 0,
@@ -60,6 +62,9 @@ export const useStore = defineStore({
     };
   },
   getters: {
+    isErrorCode(state) {
+      return state.errorCode;
+    },
     isErrorCode(state) {
       return state.errorCode;
     },
@@ -80,6 +85,15 @@ export const useStore = defineStore({
     },
     isFileLoading(state) {
       return state.fileLoading;
+    },
+    getWalletConnectionAttempted(state) {
+      return state.walletConnectionAttempted;
+    },
+    getIsAuthenticated(state) {
+      return state.isAuthenticated;
+    },
+    getIsRigHolder(value) {
+      return state.isRigHolder;
     },
     getAccount(state) {
       return state.account;
@@ -129,6 +143,9 @@ export const useStore = defineStore({
     getLatestTokens(state) {
       return state.latestTokens;
     },
+    getMojoMCNFTTokens(state) {
+      return state.mojoMCNFTTokens;
+    },
     getTrackList(state) {
       return state.trackList;
     },
@@ -149,17 +166,14 @@ export const useStore = defineStore({
     },
   },
   actions: {
-    /**
-     * Set walletConnectionAttempted value in store
-     */
     setWalletConnectionAttempted(value) {
       this.walletConnectionAttempted = value;
     },
-    /**
-     * Set isAuthenticated value in store
-     */
     setIsAuthenticated(value) {
       this.isAuthenticated = value;
+    },
+    setIsRigHolder(value) {
+      this.isRigHolder = value;
     },
     setErrorCode(value) {
       this.errorCode = value;
@@ -236,6 +250,9 @@ export const useStore = defineStore({
     },
     addLatestTokens(...tokens) {
       this.latestTokens.push(...tokens);
+    },
+    addMojoMCNFTTokens(...tokens) {
+      this.mojoMCNFTTokens.push(...tokens);
     },
     resetTracks() {
       this.trackList = [];
@@ -473,8 +490,8 @@ export const useStore = defineStore({
       audioVideoURL,
       animationURL,
       youtubeURL,
+      backgroundColor,
       resolution,
-      duration
     ) {
       console.log("tokenId :", tokenId);
       console.log("cid :", cid);
@@ -496,8 +513,8 @@ export const useStore = defineStore({
       console.log("audioVideoURL :", audioVideoURL);
       console.log("animationURL :", animationURL);
       console.log("youtubeURL :", youtubeURL);
+      console.log("backgroundColor :", backgroundColor);
       console.log("resolution :", resolution);
-      console.log("duration :", duration);
       this.setLoading(true);
       // Run a SQL SELECT query
       try {
@@ -538,10 +555,10 @@ export const useStore = defineStore({
           console.log("All Tableland Tables:", tables);
 
           /* Test if we find our Main Mojo NFT table created by our MojoCore smart contract */
-          const attrMatchingTables = Object.values(tables).filter(
-            (table) => table.structure === appAttrTableStructure
-          );
-          console.log("attrMatchingTables", attrMatchingTables);
+          // const attrMatchingTables = Object.values(tables).filter(
+          //   (table) => table.structure === appAttrTableStructure
+          // );
+          // console.log("attrMatchingTables", attrMatchingTables);
 
           /* Create a new table for our NFT metadata */
 
@@ -669,20 +686,18 @@ export const useStore = defineStore({
      * NFT PORT API - Fetch NFTs by Account Address
      * @param {String} account Results will only include NFTs from this account address.
      * @param {String} contract Filter by and return NFTs only from the given contract address.
-     * @param {String} continuation Continuation. Pass this value from the previous response to fetch the next page.
      * @param {String} chain Allowed values: polygon / ethereum / rinkeby
      * @param {String} include Include optional data in the response. default is the default response and metadata includes NFT metadata, like in Retrieve NFT details, and contract_information includes information of the NFT’s contract.
      * Allowed values: default / metadata / contract_information  Default: default
      * @param {String} exclude Exclude data from the response. erc721 excludes ERC721 tokens and erc1155 excludes ERC1155 tokens. Allowed values: erc721 / erc1155
      * @param {Integer} page_size Required Search query
      */
-    async accountNftSearch(account, contract, continuation, chain, include, exclude, page_size) {
+    async accountNftSearch(account, contract, chain, include, exclude, page_size) {
       /* NFT Port API Search */
       const nftPortApi = new nftPort();
       const results = await nftPortApi.accountNftSearch(
         account,
         contract,
-        continuation,
         chain,
         include,
         exclude,

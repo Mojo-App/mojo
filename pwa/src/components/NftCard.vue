@@ -1,5 +1,5 @@
 <template>
-  <div class="nft" v-if="image && name">
+  <div class="nft">
     <div v-if="image && getUrlProtocol(image) === 'mp4'" class="nft-video">
       <video height="240" controls>
         <source :src="`${image}`" type="video/mp4" />
@@ -14,14 +14,18 @@
         Your browser does not support the video tag.
       </video>
     </div>
-    <div v-else class="nft-image">
+    <div v-else-if="image" class="nft-image">
       <img :src="`${getUrlProtocol(image)}`" :alt="`${name}`" />
+    </div>
+    <div v-else class="nft-error-image">
+      <img src="../assets/images/ImageError.png" alt="No image" />
     </div>
     <!-- <div v-if="contract" class="nft-title">Contract : {{ contract }}</div> -->
     <!-- <div v-if="tokenId" class="nft-title">Token Id : {{ tokenId }}</div> -->
     <div v-if="name" class="nft-title">
       {{ name }}
     </div>
+    <div v-else class="nft-title">Nameless</div>
     <!-- <div v-if="description" class="nft-description">
       {{ description }}
     </div>
@@ -101,10 +105,11 @@ export default {
   display: block;
   box-sizing: border-box;
   width: 100%;
-  // min-height: 350px;
+  min-height: 260px;
   background: #f4f4f4;
   border-radius: 10px;
   overflow: hidden;
+  cursor: pointer;
 
   .nft-video {
     width: 100%;
@@ -124,6 +129,21 @@ export default {
   .nft-image {
     width: 100%;
     margin: 0 auto;
+    padding: 0;
+    overflow: hidden;
+
+    img,
+    svg {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      overflow: hidden;
+    }
+  }
+
+  .nft-error-image {
+    width: 100%;
+    margin: 15px auto 0;
     padding: 0;
     overflow: hidden;
 

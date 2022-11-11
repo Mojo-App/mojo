@@ -377,22 +377,13 @@ export default class nftPort {
    * @returns {Promise<String|Error>}
    *
    */
-  async accountNftSearch(
-    account_address,
-    contract_address,
-    continuation,
-    chain,
-    include,
-    exclude,
-    page_size
-  ) {
+  async accountNftSearch(account_address, contract_address, chain, include, exclude, page_size) {
     if (account_address !== "") {
       const options = {
         method: "GET",
         url: this.endpoint + `accounts/${account_address}`,
         params: {
           contract_address: contract_address,
-          continuation: continuation,
           chain: chain,
           include: include,
           exclude: exclude,
@@ -432,7 +423,6 @@ export default class nftPort {
         });
 
       const account = {
-        continuation: results.continuation,
         nfts: results.nfts,
         total: results.total,
         response: results.response,

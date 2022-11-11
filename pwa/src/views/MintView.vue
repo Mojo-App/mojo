@@ -160,9 +160,6 @@
                 </div>
                 <!-- Control Panel -->
                 <div class="nft-modal-approve">
-                  <div v-show="tokenId" class="button-container">
-                    <button class="add-button" @click="AddNewAttribute()">add new attribute</button>
-                  </div>
                   <button
                     v-show="!tokenId"
                     :class="!approvedMint ? 'approve-button' : 'approved-button'"
@@ -175,19 +172,13 @@
                   </div>
                   <div v-if="tokenId" class="file-table-link">
                     <a
-                      :href="`https://testnet.tableland.network/query?mode=list&s=SELECT%20json_object%28%27id%27%2Ctokenid%2C%27name%27%2Cname%2C%27description%27%2Cdescription%2C%27image%27%2Cimage%2C%27image_data%27%2Cimage_data%2C%27category%27%2Ccategory%2C%27external_url%27%2Cexternal_url%2C%27background_color%27%2Cbackground_color%2C%27animation_url%27%2Canimation_url%2C%27youtube_url%27%2Cyoutube_url%2C%27attributes%27%2Cjson_group_array%28json_object%28%27locked%27%2Clocked%2C%27icon%27%2Cicon%2C%27display_type%27%2Cdisplay_type%2C%27trait_type%27%2Ctrait_type%2C%27value%27%2Cvalue%29%29%29%20FROM%20Mojo_Music_80001_3503%20JOIN%20Mojo_Music_80001_3504%20ON%20Mojo_Music_80001_3503%2Etokenid%20%3D%20Mojo_Music_80001_3504%2Emaintable_tokenid%20WHERE%20tokenid%3D${tokenId}%20group%20by%20tokenid`"
+                      :href="`https://testnet.tableland.network/query?mode=list&s=SELECT%20json_object%28%27id%27%2Ctokenid%2C%27name%27%2Cname%2C%27description%27%2Cdescription%2C%27image%27%2Cimage%2C%27category%27%2Ccategory%2C%27external_url%27%2Cexternal_url%2C%27background_color%27%2Cbackground_color%2C%27animation_url%27%2Canimation_url%2C%27youtube_url%27%2Cyoutube_url%2C%27attributes%27%2Cjson_group_array%28json_object%28%27locked%27%2Clocked%2C%27icon%27%2Cicon%2C%27display_type%27%2Cdisplay_type%2C%27trait_type%27%2Ctrait_type%2C%27value%27%2Cvalue%29%29%29%20FROM%20Mojo_Music_80001_3522%20JOIN%20Mojo_Music_80001_3523%20ON%20Mojo_Music_80001_3522%2Etokenid%20%3D%20Mojo_Music_80001_3523%2Emaintable_tokenid%20WHERE%20tokenid%3D${tokenId}%20group%20by%20tokenid`"
                       title="View Tableland data"
                       target="_blank"
                     >
                       tableland
                     </a>
                   </div>
-                  <button v-show="!tokenId" class="cancel-button" @click="cancelMint()">
-                    cancel
-                  </button>
-                  <button v-show="tokenId" class="cancel-button" @click="cancelMint()">
-                    reset
-                  </button>
                 </div>
                 <!-- END Control Panel -->
               </div>
@@ -210,51 +201,75 @@
           <div v-if="account" class="right">
             <!-- Tab One is to add our main NFT metadata -->
             <div v-if="formTab === 'one'" id="form-tab-one" class="form-container">
-              <h2>1. Mint NFT</h2>
+              <h2>Mint NFT</h2>
               <div class="select-row">
                 <label>Category</label>
-                <select v-model="category">
-                  <option value="" class="grey">Select a Category</option>
-                  <option v-for="cat in musicCategories" :key="cat.id" :value="cat.value">
-                    {{ cat.label }}
-                  </option>
-                </select>
+                <div class="select-wrapper">
+                  <select v-model="category">
+                    <option value="" class="grey">Select a Category</option>
+                    <option v-for="cat in musicCategories" :key="cat.id" :value="cat.value">
+                      {{ cat.label }}
+                    </option>
+                  </select>
+                </div>
               </div>
               <div class="input-row">
                 <label>Name</label>
-                <input type="text" v-model="name" />
+                <div class="input-wrapper">
+                  <input type="text" v-model="name" />
+                </div>
               </div>
               <div class="input-row">
                 <label>Description</label>
-                <textarea v-model="description" rows="5" cols="50"></textarea>
+                <div class="textarea-wrapper">
+                  <textarea v-model="description" rows="5" cols="50"></textarea>
+                </div>
+              </div>
+              <div class="input-row">
+                <label>External link</label>
+                <div class="input-wrapper">
+                  <input
+                    type="text"
+                    placeholder="eg. https://opensea.io/collection/mojo-music"
+                    v-model="externalUrl"
+                  />
+                </div>
               </div>
               <div class="input-row hidden">
-                <label>Max Prints</label>
-                <input type="text" placeholder="default is one" v-model="maxInvocations" />
-              </div>
-              <div class="input-row">
-                <input
-                  type="text"
-                  placeholder="Audio/Video Type"
-                  v-model="audioVideoType"
-                  readonly
-                />
-              </div>
-              <div class="input-row">
-                <input type="text" placeholder="File Size" v-model="size" readonly />
+                <div class="input-wrapper">
+                  <input
+                    type="text"
+                    placeholder="Audio/Video Type"
+                    v-model="audioVideoType"
+                    readonly
+                  />
+                </div>
               </div>
               <!-- Data we receive after file upload HIDDEN -->
               <div class="input-row hidden">
-                <input type="text" placeholder="Token ID" v-model="tokenId" />
+                <div class="input-wrapper">
+                  <input type="text" placeholder="Token ID" v-model="tokenId" />
+                </div>
               </div>
               <div class="input-row hidden">
-                <input type="text" placeholder="Content ID" v-model="cid" />
+                <div class="input-wrapper">
+                  <input type="text" placeholder="Content ID" v-model="cid" />
+                </div>
               </div>
               <div class="input-row hidden">
-                <input type="text" placeholder="Created" v-model="createdAt" readonly />
+                <div class="input-wrapper">
+                  <input type="text" placeholder="Created" v-model="createdAt" readonly />
+                </div>
               </div>
               <div class="input-row hidden">
-                <input type="text" placeholder="Image Url" v-model="imageUrl" readonly />
+                <div class="input-wrapper">
+                  <input type="text" placeholder="Image Url" v-model="imageUrl" readonly />
+                </div>
+              </div>
+              <div class="input-row hidden">
+                <div class="input-wrapper">
+                  <input type="text" placeholder="File Size" v-model="size" readonly />
+                </div>
               </div>
               <!-- END Data we receive after file upload HIDDEN -->
               <!-- Button Row -->
@@ -272,16 +287,45 @@
                 </button>
                 <button class="restart-button" @click="cancelMint()">cancel</button>
               </div>
-              <div class="input-row">
-                👷 Minting coming soon, we're still busy buidlin over here 🚧
-              </div>
               <!-- END Button Row -->
             </div>
             <!-- END Tab 1 -->
 
             <!-- Tab Two NFT Metadata Attributes -->
             <div v-if="formTab === 'two'" id="form-tab-two" class="form-container">
-              <h2>2. Additional Details</h2>
+              <h2>Video Attributes</h2>
+              <div class="input-row">
+                <label>Title</label>
+                <input type="text" v-model="title" />
+              </div>
+              <div class="input-row">
+                <label>Website</label>
+                <input type="text" v-model="website" />
+              </div>
+              <div class="input-row">
+                <label>Preview Link</label>
+                <input type="text" v-model="preview" />
+              </div>
+              <div class="input-row">
+                <label>Audio/Video Link</label>
+                <input type="text" v-model="audioVideoURL" />
+              </div>
+              <div class="input-row">
+                <label>Best Resolution</label>
+                <input type="text" v-model="resolution" />
+              </div>
+              <!-- Button Row -->
+              <div class="button-container">
+                <button class="back-button" @click="switchToTab('one')">back</button>
+                <button class="mint-done-button" @click="switchToTab('three')">next</button>
+              </div>
+              <!-- END Button Row -->
+            </div>
+            <!-- END Tab Two NFT Metadata Attributes -->
+
+            <!-- Tab Three NFT Pricing -->
+            <div v-if="formTab === 'three'" id="form-tab-three" class="form-container">
+              <h2>Additional Details</h2>
               <div class="input-row">
                 <label>Animation Link</label>
                 <input type="text" v-model="animationUrl" />
@@ -291,61 +335,18 @@
                 <input type="text" v-model="youtubeUrl" />
               </div>
               <div class="input-row">
-                <label>External link</label>
-                <input
-                  type="text"
-                  placeholder="eg. https://opensea.io/collection/mojo-music"
-                  v-model="externalUrl"
-                />
-              </div>
-              <div class="input-row">
                 <label>Background Color</label>
                 <input type="text" placeholder="#ffffff" v-model="backgroundColor" />
               </div>
-              <!-- Button Row -->
-              <div v-if="account && formTab === 'two'" class="button-container">
-                <button class="back-button-blue" @click="switchToTab('one')">🔙</button>
-                <button class="skip-button" @click="switchToTab('three')">Skip</button>
-                <button class="attr-button" @click="addNFTMainAttributes()">Add Details</button>
-              </div>
-              <!-- END Button Row -->
-            </div>
-            <!-- END Tab Two NFT Metadata Attributes -->
-
-            <!-- Tab Three NFT Pricing -->
-            <div v-if="formTab === 'three'" id="form-tab-three" class="form-container">
-              <h2>3. Add Video Attributes</h2>
-              <div v-show="tokenId" class="nft-modal-add-sound-attributes">
-                <div class="input-row">
-                  <label>Preview Link</label>
-                  <input type="text" placeholder="Preview Link" v-model="preview" />
-                </div>
-                <div class="input-row hidden">
-                  <label>Audio/Video Link</label>
-                  <input type="text" placeholder="Audio/Video Link" v-model="audioVideoURL" />
-                </div>
-                <div class="input-row">
-                  <label>Best Resolution</label>
-                  <input type="text" v-model="resolution" />
-                </div>
-                <div class="input-row">
-                  <label>Duration</label>
-                  <input type="text" v-model="duration" />
-                </div>
+              <div class="button-container">
+                <button class="back-button" @click="switchToTab('two')">back</button>
+                <button class="mint-done-button" @click="switchToTab('four')">next</button>
               </div>
             </div>
 
             <div v-if="formTab === 'four'" id="form-tab-four" class="form-container">
-              <h2>3. Add Licensing Attributes</h2>
-              <div v-show="tokenId" class="nft-modal-add-license-attributes">
-                <div class="input-row">
-                  <label>Title</label>
-                  <input type="text" placeholder="Title" v-model="title" />
-                </div>
-                <div class="input-row">
-                  <label>Website</label>
-                  <input type="text" placeholder="Website" v-model="website" />
-                </div>
+              <!-- <h2>Licensing Attributes</h2>
+              <div class="nft-modal-add-license-attributes">
                 <div class="select-row">
                   <label>License</label>
                   <select v-model="license">
@@ -355,6 +356,10 @@
                     </option>
                   </select>
                 </div>
+                <div class="input-row hidden">
+                  <label>Max Prints</label>
+                  <input type="text" placeholder="default is one" v-model="maxInvocations" />
+                </div>
                 <div class="input-row">
                   <label>Royalty Fee</label>
                   <input type="text" placeholder="max 5%" v-model="royaltyPercentage" />
@@ -363,9 +368,9 @@
                   <label>Price</label>
                   <input type="text" v-model="price" />
                 </div>
-              </div>
+              </div> -->
 
-              <h2>3. Add Custom Attributes</h2>
+              <h2>Custom Attributes</h2>
               <!-- STEP 3 : Show Add attributes form once NFT minted and we have a token id returned -->
               <div v-show="tokenId" class="nft-modal-add-attributes">
                 <div class="nft-attribute">
@@ -402,10 +407,15 @@
                     />
                   </div>
                 </div>
+                <div v-show="tokenId" class="button-container">
+                  <button class="add-button" @click="AddNewAttribute()">
+                    add new custom attribute
+                  </button>
+                </div>
               </div>
               <!-- Button Row -->
-              <div v-if="account && formTab === 'three'" class="button-container">
-                <button class="back-button-purple" @click="switchToTab('two')">🔙</button>
+              <div class="button-container">
+                <button class="back-button" @click="switchToTab('three')">back</button>
                 <button class="update-button" @click="createNFTRow()">finish</button>
               </div>
               <!-- END Button Row -->
@@ -422,8 +432,8 @@
 <script>
 import { ref, computed, onMounted } from "vue";
 import { ethers, BigNumber } from "ethers";
-import moment from "moment";
 import { Notyf } from "notyf";
+import moment from "moment";
 
 /* Import our Pinia Store & Refs */
 import { storeToRefs } from "pinia";
@@ -433,6 +443,7 @@ import { useStore } from "../store";
 import { uploadBlob } from "../services/ipfs.js";
 import { fileSize, generateLink } from "../services/helpers";
 // import { nftStorage } from "../services/nftStorage.js";
+import tablelandCRUD from "../services/tablelandCRUD.js";
 import JSConfetti from "js-confetti";
 
 /* Import Components */
@@ -441,7 +452,7 @@ import ArrowBack from "../assets/svgs/ArrowBack.vue";
 
 /* Import Smart Contract ABI and Mojo Contract Address */
 import contractAbi from "../../../artifacts/contracts/mojo_ERC721.sol/MOJO.json";
-const contractAddress = "0x50878dC8674A3738d3C1fCA76F9DB308Ed2EFE4D";
+const contractAddress = "0x13B9DF4c7C97563fAD045251FCA95a9E61c9Dc85";
 
 /* Console log with some style */
 const stylesContract = ["color: black", "background: #e9429b"].join(";");
@@ -545,7 +556,6 @@ export default {
     const audioVideoURL = ref("");
     const backgroundColor = ref("");
     const resolution = ref("");
-    const duration = ref("");
 
     /* Updating Traits Form
      * Traits start at 0 on mint, the date of mint is the first trait added
@@ -739,7 +749,6 @@ export default {
           //   youtubeUrl.value,
           //   backgroundColor.value,
           //   resolution.value,
-          //   duration.value
           // );
           /* Console log with some style */
           // const stylesNFTStorage = ["color: black", "background: #f23f3f"].join(";");
@@ -762,14 +771,14 @@ export default {
           const mintDateString = mintDateTimestamp.toString();
           console.log("Mint Date String :", mintDateString);
 
-          /* Mint our NFT using complex Struct */
+          /* Mint our NFT */
           let nftTxn = await contract.safeMint(
             signer.getAddress(),
             name.value.toString(),
             description.value.toString(),
             imageUrl.value.toString(),
             category.value.toString(),
-            "https://cloudflare-ipfs.com/ipfs/bafkreibx3akdct6syqhkis3dqsnekukhh5ib5pdwepfki7hf45viv4ylp4",
+            "https://cloudflare-ipfs.com/ipfs/QmRrfbnwUtz6THu63wNHtCPnHRc7htxDsjTJfhStGFtnqR",
             "date",
             "Created",
             mintDateString
@@ -806,7 +815,7 @@ export default {
             notyf.dismiss(loadingIndicator);
             notyf.open({
               type: "success",
-              message: `🧬 NFT has been minted successfully, see transaction: https://mumbai.polygonscan.com/tx/${nftTxn.hash}`,
+              message: `NFT minted successfully!`,
             });
           }
           /* Stop minting loader */
@@ -1381,126 +1390,6 @@ export default {
     };
 
     /**
-     * Set our NFT External Url field via contract
-     */
-    const setExternalUrl = async (tokenId) => {
-      if (!tokenId.value) {
-        notyf.error(`We need a Token Id to continue!`);
-        return;
-      }
-      /**
-       * Some very basic form validation, these are loaded after IPFS upload
-       * but users can edit so we still need some validation in UI
-       */
-      if (!externalUrl.value) {
-        notyf.error(`Please enter an external url to continue!`);
-        formTab.value = "one";
-        return;
-      }
-      if (externalUrl.value.length < 3) {
-        notyf.error(`NFT external url must be longer then 3 characters!`);
-        formTab.value = "one";
-        return;
-      }
-      /* Init loading indicator */
-      const loadingIndicator = notyf.open({
-        type: "loading",
-        message: "⏳ Please wait while we add your NFT metadata attributes.",
-      });
-      /**
-       * Set our NFT External Url via Contract method
-       * @dev Not sure about this yet but leaves us a few options
-       */
-      try {
-        const { ethereum } = window;
-        if (ethereum) {
-          const provider = new ethers.providers.Web3Provider(ethereum);
-          const signer = provider.getSigner();
-
-          /**
-           *  @dev Note: Reset this once Contracts deployed or re-dployed
-           */
-          const contract = new ethers.Contract(contractAddress, contractAbi.abi, signer);
-          console.log("Talk to the wallet and pay gas fees", signer);
-
-          /**
-           *  Receive Emitted Event from Contract
-           *  @dev See NewNftMinted emitted from our smart contract safeMint function
-           */
-          contract.on(
-            "externalUrlUpdated",
-            (receiver, timestamp, metadataTableId, external_url, tokenId) => {
-              console.log("receiver ", receiver);
-
-              console.log("timestamp ", timestamp);
-              createdAt.value = moment.unix(timestamp).toString();
-              console.log("createdAt.value ", createdAt.value);
-
-              let tokenIdBigNo = new BigNumber(tokenId);
-              console.log("tokenId ", tokenIdBigNo);
-              rowId.value = tokenIdBigNo.toNumber();
-              console.log("rowId.value ", rowId.value);
-
-              console.log("metadataTableId ", metadataTableId);
-              console.log("external_url ", external_url);
-            }
-          );
-
-          let nftTxn = await contract.update_external_url(
-            `https://testnets.opensea.io/assets/mumbai/${contractAddress}/${tokenId}`
-          );
-
-          /* Console log with some style */
-          const stylesUpdate = ["color: black", "background: yellow"].join(";");
-          console.log("%c⏳ Updating NFT ...please wait! %s", stylesUpdate, nftTxn.hash);
-
-          // The OpenZeppelin base ERC721 contract emits a Transfer event
-          // when a token is issued. tx.wait() will wait until a block containing
-          // our transaction has been mined and confirmed. The transaction receipt
-          // contains events emitted while processing the transaction.
-          /* Console log with some style */
-
-          const stylesMining = ["color: black", "background: yellow"].join(";");
-          console.log("%c⛏ Mining...please wait! ⛏ %s", stylesMining, nftTxn.hash);
-          const receipt = await nftTxn.wait();
-
-          /* Console log with some style */
-          const stylesReceipt = ["color: black", "background: purple"].join(";");
-          console.log("%c💎 Congrats on enpowering your gem! 💎 %s", stylesReceipt, nftTxn.hash);
-
-          if (receipt.status === 1) {
-            /**
-             * @dev NOTE: Switch up these links once we go to Production
-             * Currently set to use Polygon Mumbai Testnet
-             */
-            const stylesPolygon = ["color: white", "background: #7e44df"].join(";");
-            console.log(
-              `%c🔧 NFT external url updated via Tableland contract, see transaction: https://mumbai.polygonscan.com/tx/${nftTxn.hash} %s`,
-              stylesPolygon,
-              nftTxn.hash
-            );
-            /* Remove loading indicator and show success notification */
-            notyf.dismiss(loadingIndicator);
-            notyf.success(
-              `🧬 NFT table row been updated, see transaction: https://mumbai.polygonscan.com/tx/${nftTxn.hash}`
-            );
-            /* Set to NFT Add Media Tab */
-            switchToTab("two");
-            return;
-          }
-          notyf.error("Error updating NFT metadata!");
-          return;
-        } else {
-          notyf.dismiss(loadingIndicator);
-          notyf.error("Ethereum object doesn't exist!");
-        }
-      } catch (error) {
-        notyf.dismiss(loadingIndicator);
-        console.log("error", error);
-      }
-    };
-
-    /**
      * Update our NFT metadata
      */
     const createNFTRow = async () => {
@@ -1551,14 +1440,14 @@ export default {
         message: "⏳ Please wait while we update your NFT metadata.",
       });
 
-      const createdRowId = await store.addNFTMainAttributes(
+      /* Load Tableland CRUD */
+      const tableland = new tablelandCRUD();
+      const mNFT = await tableland.updateNFT(
         tokenId.value,
         cid.value,
         name.value,
         description.value,
         externalUrl.value,
-        animationUrl.value,
-        youtubeUrl.value,
         imageUrl.value,
         size.value,
         createdAt.value,
@@ -1572,28 +1461,32 @@ export default {
         website.value,
         preview.value,
         audioVideoURL.value,
+        animationUrl.value,
+        youtubeUrl.value,
         backgroundColor.value,
-        resolution.value,
-        duration.value
+        resolution.value
       );
-      if (createdRowId) {
+      console.log("Mojo Music NFT Data: ", mNFT);
+
+      if (mNFT) {
         /* Console log with some style */
         const stylesRowEntry = ["color: white", "background: #32c33a"].join(";");
-        console.log(`%c💾 NFT metadata row created ID : %s`, stylesRowEntry, createdRowId);
+        console.log(`%c NFT Data : %s`, stylesRowEntry, mNFT);
         /* Remove loading indicator and show success notification */
         notyf.dismiss(loadingIndicator);
         notyf.open({
           type: "success",
-          message: `💾 NFT with metadata created ID: ${createdRowId}`,
+          message: `NFT metadata updated`,
         });
 
+        cancelMint();
         /* Set to NFT Main Attributes Tab */
-        switchToTab("three");
+        switchToTab("one");
         return;
       }
       notyf.dismiss(loadingIndicator);
       notyf.error(`Error adding a new table row, please try again!`);
-      switchToTab("two");
+      // switchToTab("two");
       return;
     };
 
@@ -1624,7 +1517,6 @@ export default {
       audioVideoURL.value = "";
       backgroundColor.value = "";
       resolution.value = "";
-      duration.value = "";
       size.value = "";
       createdAt.value = "";
       attributes.value = [];
@@ -1845,7 +1737,6 @@ export default {
       audioVideoURL,
       backgroundColor,
       resolution,
-      duration,
       musicCategories,
       size,
       createdAt,
@@ -1860,7 +1751,6 @@ export default {
       updateTraitDisplayType,
       updateTraitType,
       updateTraitValue,
-      setExternalUrl,
       createNFTRow,
       generateLink,
       fileSize,
@@ -1901,10 +1791,9 @@ section#mint-content {
   .main {
     width: 100%;
     height: 100%;
-    margin: 0 auto;
-    padding: 0 0 10px 0;
+    margin: 0;
+    padding: 0;
     overflow: scroll;
-
     @include breakpoint($break-ssm) {
       height: 99%;
     }
@@ -1912,32 +1801,25 @@ section#mint-content {
     section#mint {
       height: 100%;
       color: #1a1a1a;
-      background: $white;
+      background: $mojo-blue;
       display: flex;
       flex-direction: column;
       align-content: center;
       justify-content: center;
-      padding: 10px;
       overflow: scroll;
-
       @include breakpoint($break-ssm) {
-        padding: 20px;
-        align-content: center;
         justify-content: flex-start;
       }
 
       .row {
+        width: 100%;
         display: flex;
         flex-direction: row;
         align-content: center;
         justify-content: center;
         align-items: center;
-
         @include breakpoint($break-ssm) {
           flex-direction: column;
-          align-content: center;
-          justify-content: center;
-          align-items: center;
         }
       }
 
@@ -1950,11 +1832,9 @@ section#mint-content {
         justify-content: center;
         align-items: flex-end;
         overflow: hidden;
-
         @include breakpoint($break-md) {
           width: 100%;
         }
-
         @include breakpoint($break-sm) {
           width: 100%;
         }
@@ -2354,30 +2234,6 @@ section#mint-content {
             align-items: center;
             margin-top: 5px;
 
-            .add-button {
-              color: $white;
-              background-color: $mojo-blue;
-              font-family: Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans",
-                "Helvetica Neue", sans-serif;
-              font-style: normal;
-              font-weight: 800;
-              font-size: 14px;
-              line-height: 24px;
-              text-align: center;
-              width: 200px;
-              border-radius: 30px;
-              padding: 4px;
-              height: auto;
-              border: 0;
-              margin: 0 5px 0 0;
-              transition: 0.4s;
-              cursor: pointer;
-
-              &:hover {
-                color: $black;
-              }
-            }
-
             .approve-button {
               color: $white;
               background-color: $mojo-green;
@@ -2403,7 +2259,7 @@ section#mint-content {
             }
 
             .approved-button {
-              color: $black;
+              color: $white;
               background-color: $mojo-blue;
               font-family: Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans",
                 "Helvetica Neue", sans-serif;
@@ -2510,6 +2366,7 @@ section#mint-content {
         align-content: center;
         justify-content: center;
         align-items: flex-start;
+        padding: 0;
 
         @include breakpoint($break-md) {
           width: 100%;
@@ -2517,37 +2374,41 @@ section#mint-content {
 
         .form-container {
           display: flex;
-          width: 98%;
-          height: 555px;
+          width: 100%;
+          min-height: 570px;
           flex-direction: column;
           justify-content: center;
           align-items: center;
-          border: 4px solid var(--gradient-100);
+          border: 2px solid var(--gradient-100);
           border-top-right-radius: 1rem;
           border-bottom-right-radius: 1rem;
           border-bottom-left-radius: 0;
-          padding: 30px 20px;
+          padding: 20px 0 10px 10px;
+          background-color: $white;
 
           @include breakpoint($break-sm) {
             border-top-right-radius: 0;
             border-bottom-right-radius: 0;
             border-bottom-left-radius: 1em;
             border-bottom-right-radius: 1em;
-            padding: 30px 0 30px 0;
+            padding: 15px 0 10px 0;
           }
 
           h2 {
-            font-size: 1.6rem;
-            line-height: 1.7rem;
+            color: $mojo-dark-blue;
+            font-size: 32px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: 42px;
             text-align: center;
             padding-bottom: 2px;
             text-decoration: none;
             border-bottom: 1px solid;
-            margin: 0 auto 20px;
+            margin: 0 auto 10px;
 
             @include breakpoint($break-ssm) {
-              font-size: 1.4rem;
-              line-height: 1.5rem;
+              font-size: 1.3rem;
+              line-height: 1.4rem;
             }
           }
         }
@@ -2565,53 +2426,181 @@ section#mint-content {
           color: $mojo-blue;
           font-style: normal;
           font-weight: 800;
-          font-size: 20px;
+          font-size: 18px;
           line-height: 24px;
           letter-spacing: 0.1em;
-          margin: 0 0 2px 5px;
+          margin: 0 0 2px 15px;
         }
 
-        input {
-          width: 100%;
-          color: #1a1a1a;
-          background-color: #fdfdfd;
-          border: 2px solid var(--gradient-100);
-          border-radius: 10px;
-          letter-spacing: 1px;
-          font-size: 14px;
-          width: 300px;
-          margin-bottom: 10px;
-          padding: 10px;
-          text-align: center;
-
-          @include breakpoint($break-sm) {
-            width: 300px;
-          }
-
-          @include breakpoint($break-md) {
-            width: 300px;
-          }
-
-          @include breakpoint($break-xxl) {
-            width: 300px;
-          }
+        /* Form wrapper styling - https://codepen.io/NoorA1125/pen/movOEN */
+        .input-wrapper {
+          width: 400px;
+          height: 40px;
+          margin: 0 0 10px 0;
+          border-radius: 40px;
+          background: transparent;
+          box-shadow: 0 4px 20px -2px #e9e9e9;
         }
 
-        input::placeholder {
-          color: #a8a8a8;
-          letter-spacing: 1px;
+        /* Form text input */
+        .input-wrapper input {
+          padding-left: 20px;
+          width: 400px;
+          height: 20px;
+          padding: 10px 5px 10px 15px;
+          float: left;
+          border: 0;
+          background: #fff;
+          border-radius: 40px;
+          border-top-style: none;
         }
 
-        input:read-only {
-          color: #1a1a1a;
-          border: 2px dashed #e0e0e0;
-          letter-spacing: 2px;
-          cursor: not-allowed;
+        .input-wrapper input:focus {
+          outline: 0;
+          background: #fff;
         }
 
-        input:focus {
-          border: 2px solid $mojo-light-blue;
-          outline: none;
+        .input-wrapper input::-webkit-input-placeholder {
+          color: #999;
+          font-weight: normal;
+          font-style: italic;
+          padding-left: 20px;
+        }
+
+        .input-wrapper input:-moz-placeholder {
+          color: #999;
+          font-weight: normal;
+          font-style: italic;
+        }
+
+        .input-wrapper input:-ms-input-placeholder {
+          color: #999;
+          font-weight: normal;
+          font-style: italic;
+          border-style: none;
+        }
+
+        /* Update Field Button */
+        .input-wrapper button {
+          overflow: visible;
+          position: relative;
+          float: right;
+          border: 0;
+          padding: 0;
+          height: 40px;
+          width: 110px;
+          color: #fff;
+          text-transform: uppercase;
+          background: $mojo-blue;
+          border-radius: 40px;
+          text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
+          transition: 0.6s;
+          cursor: pointer;
+        }
+
+        .input-wrapper button:hover {
+          background: $mojo-dark-blue;
+        }
+
+        .input-wrapper button:active,
+        .input-wrapper button:focus {
+          background: $mojo-dark-blue;
+          outline: 0;
+        }
+
+        .input-wrapper button::-moz-focus-inner {
+          /* remove extra button spacing for Mozilla Firefox */
+          border: 0;
+          padding: 0;
+        }
+
+        .textarea-wrapper {
+          width: 400px;
+          height: 100px;
+          margin: 0 0 10px 0;
+          border-radius: 40px;
+          background: transparent;
+          box-shadow: 0 4px 20px -2px #e9e9e9;
+        }
+
+        /* Form text input */
+        .textarea-wrapper textarea {
+          padding-left: 20px;
+          width: 370px;
+          height: 79px;
+          padding: 15px;
+          float: left;
+          font: bold 13px "lucida sans", "trebuchet MS", "Tahoma";
+          border: 0;
+          background: #fff;
+          border-radius: 30px;
+          border-top-style: none;
+          resize: none;
+        }
+
+        .textarea-wrapper textarea:focus {
+          outline: 0;
+          background: #fff;
+        }
+
+        .textarea-wrapper textarea::-webkit-input-placeholder {
+          color: #999;
+          font-weight: normal;
+          font-style: italic;
+          padding-left: 20px;
+        }
+
+        .textarea-wrapper textarea:-moz-placeholder {
+          color: #999;
+          font-weight: normal;
+          font-style: italic;
+        }
+
+        .textarea-wrapper textarea:-ms-input-placeholder {
+          color: #999;
+          font-weight: normal;
+          font-style: italic;
+          border-style: none;
+        }
+
+        /* Form submit button */
+        .textarea-wrapper button {
+          overflow: visible;
+          position: relative;
+          float: right;
+          border: 0;
+          padding: 0;
+          height: 40px;
+          width: 110px;
+          color: #fff;
+          text-transform: uppercase;
+          background: $mojo-blue;
+          border-radius: 40px;
+          text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
+          margin-top: 15px;
+          transition: 0.6s;
+          cursor: pointer;
+        }
+
+        .textarea-wrapper button:hover {
+          background: $mojo-dark-blue;
+        }
+
+        .textarea-wrapper button:active,
+        .textarea-wrapper button:focus {
+          background: $mojo-blue;
+          outline: 0;
+        }
+
+        .textarea-wrapper button:focus:before,
+        .textarea-wrapper button:active:before {
+          border-right-color: #c42f2f;
+        }
+
+        .textarea-wrapper button::-moz-focus-inner {
+          /* remove extra button spacing for Mozilla Firefox */
+          border: 0;
+          padding: 0;
         }
 
         .select-row {
@@ -2623,65 +2612,85 @@ section#mint-content {
           margin-bottom: 15px;
         }
 
-        select {
-          display: inline-block;
-          color: #1a1a1a;
-          background-color: #fdfdfd;
-          border: 2px solid var(--gradient-100);
-          border-radius: 10px;
-          letter-spacing: 1px;
-          font-size: 14px;
-          width: 328px;
-          margin-bottom: 10px;
-          padding: 10px;
-          text-align: center;
-
-          /* reset */
-          margin: 0;
-          -webkit-box-sizing: border-box;
-          -moz-box-sizing: border-box;
-          box-sizing: border-box;
-          appearance: none;
-          -webkit-appearance: none;
-          -moz-appearance: none;
-
-          background-image: linear-gradient(45deg, transparent 50%, gray 50%),
-            linear-gradient(135deg, gray 50%, transparent 50%),
-            linear-gradient(to right, #ccc, #ccc);
-          background-position: calc(100% - 20px) calc(1em + 2px), calc(100% - 15px) calc(1em + 2px),
-            calc(100% - 2.5em) 0.5em;
-          background-size: 5px 5px, 5px 5px, 1px 1.5em;
-          background-repeat: no-repeat;
-
-          @include breakpoint($break-sm) {
-            width: 325px;
-          }
-
-          @include breakpoint($break-md) {
-            width: 325px;
-          }
-
-          @include breakpoint($break-xxl) {
-            width: 325px;
-          }
+        .select-wrapper {
+          width: 400px;
+          height: 40px;
+          margin: 0 0 10px 0;
+          border-radius: 40px;
+          background: transparent;
+          box-shadow: 0 4px 20px -2px #e9e9e9;
         }
 
-        select:focus {
-          border: 2px solid #2bb5f0;
-          background-image: linear-gradient(45deg, green 50%, transparent 50%),
-            linear-gradient(135deg, transparent 50%, green 50%),
-            linear-gradient(to right, #ccc, #ccc);
-          background-position: calc(100% - 15px) 1em, calc(100% - 20px) 1em,
-            calc(100% - 2.5em) 0.5em;
-          background-size: 5px 5px, 5px 5px, 1px 1.5em;
-          background-repeat: no-repeat;
-          outline: none;
+        /* Form text input */
+        .select-wrapper select {
+          padding-left: 20px;
+          width: 400px;
+          height: 40px;
+          padding: 10px 5px 10px 15px;
+          float: left;
+          border: 0;
+          background: #fff;
+          border-radius: 40px;
+          border-top-style: none;
+        }
+
+        .select-wrapper select:focus {
+          outline: 0;
+          background: #fff;
+        }
+
+        .select-wrapper select::-webkit-input-placeholder {
+          color: #999;
+          font-weight: normal;
+          font-style: italic;
+          padding-left: 20px;
+        }
+
+        .select-wrapper select:-moz-placeholder {
+          color: #999;
+          font-weight: normal;
+          font-style: italic;
+        }
+
+        .select-wrapper select:-ms-input-placeholder {
+          color: #999;
+          font-weight: normal;
+          font-style: italic;
+          border-style: none;
+        }
+
+        /* Update Field Button */
+        .select-wrapper button {
+          overflow: visible;
+          position: relative;
+          float: right;
+          border: 0;
+          padding: 0;
+          height: 40px;
+          width: 110px;
+          color: #fff;
+          text-transform: uppercase;
+          background: $mojo-blue;
+          border-radius: 40px;
+          text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
+          transition: 0.6s;
           cursor: pointer;
         }
 
-        select:-moz-focusring {
-          color: transparent;
-          text-shadow: 0 0 0 #000;
+        .select-wrapper button:hover {
+          background: $mojo-dark-blue;
+        }
+
+        .select-wrapper button:active,
+        .select-wrapper button:focus {
+          background: $mojo-dark-blue;
+          outline: 0;
+        }
+
+        .select-wrapper button::-moz-focus-inner {
+          /* remove extra button spacing for Mozilla Firefox */
+          border: 0;
+          padding: 0;
         }
 
         .grey {
@@ -2689,81 +2698,8 @@ section#mint-content {
           letter-spacing: 1px;
         }
 
-        textarea {
-          color: #1a1a1a;
-          background-color: #fdfdfd;
-          border: 2px solid var(--gradient-100);
-          border-radius: 10px;
-          letter-spacing: 1px;
-          font-size: 14px;
-          width: 300px;
-          margin-bottom: 10px;
-          padding: 10px;
-          text-align: center;
-        }
-
-        textarea::placeholder {
-          color: #a8a8a8;
-          letter-spacing: 1px;
-        }
-
-        textarea:focus {
-          border: 2px solid $mojo-light-blue;
-          outline: none;
-        }
-
         .hidden {
           display: none;
-        }
-
-        .tld {
-          position: absolute;
-          font-size: 20px;
-          font-weight: bold;
-          color: white;
-          /* left: -70px; */
-          right: 22px;
-          margin: 0;
-          padding: 0;
-          margin-bottom: 13px;
-        }
-
-        .mint-list {
-          display: flex;
-          flex-direction: row;
-          flex-wrap: wrap;
-          justify-content: center;
-          align-items: center;
-          margin-top: 20px;
-        }
-
-        .mint-item {
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          align-items: center;
-          padding: 10px 15px;
-          border-radius: 5px;
-          margin: 10px 15px;
-          font-size: 18px;
-          background-color: #c4b7fa;
-          color: black;
-          min-width: 150px;
-          max-width: fit-content;
-          box-shadow: 0px 0px 10px 3px rgba(255, 255, 255, 0.2);
-        }
-
-        /* Different background-colour for every nth mint-item */
-        .mint-item:nth-child(2n) {
-          background-color: lightblue;
-        }
-
-        .mint-item:nth-child(3n) {
-          background-color: lightpink;
-        }
-
-        .mint-item:nth-child(5n) {
-          background-color: lightgreen;
         }
       }
 
@@ -2813,35 +2749,23 @@ section#mint-content {
           cursor: not-allowed;
         }
 
-        .back-button-blue {
-          color: #1c8bfe;
-          background-color: #fff;
+        .back-button {
+          color: $white;
+          background-color: $mojo-dark-blue;
           font-size: 18px;
           font-weight: bold;
-          width: auto;
-          max-width: 300px;
           height: 55px;
-          border: 2px solid #1c8bfe;
-          padding-left: 20px;
-          padding-right: 20px;
-          border-radius: 10px;
-          margin-right: 1%;
+          border: 0;
+          border-radius: 30px;
+          padding-left: 65px;
+          padding-right: 65px;
+          margin: 10px 1% 10px 0;
+          transition: 0.4s;
           cursor: pointer;
-        }
 
-        .back-button-purple {
-          color: #8d50f5;
-          background-color: #fff;
-          font-size: 18px;
-          font-weight: bold;
-          width: auto;
-          height: 55px;
-          border: 2px solid #8d50f5;
-          padding-left: 20px;
-          padding-right: 20px;
-          border-radius: 10px;
-          margin-right: 10px;
-          cursor: pointer;
+          &:hover {
+            color: $black;
+          }
         }
 
         .mint-button {
@@ -2859,7 +2783,7 @@ section#mint-content {
           cursor: pointer;
 
           &:hover {
-            color: $mojo-blue;
+            color: $black;
           }
         }
 
@@ -2870,7 +2794,7 @@ section#mint-content {
         }
 
         .mint-done-button {
-          color: $black;
+          color: $white;
           background-color: $mojo-green;
           font-size: 18px;
           font-weight: bold;
@@ -2884,7 +2808,7 @@ section#mint-content {
           cursor: pointer;
 
           &:hover {
-            color: $mojo-blue;
+            color: $black;
           }
         }
 
@@ -2907,40 +2831,46 @@ section#mint-content {
           }
         }
 
-        .external-url-button {
-          color: #fff;
-          background-color: #e9429b;
-          font-size: 18px;
-          font-weight: bold;
-          width: 100%;
-          max-width: 300px;
-          height: 55px;
+        .add-button {
+          color: $white;
+          background-color: $mojo-blue;
+          font-family: Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans",
+            "Helvetica Neue", sans-serif;
+          font-style: normal;
+          font-weight: 800;
+          font-size: 14px;
+          line-height: 24px;
+          text-align: center;
+          border-radius: 30px;
+          padding: 4px 15px;
+          height: auto;
           border: 0;
-          padding-left: 87px;
-          padding-right: 87px;
-          border-radius: 10px;
+          margin: 15px auto 30px;
+          transition: 0.4s;
           cursor: pointer;
-        }
 
-        .external-url-button:disabled {
-          background: #c6c6c6;
-          color: #101010;
-          cursor: not-allowed;
+          &:hover {
+            color: $black;
+          }
         }
 
         .update-button {
-          color: #fff;
-          background-color: #1c8bfe;
+          color: $white;
+          background-color: $mojo-green;
           font-size: 18px;
           font-weight: bold;
-          width: auto;
-          max-width: 300px;
           height: 55px;
           border: 0;
-          padding-left: 43px;
-          padding-right: 43px;
-          border-radius: 10px;
+          border-radius: 30px;
+          padding-left: 65px;
+          padding-right: 65px;
+          margin: 10px 1% 10px 0;
+          transition: 0.4s;
           cursor: pointer;
+
+          &:hover {
+            color: $black;
+          }
         }
 
         .update-button:disabled {
@@ -2951,10 +2881,14 @@ section#mint-content {
       }
 
       h2 {
-        font-size: 1.8rem;
+        color: $white;
+        font-size: 34px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 42px;
         text-align: center;
         margin-block-start: 0;
-        margin-block-end: 0.2em;
+        margin-block-end: 0.3em;
 
         @include breakpoint($break-ssm) {
           font-size: 2.25rem;

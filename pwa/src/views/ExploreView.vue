@@ -707,7 +707,10 @@ section#explore-content {
         padding: 0;
 
         h2 {
-          font-size: 1.8rem;
+          font-size: 34px;
+          font-style: normal;
+          font-weight: 700;
+          line-height: 42px;
           text-align: center;
           margin-block-start: 0;
           margin-block-end: 0.2em;
@@ -1515,7 +1518,10 @@ section#explore-content {
         margin: 0 auto;
 
         h2 {
-          font-size: 1.4rem;
+          font-size: 34px;
+          font-style: normal;
+          font-weight: 700;
+          line-height: 42px;
           text-align: center;
           text-decoration: none;
         }
@@ -1643,9 +1649,9 @@ section#explore-content {
         h2 {
           width: 100%;
           color: $white;
+          font-size: 34px;
           font-style: normal;
           font-weight: 700;
-          font-size: 36px;
           line-height: 42px;
           margin: 10px 0 0 0;
           padding: 0 0 0 10px;
