@@ -324,6 +324,7 @@ section#stream-content {
 
             img,
             svg {
+              display: block;
               width: 85%;
               height: auto;
               object-fit: cover;

@@ -47,7 +47,7 @@ export default class authNFT {
       /**
        * Check if our user is a Tableland Rig holder, well let em in then, #LFG boyz
        */
-      console.log("etherScapAPI", etherScapAPI);
+      // console.log("etherScapAPI", etherScapAPI);
       const response = await axios.get("https://api.etherscan.io/api", {
         params: {
           module: "account",
@@ -59,8 +59,8 @@ export default class authNFT {
         },
       });
       const data = response.data;
-      console.log("Etherscan Response Data: ", data);
-      console.log("Etherscan Response Data Result: ", data.result);
+      // console.log("Etherscan Response Data: ", data);
+      // console.log("Etherscan Response Data Result: ", data.result);
 
       return data.result > 0 ? true : false;
     }
@@ -98,7 +98,7 @@ export default class authNFT {
        * @dev TODO: Need to add a check here for the chain and switch the api
        */
 
-      console.log("polygonScapAPI", polygonScapAPI);
+      // console.log("polygonScapAPI", polygonScapAPI);
       const polyResponse = await axios.get("https://api-testnet.polygonscan.com/api", {
         params: {
           module: "account",
@@ -110,9 +110,9 @@ export default class authNFT {
         },
       });
       const polyData = polyResponse.data;
-      console.log("Polygon Scan Response Data: ", polyData);
+      // console.log("Polygon Scan Response Data: ", polyData);
 
-      console.log("etherScapAPI", etherScapAPI);
+      // console.log("etherScapAPI", etherScapAPI);
       const response = await axios.get("https://api.etherscan.io/api", {
         params: {
           module: "account",
@@ -124,7 +124,7 @@ export default class authNFT {
         },
       });
       const data = response.data;
-      console.log("Etherscan Response Data: ", data);
+      // console.log("Etherscan Response Data: ", data);
 
       return polyData.result > 0 || data.result > 0 ? true : false;
     }
@@ -162,7 +162,7 @@ export default class authNFT {
        * @dev TODO: Need to add a check here for the chain and switch the api
        */
 
-      console.log("polygonScapAPI", polygonScapAPI);
+      // console.log("polygonScapAPI", polygonScapAPI);
       const polyResponse = await axios.get("https://api-testnet.polygonscan.com/api", {
         params: {
           module: "account",
@@ -174,9 +174,9 @@ export default class authNFT {
         },
       });
       const polyData = polyResponse.data;
-      console.log("Polygon Scan Response Data: ", polyData);
+      // console.log("Polygon Scan Response Data: ", polyData);
 
-      console.log("etherScapAPI", etherScapAPI);
+      // console.log("etherScapAPI", etherScapAPI);
       const response = await axios.get("https://api.etherscan.io/api", {
         params: {
           module: "account",
@@ -188,7 +188,7 @@ export default class authNFT {
         },
       });
       const data = response.data;
-      console.log("Etherscan Response Data: ", data);
+      // console.log("Etherscan Response Data: ", data);
 
       return polyData.result > 0 || data.result > 0 ? true : false;
     }

@@ -1,12 +1,5 @@
-import { ethers } from "ethers";
 /* Import Tableland sdk */
-import { connect, resultsToObjects, SUPPORTED_CHAINS } from "@tableland/sdk";
-
-/* Services api keys */
-// const etherScapAPI = import.meta.env.VITE_ETHERSCAN_API_KEY;
-// const polygonScapAPI = import.meta.env.VITE_POLYSCAN_API_KEY;
-// const infuraKey = import.meta.env.VITE_INFURA_API_KEY;
-// const infuraSecret = import.meta.env.VITE_INFURA_API_SECRET;
+import { connect } from "@tableland/sdk";
 
 /* Get our Mojo Contract Address */
 // const mojoContractAddress = "0x13B9DF4c7C97563fAD045251FCA95a9E61c9Dc85";
@@ -15,21 +8,25 @@ import { connect, resultsToObjects, SUPPORTED_CHAINS } from "@tableland/sdk";
 
 export default class tablelandCRUD {
   constructor() {
-    this.endpoint = new URL("https://ipfs.infura.io:5001");
+    this.mainMojoCreatorsTable = "Mojo_Creators_80001_3524";
+    this.attributesMojoCreatorsTable = "Mojo_Creators_80001_3525";
+    this.mainMojoMusicTable = "Mojo_Creators_80001_3522";
+    this.attributesMojoMusicTable = "Mojo_Music_80001_3523";
+    this.categoriesTable = "Mojo_Music_80001_3473";
   }
 
   /**
-   * @param {String} tokenId
+   * @param {String} accountAddress
    * @returns {Promise<String|Error>}
    */
-  async getAccountNFTs(tokenId) {
+  async getMojoCreatorNFTsByAddress(accountAddress) {
     // Connect to the Tableland testnet (defaults to Polygon Mumbai testnet chain)
     // @return {Connection} Interface to access the Tableland network and, optionally, a target `chain`
     const tableland = await connect({ network: "testnet", chain: "polygon-mumbai" });
     // Run a SQL SELECT query
     // @return {ReadQueryResult} Tableland gateway response with row & column values
     const { rows } = await tableland.read(
-      `SELECT tokenid, name, description, image, address, slogan, profile_img, banner_img, website FROM Mojo_Creators_80001_3524 WHERE tokenid = ${tokenId};`
+      `SELECT tokenid, name, description, image, address, slogan, profile_img, banner_img, website FROM ${this.mainMojoCreatorsTable} WHERE address = '${accountAddress}';`
     );
     return rows;
   }
@@ -38,14 +35,30 @@ export default class tablelandCRUD {
    * @param {String} tokenId
    * @returns {Promise<String|Error>}
    */
-  async getAccountNFTAttributes(tokenId) {
+  async getMojoCreatorNFTsById(tokenId) {
     // Connect to the Tableland testnet (defaults to Polygon Mumbai testnet chain)
     // @return {Connection} Interface to access the Tableland network and, optionally, a target `chain`
     const tableland = await connect({ network: "testnet", chain: "polygon-mumbai" });
     // Run a SQL SELECT query
     // @return {ReadQueryResult} Tableland gateway response with row & column values
     const { rows } = await tableland.read(
-      `SELECT maintable_tokenid, trait_id, icon, display_type, trait_type, value FROM Mojo_Creators_80001_3525 WHERE maintable_tokenid = ${tokenId};`
+      `SELECT tokenid, name, description, image, address, slogan, profile_img, banner_img, website FROM ${this.mainMojoCreatorsTable} WHERE tokenid = ${tokenId};`
+    );
+    return rows;
+  }
+
+  /**
+   * @param {String} tokenId
+   * @returns {Promise<String|Error>}
+   */
+  async getMojoCreatorNFTAttributes(tokenId) {
+    // Connect to the Tableland testnet (defaults to Polygon Mumbai testnet chain)
+    // @return {Connection} Interface to access the Tableland network and, optionally, a target `chain`
+    const tableland = await connect({ network: "testnet", chain: "polygon-mumbai" });
+    // Run a SQL SELECT query
+    // @return {ReadQueryResult} Tableland gateway response with row & column values
+    const { rows } = await tableland.read(
+      `SELECT maintable_tokenid, trait_id, icon, display_type, trait_type, value FROM ${this.attributesMojoCreatorsTable} WHERE maintable_tokenid = ${tokenId};`
     );
     return rows;
   }

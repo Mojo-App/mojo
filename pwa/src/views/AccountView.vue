@@ -44,8 +44,8 @@
     </div>
     <!-- Right Hand Side -->
     <div class="right">
+      <!-- Step 2: Mint a Mojo Creators Membership NFT -->
       <div v-if="account && !isAuthenticated" class="account-card">
-        <!-- Step 1: Mint a Mojo Creators Membership NFT -->
         <div class="form-container">
           <h2>Mint Creator NFT</h2>
           <div
@@ -53,10 +53,10 @@
             :class="{ active: isDragged }"
             @dragenter="onDragEnter"
             @dragleave="onDragLeave"
-            @drop.prevent="onDropHandler($event, 'imageUrl')"
+            @drop.prevent="onDropHandler($event)"
             @dragover.prevent
           >
-            <input type="file" multiple ref="fileRef" @change="onFileChangedHandler('imageUrl')" />
+            <input type="file" multiple ref="fileRef" @change="onFileChangedHandler()" />
             <div class="dropzone-box" @click="openSelectFile">
               <i-mdi-timer-sand v-if="isUploading" class="icon-color" />
               <i-mdi-upload v-else class="icon-color" />
@@ -76,17 +76,24 @@
           <div v-show="imageUrl" class="file-view-link">
             <a :href="imageUrl" title="Open in new tab" target="_blank">View</a>
           </div>
+          <br />
           <div class="input-row">
             <label>Name</label>
-            <input type="text" v-model="name" />
+            <div class="input-wrapper">
+              <input type="text" v-model="name" />
+            </div>
           </div>
           <div class="input-row">
             <label>Description</label>
-            <textarea v-model="description" rows="5" cols="50"></textarea>
+            <div class="textarea-wrapper">
+              <textarea v-model="description" rows="5" cols="50"></textarea>
+            </div>
           </div>
           <div class="input-row">
             <label>Account Address</label>
-            <input type="text" v-model="accountAddress" />
+            <div class="input-wrapper">
+              <input type="text" v-model="accountAddress" />
+            </div>
           </div>
           <div class="button-container">
             <button
@@ -100,8 +107,8 @@
           </div>
         </div>
       </div>
-      <div v-else class="account-card">
-        <!-- Show our Mojo Creator NFTs -->
+      <!-- Step 3: Show our Mojo Creator NFTs -->
+      <div v-if="account && isAuthenticated" class="account-card">
         <div class="control-panel">
           <button
             :class="
@@ -109,11 +116,18 @@
             "
             @click="toggleShowNFTs()"
           >
-            {{ showNFTs ? "hide" : "show" }}
+            {{ showNFTs ? "hide list" : "show all" }}
           </button>
+          <!-- Some Loading Messages -->
+          <div v-if="authing" class="loading-text">...authing</div>
           <div v-if="loading" class="loading-text">...loading</div>
-          <div v-if="!loading && showNFTs" class="loading-text">Select a NFT to update</div>
-          <div v-if="!loading && !showNFTs" class="loading-text">View your Mojo Creator NFTs</div>
+          <div v-if="(!loading && showNFTs) || (!authing && showNFTs)" class="loading-text">
+            Select a NFT to update
+          </div>
+          <div v-if="(!authing && !showNFTs) || (!loading && !showNFTs)" class="loading-text">
+            Update your Mojo Creator NFT
+          </div>
+          <!-- END Some Loading Messages -->
         </div>
         <div v-if="mojoMCNFTTokens" class="row token-list">
           <template v-if="showNFTs">
@@ -142,21 +156,19 @@
                 <div v-else class="nft-error-image">
                   <img src="../assets/images/ImageError.png" alt="No image" />
                 </div>
-                <div v-if="token.name" class="nft-title">
-                  {{ token.name }}
-                </div>
+                <div v-if="token.name" class="nft-title">{{ token.tokenId }}. {{ token.name }}</div>
                 <div v-else class="nft-title">Nameless</div>
-                <div v-if="token.contract" class="nft-title">Contract : {{ token.contract }}</div>
-                <div v-if="token.tokenId" class="nft-title">Token Id : {{ token.tokenId }}</div>
-                <div v-if="token.description" class="nft-description">
+                <!-- <div v-if="token.contract" class="nft-title">Contract : {{ token.contract }}</div> -->
+                <!-- <div v-if="token.tokenId" class="nft-title">Token Id : {{ token.tokenId }}</div> -->
+                <!-- <div v-if="token.description" class="nft-description">
                   {{ token.description }}
-                </div>
-                <div v-if="token.external_url" class="nft-external-url">
+                </div> -->
+                <!-- <div v-if="token.external_url" class="nft-external-url">
                   {{ token.external_url }}
-                </div>
-                <div v-if="token.animation_url" class="nft-animation-url">
+                </div> -->
+                <!-- <div v-if="token.animation_url" class="nft-animation-url">
                   {{ token.animation_url }}
-                </div>
+                </div> -->
                 <div v-if="token.attributes" class="nft-attributes">
                   <template v-for="attr in token.attributes" :key="attr.value">
                     <div class="nft-attribute-cards">
@@ -183,26 +195,27 @@
               v-if="updateBannerShow"
               class="panel-upload--dropzone"
               :class="{ active: isDragged }"
-              @dragenter="onDragEnter"
-              @dragleave="onDragLeave"
-              @drop.prevent="onDropHandler($event, 'bannerImg')"
+              @dragenter="onDragEnterBanner"
+              @dragleave="onDragLeaveBanner"
+              @drop.prevent="onDropHandlerBanner($event)"
               @dragover.prevent
             >
               <input
                 type="file"
                 multiple
-                ref="fileRef"
-                @change="onFileChangedHandler('bannerImg')"
+                ref="fileRefBanner"
+                @change="onFileChangedHandlerBanner()"
               />
-              <div class="dropzone-box" @click="openSelectFile">
+              <div class="dropzone-box" @click="openSelectFileBanner">
                 <i-mdi-timer-sand v-if="isUploading" class="icon-color" />
                 <i-mdi-upload v-else class="icon-color" />
                 <span>Drop files here for upload to IPFS</span>
                 <div class="dropzone-is-loading" :class="{ active: isUploading }">
                   <div class="dropzone-loading--bar"></div>
                 </div>
-                <span v-show="fileCount > 0"
-                  >{{ fileCount - finished }} of {{ fileCount }} files uploaded</span
+                <span v-show="fileCountBannerImg > 0"
+                  >{{ fileCountBannerImg - finished }} of {{ fileCountBannerImg }} files
+                  uploaded</span
                 >
                 <div class="dropzone-details">
                   <div class="dropzone-detail">{{ result.count }} files</div>
@@ -233,26 +246,27 @@
                   v-if="updateProfileShow"
                   class="panel-upload--dropzone"
                   :class="{ active: isDragged }"
-                  @dragenter="onDragEnter"
-                  @dragleave="onDragLeave"
-                  @drop.prevent="onDropHandler($event, 'profileImg')"
+                  @dragenter="onDragEnterProfile"
+                  @dragleave="onDragLeaveProfile"
+                  @drop.prevent="onDropHandlerProfile($event)"
                   @dragover.prevent
                 >
                   <input
                     type="file"
                     multiple
-                    ref="fileRef"
-                    @change="onFileChangedHandler('profileImg')"
+                    ref="fileRefProfile"
+                    @change="onFileChangedHandlerProfile()"
                   />
-                  <div class="dropzone-box" @click="openSelectFile">
+                  <div class="dropzone-box" @click="openSelectFileProfile">
                     <i-mdi-timer-sand v-if="isUploading" class="icon-color" />
                     <i-mdi-upload v-else class="icon-color" />
                     <span>Drop files here for upload to IPFS</span>
                     <div class="dropzone-is-loading" :class="{ active: isUploading }">
                       <div class="dropzone-loading--bar"></div>
                     </div>
-                    <span v-show="fileCount > 0"
-                      >{{ fileCount - finished }} of {{ fileCount }} files uploaded</span
+                    <span v-show="fileCountProfileImg > 0"
+                      >{{ fileCountProfileImg - finished }} of {{ fileCountProfileImg }} files
+                      uploaded</span
                     >
                     <div class="dropzone-details">
                       <div class="dropzone-detail">{{ result.count }} files</div>
@@ -265,7 +279,11 @@
                   :src="`${getUrlProtocol(profileImg)}`"
                   :alt="`${name ? name : ''}`"
                 />
-                <img v-else src="../assets/images/ImageError.png" alt="No image" />
+                <img
+                  v-if="!profileImg && !updateProfileShow"
+                  src="../assets/images/ImageError.png"
+                  alt="No image"
+                />
                 <button
                   :class="
                     profileImg || updateProfileShow
@@ -278,123 +296,126 @@
                 </button>
               </div>
               <div class="column">
-                <div class="nft-modal-title">
-                  <label>Name</label>
-                  <div class="input-wrapper">
-                    <input type="text" name="name" v-model="name" />
-                    <button class="update-field-button" @click="updateName(name)">update</button>
-                  </div>
-                </div>
-                <div class="nft-modal-address">
-                  <label>Account Address</label>
-                  <div class="input-wrapper">
-                    <input type="text" name="address" v-model="accountAddress" />
-                    <button class="update-field-button" @click="updateAddress(accountAddress)">
-                      update
-                    </button>
-                  </div>
-                </div>
-                <div class="nft-modal-website">
-                  <label>Website</label>
-                  <div class="input-wrapper">
-                    <input type="text" name="website" v-model="website" />
-                    <button class="update-field-button" @click="updateWebsite(website)">
-                      update
-                    </button>
-                  </div>
-                </div>
-                <div class="nft-modal-slogan">
-                  <label>Slogan</label>
-                  <div class="input-wrapper">
-                    <input type="text" name="slogan" v-model="slogan" />
-                    <button class="update-field-button" @click="updateSlogan(slogan)">
-                      update
-                    </button>
-                  </div>
-                </div>
-                <div class="nft-modal-description">
-                  <label>Description</label>
-                  <div class="textarea-wrapper">
-                    <textarea v-model="description" rows="5" cols="50"></textarea>
-                    <button class="update-field-button" @click="updateDescription(description)">
-                      update
-                    </button>
-                  </div>
-                </div>
-                <!-- Add Traits Form -->
-                <div v-if="!attributes" class="nft-modal-add-attribute">
-                  <div class="nft-add-attribute">
-                    <div class="nft-attribute-icon">
-                      <label>Trait Icon</label>
-                      <div class="input-wrapper">
-                        <input type="text" name="traitIcon" v-model="traitIcon" />
-                        <button class="update-field-button" @click="updateTraitIcon(traitIcon)">
-                          update
-                        </button>
-                      </div>
+                <div class="nft-form-container">
+                  <div class="nft-modal-title">
+                    <label>Name</label>
+                    <div class="input-wrapper">
+                      <input type="text" name="name" v-model="name" />
+                      <button class="update-field-button" @click="updateName(name)">update</button>
                     </div>
-                    <div class="nft-attribute-display-type">
-                      <!-- TODO This need to be a select with options from opensea -->
-                      <label>Trait Display Type</label>
-                      <div class="input-wrapper">
-                        <input type="text" name="traitDisplayType" v-model="traitDisplayType" />
-                        <button
-                          class="update-field-button"
-                          @click="updateTraitDisplayType(traitDisplayType)"
-                        >
-                          update
-                        </button>
-                      </div>
-                      <!-- TODO This need to be a select with options from opensea -->
+                  </div>
+                  <div class="nft-modal-address">
+                    <label>Account Address</label>
+                    <div class="input-wrapper">
+                      <input type="text" name="address" v-model="accountAddress" />
+                      <button class="update-field-button" @click="updateAddress(accountAddress)">
+                        update
+                      </button>
                     </div>
-                    <div class="nft-attribute-trait-type">
-                      <label>Trait Type</label>
-                      <div class="input-wrapper">
-                        <input type="text" name="traitType" v-model="traitType" />
-                        <button class="update-field-button" @click="updateTraitType(traitType)">
-                          update
-                        </button>
-                      </div>
+                  </div>
+                  <div class="nft-modal-website">
+                    <label>Website</label>
+                    <div class="input-wrapper">
+                      <input type="text" name="website" v-model="website" />
+                      <button class="update-field-button" @click="updateWebsite(website)">
+                        update
+                      </button>
                     </div>
-                    <div class="nft-attribute-value">
-                      <label>Trait Value</label>
-                      <div class="input-wrapper">
-                        <input type="text" name="traitValue" v-model="traitValue" />
-                        <button class="update-field-button" @click="updateTraitValue(traitValue)">
-                          update
-                        </button>
+                  </div>
+                  <div class="nft-modal-slogan">
+                    <label>Slogan</label>
+                    <div class="input-wrapper">
+                      <input type="text" name="slogan" v-model="slogan" />
+                      <button class="update-field-button" @click="updateSlogan(slogan)">
+                        update
+                      </button>
+                    </div>
+                  </div>
+                  <div class="nft-modal-description">
+                    <label>Description</label>
+                    <div class="textarea-wrapper">
+                      <textarea v-model="description" rows="5" cols="50"></textarea>
+                      <button class="update-field-button" @click="updateDescription(description)">
+                        update
+                      </button>
+                    </div>
+                  </div>
+                  <!-- Add Traits Form -->
+                  <div v-if="!attributes" class="nft-modal-add-attribute">
+                    <div class="nft-add-attribute">
+                      <div class="nft-attribute-icon">
+                        <label>Trait Icon</label>
+                        <div class="input-wrapper">
+                          <input type="text" name="traitIcon" v-model="traitIcon" />
+                          <button class="update-field-button" @click="updateTraitIcon(traitIcon)">
+                            update
+                          </button>
+                        </div>
+                      </div>
+                      <div class="nft-attribute-display-type">
+                        <!-- TODO This need to be a select with options from opensea -->
+                        <label>Trait Display Type</label>
+                        <div class="input-wrapper">
+                          <input type="text" name="traitDisplayType" v-model="traitDisplayType" />
+                          <button
+                            class="update-field-button"
+                            @click="updateTraitDisplayType(traitDisplayType)"
+                          >
+                            update
+                          </button>
+                        </div>
+                        <!-- TODO This need to be a select with options from opensea -->
+                      </div>
+                      <div class="nft-attribute-trait-type">
+                        <label>Trait Type</label>
+                        <div class="input-wrapper">
+                          <input type="text" name="traitType" v-model="traitType" />
+                          <button class="update-field-button" @click="updateTraitType(traitType)">
+                            update
+                          </button>
+                        </div>
+                      </div>
+                      <div class="nft-attribute-value">
+                        <label>Trait Value</label>
+                        <div class="input-wrapper">
+                          <input type="text" name="traitValue" v-model="traitValue" />
+                          <button class="update-field-button" @click="updateTraitValue(traitValue)">
+                            update
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <!-- <div class="row">
+            <div class="row">
               <div class="column">
                 <div
                   v-if="updateImageShow"
                   class="panel-upload--dropzone"
                   :class="{ active: isDragged }"
-                  @dragenter="onDragEnter"
-                  @dragleave="onDragLeave"
-                  @drop.prevent="onDropHandler($event, 'profileImg')"
+                  @dragenter="onDragEnterImage"
+                  @dragleave="onDragLeaveImage"
+                  @drop.prevent="onDropHandlerImage($event)"
                   @dragover.prevent
                 >
                   <input
                     type="file"
                     multiple
-                    ref="fileRef"
-                    @change="onFileChangedHandler('profileImg')"
+                    ref="fileRefImage"
+                    @change="onFileChangedHandlerImage()"
                   />
-                  <div class="dropzone-box" @click="openSelectFile">
+                  <div class="dropzone-box" @click="openSelectFileImage">
                     <i-mdi-timer-sand v-if="isUploading" class="icon-color" />
                     <i-mdi-upload v-else class="icon-color" />
                     <span>Drop files here for upload to IPFS</span>
                     <div class="dropzone-is-loading" :class="{ active: isUploading }">
                       <div class="dropzone-loading--bar"></div>
                     </div>
-                    <span v-show="fileCount > 0"
-                      >{{ fileCount - finished }} of {{ fileCount }} files uploaded</span
+                    <span v-show="fileCountImages > 0"
+                      >{{ fileCountImages - finished }} of {{ fileCountImages }} files
+                      uploaded</span
                     >
                     <div class="dropzone-details">
                       <div class="dropzone-detail">{{ result.count }} files</div>
@@ -408,10 +429,12 @@
                     Your browser does not support the video tag.
                   </video>
                   <button
-                    :class="imageUrl ? 'nft-modal-image-edit-button' : 'nft-modal-image-add-button'"
-                    @click="updateImage(imageUrl)"
+                    :class="
+                      updateImageShow ? 'nft-modal-image-edit-button' : 'nft-modal-image-add-button'
+                    "
+                    @click="toggleImageUpload()"
                   >
-                    {{ imageUrl ? "edit" : "add" }}
+                    {{ updateImageShow ? "hide" : "upload" }}
                   </button>
                 </div>
                 <div v-if="getUrlProtocol(imageUrl) === 'mp3'" class="nft-modal-video">
@@ -423,10 +446,12 @@
                     Your browser does not support the video tag.
                   </video>
                   <button
-                    :class="imageUrl ? 'nft-modal-image-edit-button' : 'nft-modal-image-add-button'"
-                    @click="updateImage(imageUrl)"
+                    :class="
+                      updateImageShow ? 'nft-modal-image-edit-button' : 'nft-modal-image-add-button'
+                    "
+                    @click="toggleImageUpload()"
                   >
-                    {{ imageUrl ? "edit" : "add" }}
+                    {{ updateImageShow ? "hide" : "upload" }}
                   </button>
                 </div>
                 <div v-else-if="imageUrl" class="nft-modal-image">
@@ -435,11 +460,11 @@
                     :class="imageUrl ? 'nft-modal-image-edit-button' : 'nft-modal-image-add-button'"
                     @click="toggleImageUpload()"
                   >
-                    {{ imageUrl ? "hide" : "show" }}
+                    {{ updateImageShow ? "hide" : "upload" }}
                   </button>
                 </div>
               </div>
-            </div> -->
+            </div>
             <!-- NFT Metadata Attributes -->
             <div v-if="attributes" class="nft-modal-edit-attributes">
               <template v-for="attr in attributes" :key="attr.trait_id">
@@ -572,10 +597,13 @@ var notyf = new Notyf({
 });
 /* Init Store and Refs */
 const store = useStore();
-const { loading, minting, account, isAuthenticated, mojoMCNFTTokens } = storeToRefs(store);
+const { loading, minting, authing, account, isAuthenticated, mojoMCNFTTokens } = storeToRefs(store);
 
 /* File Uploader Refs */
 const fileRef = ref(null);
+const fileRefImage = ref(null);
+const fileRefBanner = ref(null);
+const fileRefProfile = ref(null);
 const isDragged = ref(false);
 const finished = ref(0);
 const isUploading = ref(false);
@@ -613,10 +641,8 @@ const traitValue = ref("");
 const traitCreatedAt = ref("");
 const traitUpdatedAt = ref("");
 
-const approvedMint = ref(false);
-
 const showNFTs = ref(true);
-// const updateImageShow = ref(false);
+const updateImageShow = ref(false);
 const updateBannerShow = ref(false);
 const updateProfileShow = ref(false);
 
@@ -636,9 +662,9 @@ const jsConfettiSuccess = (emojis) => {
 const toggleShowNFTs = () => {
   showNFTs.value = !showNFTs.value;
 };
-// const toggleImageUpload = () => {
-//   updateImageShow.value = !updateImageShow.value;
-// };
+const toggleImageUpload = () => {
+  updateImageShow.value = !updateImageShow.value;
+};
 const toggleBannerUpload = () => {
   updateBannerShow.value = !updateBannerShow.value;
 };
@@ -671,43 +697,31 @@ async function checkIfWalletIsConnected() {
 
 /* Authenticate NFT Holder method */
 async function authenticateNFT() {
+  store.setAuthing(true);
   try {
-    /*
-     * First make sure we have access to window.ethereum
-     */
-    const { ethereum } = window;
-    if (!ethereum) {
-      alert("Please connect 🦊 Metamask to continue!");
-      return;
-    }
-    /* Get our Current Account */
-    const [accountAddress] = await ethereum.request({
-      method: "eth_requestAccounts",
-    });
-    if (accountAddress) {
-      /* Update our Current Account in the Store */
-      store.updateAccount(accountAddress);
-
+    if (account.value) {
       /* Authenticate user */
       const authAccount = new authNFT();
-
       /* Is a Tableland Rig NFT holder */
-      const rigRider = await authAccount.authTablelandContractAddress(accountAddress);
+      const rigRider = await authAccount.authTablelandContractAddress(account.value);
+
       console.log("Authed Tableland Rig Holder", rigRider);
       if (rigRider) {
         store.setIsRigHolder(rigRider);
       }
-
       /* Mojo Music NFT holder */
-      const authed = await authAccount.authMojoCreatorAccountAddress(accountAddress);
+      const authed = await authAccount.authMojoCreatorAccountAddress(account.value);
+
       console.log("Authed Mojo Creator NFT Holder : ", authed);
       if (authed) {
         store.setIsAuthenticated(authed);
         /* Fetch our Mojo Creator NFTs */
         fetchMojoNFTs();
       }
+      store.setAuthing(false);
     }
   } catch (error) {
+    store.setAuthing(false);
     console.log("Error", error);
   }
 }
@@ -876,10 +890,10 @@ const mintNFT = async () => {
 const updateImage = async (image) => {
   console.log("Image Url: ", image);
 
-  if (!tokenId.value) {
-    console.log(`Please enter a token id to continue!`);
-    return;
-  }
+  // if (!tokenId.value) {
+  //   console.log(`Please enter a token id to continue!`);
+  //   return;
+  // }
   if (!image) {
     console.log(`Please select a new image to continue!`);
     return;
@@ -959,10 +973,10 @@ const updateImage = async (image) => {
 const updateName = async (name) => {
   console.log("name", name);
 
-  if (!tokenId.value) {
-    console.log(`Please enter a token id to continue!`);
-    return;
-  }
+  // if (!tokenId.value) {
+  //   console.log(`Please enter a token id to continue!`);
+  //   return;
+  // }
   /* This is the attribute number in attribute_table, an NFT can have many attributes */
   if (!name) {
     console.log(`Please enter a name to continue!`);
@@ -1040,10 +1054,10 @@ const updateName = async (name) => {
 const updateDescription = async (description) => {
   console.log("description", description);
 
-  if (!tokenId.value) {
-    console.log(`Please enter a token id to continue!`);
-    return;
-  }
+  // if (!tokenId.value) {
+  //   console.log(`Please enter a token id to continue!`);
+  //   return;
+  // }
   /* This is the attribute number in attribute_table, an NFT can have many attributes */
   if (!description) {
     console.log(`Please enter a description to continue!`);
@@ -1127,10 +1141,10 @@ const updateDescription = async (description) => {
 const updateAddress = async (address) => {
   console.log("address", address);
 
-  if (!tokenId.value) {
-    console.log(`Please enter a token id to continue!`);
-    return;
-  }
+  // if (!tokenId.value) {
+  //   console.log(`Please enter a token id to continue!`);
+  //   return;
+  // }
   /* This is the attribute number in attribute_table, an NFT can have many attributes */
   if (!address) {
     console.log(`Please enter a address to continue!`);
@@ -1169,7 +1183,7 @@ const updateAddress = async (address) => {
 
       let tx = await contract.update_address(
         BigNumber.from(tokenId.value),
-        description.value.toString()
+        accountAddress.value.toString()
       );
 
       const receipt = await tx.wait();
@@ -1211,10 +1225,10 @@ const updateAddress = async (address) => {
 const updateSlogan = async (slogan) => {
   console.log("slogan", slogan);
 
-  if (!tokenId.value) {
-    console.log(`Please enter a token id to continue!`);
-    return;
-  }
+  // if (!tokenId.value) {
+  //   console.log(`Please enter a token id to continue!`);
+  //   return;
+  // }
   /* This is the attribute number in attribute_table, an NFT can have many attributes */
   if (!slogan) {
     console.log(`Please enter a slogan to continue!`);
@@ -1251,10 +1265,7 @@ const updateSlogan = async (slogan) => {
         store.setLoading(false);
       });
 
-      let tx = await contract.update_slogan(
-        BigNumber.from(tokenId.value),
-        description.value.toString()
-      );
+      let tx = await contract.update_slogan(BigNumber.from(tokenId.value), slogan.toString());
 
       const receipt = await tx.wait();
       const stylesReceipt = ["color: black", "background: #e9429b"].join(";");
@@ -1295,10 +1306,10 @@ const updateSlogan = async (slogan) => {
 const updateProfileImg = async (profile_img) => {
   console.log("Profile image : ", profile_img);
 
-  if (!tokenId.value) {
-    console.log(`Please enter a token id to continue!`);
-    return;
-  }
+  // if (!tokenId.value) {
+  //   console.log(`Please enter a token id to continue!`);
+  //   return;
+  // }
   /* This is the attribute number in attribute_table, an NFT can have many attributes */
   if (!profile_img) {
     console.log(`Please enter a profile image to continue!`);
@@ -1382,10 +1393,10 @@ const updateProfileImg = async (profile_img) => {
 const updateBannerImg = async (banner_img) => {
   console.log("Banner image : ", banner_img);
 
-  if (!tokenId.value) {
-    console.log(`Please enter a token id to continue!`);
-    return;
-  }
+  // if (!tokenId.value) {
+  //   console.log(`Please enter a token id to continue!`);
+  //   return;
+  // }
   /* This is the attribute number in attribute_table, an NFT can have many attributes */
   if (!banner_img) {
     console.log(`Please enter a profile image to continue!`);
@@ -1469,10 +1480,10 @@ const updateBannerImg = async (banner_img) => {
 const updateWebsite = async (sitename) => {
   console.log("Website : ", sitename);
 
-  if (!tokenId.value) {
-    console.log(`Please enter a token id to continue!`);
-    return;
-  }
+  // if (!tokenId.value) {
+  //   console.log(`Please enter a token id to continue!`);
+  //   return;
+  // }
   /* This is the attribute number in attribute_table, an NFT can have many attributes */
   if (!sitename) {
     console.log(`Please enter a website url to continue!`);
@@ -1512,7 +1523,10 @@ const updateWebsite = async (sitename) => {
         }
       );
 
-      let tx = await contract.update_website(BigNumber.from(tokenId.value), website.value);
+      let tx = await contract.update_website(
+        BigNumber.from(tokenId.value),
+        website.value.toString()
+      );
 
       const receipt = await tx.wait();
       const stylesReceipt = ["color: black", "background: #e9429b"].join(";");
@@ -2101,6 +2115,9 @@ const updateTraitValue = async (attribute) => {
 const cancelMint = () => {
   /* File Uploader Refs */
   fileRef.value = null;
+  fileRefImage.value = null;
+  fileRefBanner.value = null;
+  fileRefProfile.value = null;
   isDragged.value = false;
   finished.value = 0;
   isUploading.value = false;
@@ -2130,27 +2147,22 @@ const cancelMint = () => {
   traitValue.value = "";
   traitCreatedAt.value = "";
   traitUpdatedAt.value = "";
-  approvedMint.value = false;
+
   /* Stop All Loaders */
   store.setLoading(false);
   store.setMinting(false);
 };
 
 /**
- * Approve Tableland NFT Mint
+ * Drag n Drop File Manager NFT Mint
  */
-// const ConfirmApprovedMint = (value) => {
-//   approvedMint.value = value;
-// };
+const onDropHandler = ($event) => {
+  console.log("onDropHandler event", $event);
 
-/**
- * Drag n Drop File Manager
- */
-const onDropHandler = ($event, type) => {
   if (isUploading.value) return false;
   isDragged.value = false;
   fileRef.value.files = $event.dataTransfer.files;
-  onFileChangedHandler(type);
+  onFileChangedHandler();
 };
 const openSelectFile = () => {
   if (isUploading.value) return false;
@@ -2164,16 +2176,78 @@ const onDragLeave = () => {
 };
 
 /**
+ * Drag n Drop File Manager NFT
+ */
+const onDropHandlerImage = ($event) => {
+  console.log("onDropHandlerImage event", $event);
+
+  if (isUploading.value) return false;
+  isDragged.value = false;
+  fileRefImage.value.files = $event.dataTransfer.files;
+  onFileChangedHandlerImage();
+};
+const openSelectFileImage = () => {
+  if (isUploading.value) return false;
+  fileRefImage.value.click();
+};
+const onDragEnterImage = () => {
+  isDragged.value = true;
+};
+const onDragLeaveImage = () => {
+  isDragged.value = false;
+};
+
+/**
+ * Drag n Drop File Manager NFT Banner Image
+ */
+const onDropHandlerBanner = ($event) => {
+  console.log("onDropHandlerBanner event", $event);
+
+  if (isUploading.value) return false;
+  isDragged.value = false;
+  fileRefBanner.value.files = $event.dataTransfer.files;
+  onFileChangedHandlerBanner();
+};
+const openSelectFileBanner = () => {
+  if (isUploading.value) return false;
+  fileRefBanner.value.click();
+};
+const onDragEnterBanner = () => {
+  isDragged.value = true;
+};
+const onDragLeaveBanner = () => {
+  isDragged.value = false;
+};
+
+/**
+ * Drag n Drop File Manager NFT Profile
+ */
+const onDropHandlerProfile = ($event) => {
+  console.log("onDropHandler event", $event);
+
+  if (isUploading.value) return false;
+  isDragged.value = false;
+  fileRefProfile.value.files = $event.dataTransfer.files;
+  onFileChangedHandlerProfile();
+};
+const openSelectFileProfile = () => {
+  if (isUploading.value) return false;
+  fileRefProfile.value.click();
+};
+const onDragEnterProfile = () => {
+  isDragged.value = true;
+};
+const onDragLeaveProfile = () => {
+  isDragged.value = false;
+};
+
+/**
  * @param {File} file
  * @returns {Object}
  */
 const uploadFileHandler = async (file, type) => {
   store.setLoading(true);
-  /**
-   * @dev Can try NFT.Storage here instead
-   */
   const uploadResult = await uploadBlob(file);
-
   finished.value++;
   const { error } = uploadResult;
   if (error && error instanceof Error) {
@@ -2183,12 +2257,6 @@ const uploadFileHandler = async (file, type) => {
   }
   /* Set our NFT Metadata Form Values using IPFS best practises */
   cid.value = uploadResult.data.cid;
-  /* Strip image type off our name eg, .png, .jpeg */
-  // name.value = uploadResult.data.file.name.substring(
-  //   0,
-  //   uploadResult.data.file.name.lastIndexOf(".")
-  // );
-
   /* Generate and IPFS URI for NFT's */
   if (type === "imageUrl") {
     imageUrl.value = generateLink(uploadResult.data);
@@ -2214,11 +2282,10 @@ const uploadFileHandler = async (file, type) => {
 /*
  * On file change will update our NFT Metadata
  */
-const onFileChangedHandler = async (type) => {
-  console.log("type", type);
+const onFileChangedHandler = async () => {
   isUploading.value = true;
   store.addNftFiles(...fileRef.value.files);
-  const files = store.filesNft.map((file) => uploadFileHandler(file, type));
+  const files = store.filesNft.map((file) => uploadFileHandler(file, "imageUrl"));
   try {
     let results = await Promise.all(files);
     const successfully = results.filter(({ error }) => !error);
@@ -2242,9 +2309,108 @@ const onFileChangedHandler = async (type) => {
   }
 };
 
+/*
+ * On file change will update our NFT Image
+ */
+const onFileChangedHandlerImage = async () => {
+  isUploading.value = true;
+  store.addImagesFiles(...fileRefImage.value.files);
+  const files = store.imagesNft.map((file) => uploadFileHandler(file, "imageUrl"));
+  try {
+    let results = await Promise.all(files);
+    const successfully = results.filter(({ error }) => !error);
+    console.log("Successfully uploaded", successfully[0].data);
+    if (successfully.length > 0) {
+      notyf.success(`${successfully.length} files successfully uploaded to IPFS`);
+    }
+    if (successfully.length === 0) {
+      notyf.error(`Oops! An error occurred while processing your files.`);
+    }
+    store.addImagesFiles(...successfully.map(({ error, data: file }) => file));
+    fileRefImage.value.files = null;
+    fileRefImage.value.value = null;
+  } catch (error) {
+    finished.value = 0;
+    isUploading.value = false;
+  } finally {
+    finished.value = 0;
+    isUploading.value = false;
+  }
+};
+
+/*
+ * On file change will update our NFT Banner
+ */
+const onFileChangedHandlerBanner = async () => {
+  isUploading.value = true;
+  store.addBannerImgFiles(...fileRefBanner.value.files);
+  const files = store.bannerImgNft.map((file) => uploadFileHandler(file, "bannerImg"));
+  try {
+    let results = await Promise.all(files);
+    const successfully = results.filter(({ error }) => !error);
+    console.log("Successfully uploaded", successfully[0].data);
+    if (successfully.length > 0) {
+      notyf.success(`${successfully.length} files successfully uploaded to IPFS`);
+    }
+    if (successfully.length === 0) {
+      notyf.error(`Oops! An error occurred while processing your files.`);
+    }
+    store.addBannerImgFiles(...successfully.map(({ error, data: file }) => file));
+    fileRefBanner.value.files = null;
+    fileRefBanner.value.value = null;
+  } catch (error) {
+    finished.value = 0;
+    isUploading.value = false;
+  } finally {
+    finished.value = 0;
+    isUploading.value = false;
+  }
+};
+
+/*
+ * On file change will update our NFT Profile
+ */
+const onFileChangedHandlerProfile = async () => {
+  isUploading.value = true;
+  store.addProfileImgFiles(...fileRefProfile.value.files);
+  const files = store.profileImgNft.map((file) => uploadFileHandler(file, "profileImg"));
+  try {
+    let results = await Promise.all(files);
+    const successfully = results.filter(({ error }) => !error);
+    console.log("Successfully uploaded", successfully[0].data);
+    if (successfully.length > 0) {
+      notyf.success(`${successfully.length} files successfully uploaded to IPFS`);
+    }
+    if (successfully.length === 0) {
+      notyf.error(`Oops! An error occurred while processing your files.`);
+    }
+    store.addProfileImgFiles(...successfully.map(({ error, data: file }) => file));
+    fileRefProfile.value.files = null;
+    fileRefProfile.value.value = null;
+  } catch (error) {
+    finished.value = 0;
+    isUploading.value = false;
+  } finally {
+    finished.value = 0;
+    isUploading.value = false;
+  }
+};
+
 /* Computed values for our uploader */
 const fileCount = computed(() => {
   return store.filesNft.length;
+});
+
+const fileCountImages = computed(() => {
+  return store.imagesNft.length;
+});
+
+const fileCountBannerImg = computed(() => {
+  return store.bannerImgNft.length;
+});
+
+const fileCountProfileImg = computed(() => {
+  return store.profileImgNft.length;
 });
 
 const result = computed(() => {
@@ -2285,31 +2451,6 @@ const getUrlProtocol = (url) => {
   }
 };
 
-/* Fetch NFT by Account Address */
-async function fetchTokens() {
-  if (account.value) {
-    store.setLoading(true);
-    try {
-      const authAccount = new authNFT();
-      /* Ethereum */
-      let ethereumTokens = await authAccount.fetchAccountNfts(1, account.value);
-      store.addEthereumTokens(...ethereumTokens);
-      let ethereumTestnetTokens = await authAccount.fetchAccountNfts(5, account.value);
-      store.addEthereumTokens(...ethereumTestnetTokens);
-      /* Polygon */
-      let polygonTokens = await authAccount.fetchAccountNfts(137, account.value);
-      store.addPolygonTokens(...polygonTokens);
-      let polygonTestnetTokens = await authAccount.fetchAccountNfts(80001, account.value);
-      store.addPolygonTokens(...polygonTestnetTokens);
-      store.setLoading(false);
-    } catch (error) {
-      store.setErrorMessage("Error getting tokens:", error);
-      store.setLoading(false);
-      notyf.error(`Error fetching tokens, please refresh to try again!`);
-    }
-  }
-}
-
 /**
  * Fetch Mojo Creator NFT
  */
@@ -2317,7 +2458,7 @@ async function loadMojoNFT(id) {
   store.setLoading(true);
   /* Load Tableland CRUD */
   const tableland = new tablelandCRUD();
-  const mcNFT = await tableland.getAccountNFTs(id);
+  const mcNFT = await tableland.getMojoCreatorNFTsById(id);
   console.log("Mojo Creator NFT Data: ", mcNFT[0]);
 
   if (mcNFT[0]) {
@@ -2333,11 +2474,11 @@ async function loadMojoNFT(id) {
     website.value = mcNFT[0][8] ? mcNFT[0][8] : "";
 
     /* Get our NFT metadata attributes */
-    const mcNFTattributes = await tableland.getAccountNFTAttributes(id);
+    const mcNFTattributes = await tableland.getMojoCreatorNFTAttributes(id);
     /* Reset our Attributes for newly loaded NFT data */
     if (mcNFTattributes) attributes.value = [];
     mcNFTattributes.forEach((attribute) => {
-      console.log(attribute);
+      console.log("Mojo Creator NFT Attribute Data: ", attribute);
       let obj = {
         maintable_tokenid: attribute[0],
         trait_id: attribute[1],
@@ -2346,9 +2487,9 @@ async function loadMojoNFT(id) {
         trait_type: attribute[4],
         value: attribute[5],
       };
-      console.log("attributes.value BEFORE", attributes.value[0]);
+      console.log("attributes.value BEFORE", attributes.value);
       attributes.value.push(...[obj]);
-      console.log("attributes.value AFTER", attributes.value[0]);
+      console.log("attributes.value AFTER", attributes.value);
     });
     toggleShowNFTs();
     store.setLoading(false);
@@ -2360,7 +2501,7 @@ async function loadMojoNFT(id) {
  */
 async function fetchMojoNFTs() {
   if (mojoMCNFTTokens.value.length === 0) {
-    store.setLoading(true);
+    store.setAuthing(true);
     try {
       const { ethereum } = window;
       if (ethereum) {
@@ -2373,21 +2514,15 @@ async function fetchMojoNFTs() {
           const authAccount = new authNFT();
           /* Load Tableland CRUD */
           const tableland = new tablelandCRUD();
-
           /* Fetch NFTs by Wallet Account and Chain Id */
-          // let polygonTokens = await authAccount.fetchAccountNfts(137, accountAddress);
           let polygonTokens = await authAccount.fetchAccountNfts(80001, accountAddress);
-          console.log("polygonTokens :", polygonTokens);
           /* Filter by our Mojo Contract Address */
           const resultsMainnet = polygonTokens.filter((obj) => {
             return obj.contract.toLowerCase() === mojoCreatorsContractAddress.toLowerCase();
           });
-
           /* Load up our Token Data */
           resultsMainnet.forEach(async (nft) => {
-            const mcNFT = await tableland.getAccountNFTs(nft.tokenId);
-            console.log("Mojo Creator NFT Data: ", mcNFT);
-
+            const mcNFT = await tableland.getMojoCreatorNFTsById(nft.tokenId);
             if (mcNFT[0]) {
               /* Mojo Creators NFT Form Metadata fields */
               let obj = {
@@ -2403,7 +2538,7 @@ async function fetchMojoNFTs() {
               };
 
               /* Get our NFT metadata attributes */
-              // const mcNFTattributes = tableland.getAccountNFTAttributes(nft.tokenId);
+              // const mcNFTattributes = tableland.getMojoCreatorNFTAttributes(nft.tokenId);
               /* Reset our Attributes for newly loaded NFT data */
               // if (mcNFTattributes) attributes.value = [];
               // mcNFTattributes.forEach((attribute) => {
@@ -2421,15 +2556,15 @@ async function fetchMojoNFTs() {
               //   console.log("attributes.value AFTER", attributes.value[0]);
               // });
               store.addMojoMCNFTTokens(...[obj]);
-              return obj;
+              return;
             }
           });
         }
       }
-      store.setLoading(false);
+      store.setAuthing(false);
     } catch (error) {
       console.log("error", error);
-      store.setLoading(false);
+      store.setAuthing(false);
     }
   }
 }
@@ -2442,7 +2577,6 @@ onMounted(async () => {
   });
   await checkIfWalletIsConnected();
   await authenticateNFT();
-  await fetchTokens();
 });
 </script>
 <style lang="scss" scoped>
@@ -2559,6 +2693,7 @@ section#account {
         height: 55px;
         border: 0;
         border-radius: 30px;
+        box-shadow: 0 10px 30px -2px #e9e9e9;
         padding-left: 57px;
         padding-right: 57px;
         transition: 0.4s;
@@ -2609,7 +2744,7 @@ section#account {
       border-radius: 1em;
       border: 0.5px solid #ffffff;
       box-shadow: 2px 2px 25px 6px rgba(43, 43, 43, 0.1);
-      padding: 0 0 10px 0;
+      padding: 0 0 20px 0;
       z-index: 999;
 
       @include breakpoint($break-md) {
@@ -2675,6 +2810,7 @@ section#account {
         height: 55px;
         border: 0;
         border-radius: 30px;
+        box-shadow: 0 10px 30px -2px #e9e9e9;
         padding-left: 57px;
         padding-right: 57px;
         transition: 0.4s;
@@ -2688,7 +2824,7 @@ section#account {
       .control-panel {
         position: relative;
         width: 100%;
-        height: 35px;
+        height: 50px;
         display: flex;
         flex-direction: column;
         align-content: center;
@@ -2697,8 +2833,8 @@ section#account {
 
         .nft-showcase-edit-button {
           position: absolute;
-          top: 5px;
-          left: 5px;
+          top: 15px;
+          right: 15px;
           color: $mojo-blue;
           background-color: $white;
           font-family: Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans",
@@ -2710,20 +2846,20 @@ section#account {
           text-align: center;
           padding: 4px 6px;
           height: auto;
-          border: 0;
+          border: 1px solid $mojo-blue;
           border-radius: 10px;
           margin: 0;
           transition: 0.4s;
           cursor: pointer;
-
           &:hover {
             color: $black;
           }
         }
+
         .nft-showcase-add-button {
           position: absolute;
-          top: 5px;
-          left: 5px;
+          top: 15px;
+          right: 15px;
           color: $mojo-blue;
           background-color: $white;
           font-family: Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans",
@@ -2752,6 +2888,7 @@ section#account {
           line-height: 20px;
           margin: 0 auto;
           text-align: center;
+          transition: 0.6s;
         }
       }
 
@@ -2766,7 +2903,7 @@ section#account {
 
       .token-list {
         position: relative;
-        width: 94%;
+        width: 97%;
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 20px;
@@ -2800,7 +2937,7 @@ section#account {
           display: block;
           box-sizing: border-box;
           width: 100%;
-          min-height: 260px;
+          min-height: 240px;
           background: #f4f4f4;
           border-radius: 10px;
           overflow: hidden;
@@ -2829,6 +2966,7 @@ section#account {
 
             img,
             svg {
+              display: block;
               width: 100%;
               height: 100%;
               object-fit: contain;
@@ -2844,6 +2982,7 @@ section#account {
 
             img,
             svg {
+              display: block;
               width: 100%;
               height: 100%;
               object-fit: contain;
@@ -2932,15 +3071,16 @@ section#account {
       }
 
       .form-container {
-        display: flex;
-        width: 350px;
+        width: 360px;
         height: auto;
+        display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         padding: 20px 0 10px;
 
         h2 {
+          color: $mojo-dark-blue;
           font-size: 30px;
           font-style: normal;
           font-weight: 700;
@@ -2952,8 +3092,8 @@ section#account {
           margin: 0 auto 20px;
 
           @include breakpoint($break-ssm) {
-            font-size: 1.4rem;
-            line-height: 1.5rem;
+            font-size: 1.3rem;
+            line-height: 1.4rem;
           }
         }
 
@@ -2966,6 +3106,8 @@ section#account {
           justify-content: center;
           cursor: pointer;
           overflow: hidden;
+          box-shadow: 0 10px 30px -2px #e9e9e9;
+          border-radius: 40px;
 
           &.active {
             > * {
@@ -2986,10 +3128,9 @@ section#account {
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #1a1a1a;
+            color: $black;
             background-color: #fdfdfd;
-            border: 2px solid var(--gradient-100);
-            border-radius: 10px;
+            border-radius: 40px;
             letter-spacing: 1px;
             font-size: 14px;
             margin-bottom: 10px;
@@ -3117,7 +3258,7 @@ section#account {
           font-size: 18px;
           line-height: 24px;
           letter-spacing: 0.1em;
-          margin: 0 0 2px 5px;
+          margin: 0 0 2px 15px;
         }
 
         /*Clearing Floats*/
@@ -3135,47 +3276,173 @@ section#account {
           zoom: 1;
         }
 
-        input {
-          width: 80%;
-          color: #1a1a1a;
-          background-color: #fdfdfd;
-          border: 2px solid var(--gradient-100);
-          border-radius: 10px;
-          letter-spacing: 1px;
-          font-size: 14px;
-          width: 300px;
-          margin-bottom: 10px;
-          padding: 10px;
-          text-align: left;
-
-          @include breakpoint($break-sm) {
-            width: 300px;
-          }
-
-          @include breakpoint($break-md) {
-            width: 300px;
-          }
-
-          @include breakpoint($break-xxl) {
-            width: 300px;
-          }
+        /* Form wrapper styling - https://codepen.io/NoorA1125/pen/movOEN */
+        .input-wrapper {
+          width: 360px;
+          height: 40px;
+          margin: 0 0 10px 0;
+          border-radius: 40px;
+          background: transparent;
+          box-shadow: 0 10px 30px -2px #e9e9e9;
         }
 
-        input::placeholder {
-          color: #a8a8a8;
-          letter-spacing: 1px;
+        /* Form text input */
+        .input-wrapper input {
+          padding-left: 20px;
+          width: 340px;
+          height: 20px;
+          padding: 10px 5px 10px 15px;
+          float: left;
+          border: 0;
+          background: #fff;
+          border-radius: 40px;
+          border-top-style: none;
         }
 
-        input:read-only {
-          color: #1a1a1a;
-          border: 2px dashed #e0e0e0;
-          letter-spacing: 2px;
-          cursor: not-allowed;
+        .input-wrapper input:focus {
+          outline: 0;
+          background: #fff;
         }
 
-        input:focus {
-          border: 2px solid $mojo-blue;
-          outline: none;
+        .input-wrapper input::-webkit-input-placeholder {
+          color: #999;
+          font-weight: normal;
+          font-style: italic;
+          padding-left: 20px;
+        }
+
+        .input-wrapper input:-moz-placeholder {
+          color: #999;
+          font-weight: normal;
+          font-style: italic;
+        }
+
+        .input-wrapper input:-ms-input-placeholder {
+          color: #999;
+          font-weight: normal;
+          font-style: italic;
+          border-style: none;
+        }
+
+        /* Update Field Button */
+        .input-wrapper button {
+          overflow: visible;
+          position: relative;
+          float: right;
+          border: 0;
+          padding: 0;
+          height: 40px;
+          width: 110px;
+          color: #fff;
+          text-transform: uppercase;
+          background: $mojo-blue;
+          border-radius: 40px;
+          text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
+          transition: 0.6s;
+          cursor: pointer;
+        }
+
+        .input-wrapper button:hover {
+          background: $mojo-dark-blue;
+        }
+
+        .input-wrapper button:active,
+        .input-wrapper button:focus {
+          background: $mojo-dark-blue;
+          outline: 0;
+        }
+
+        .input-wrapper button::-moz-focus-inner {
+          /* remove extra button spacing for Mozilla Firefox */
+          border: 0;
+          padding: 0;
+        }
+
+        .textarea-wrapper {
+          width: 360px;
+          height: 100px;
+          margin: 0 0 10px 0;
+          border-radius: 30px;
+          background: transparent;
+          box-shadow: 0 10px 30px -2px #e9e9e9;
+        }
+
+        /* Form text input */
+        .textarea-wrapper textarea {
+          width: 330px;
+          height: 70px;
+          padding: 15px;
+          float: left;
+          border: 0;
+          background: #fff;
+          border-radius: 30px;
+          border-top-style: none;
+          resize: none;
+        }
+
+        .textarea-wrapper textarea:focus {
+          outline: 0;
+          background: #fff;
+        }
+
+        .textarea-wrapper textarea::-webkit-input-placeholder {
+          color: #999;
+          font-weight: normal;
+          font-style: italic;
+          padding-left: 20px;
+        }
+
+        .textarea-wrapper textarea:-moz-placeholder {
+          color: #999;
+          font-weight: normal;
+          font-style: italic;
+        }
+
+        .textarea-wrapper textarea:-ms-input-placeholder {
+          color: #999;
+          font-weight: normal;
+          font-style: italic;
+          border-style: none;
+        }
+
+        /* Form submit button */
+        .textarea-wrapper button {
+          overflow: visible;
+          position: relative;
+          float: right;
+          border: 0;
+          padding: 0;
+          height: 40px;
+          width: 110px;
+          color: #fff;
+          text-transform: uppercase;
+          background: $mojo-blue;
+          border-radius: 40px;
+          text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
+          margin-top: 15px;
+          transition: 0.6s;
+          cursor: pointer;
+        }
+
+        .textarea-wrapper button:hover {
+          background: $mojo-dark-blue;
+        }
+
+        .textarea-wrapper button:active,
+        .textarea-wrapper button:focus {
+          background: $mojo-blue;
+          outline: 0;
+        }
+
+        .textarea-wrapper button:focus:before,
+        .textarea-wrapper button:active:before {
+          border-right-color: #c42f2f;
+        }
+
+        .textarea-wrapper button::-moz-focus-inner {
+          /* remove extra button spacing for Mozilla Firefox */
+          border: 0;
+          padding: 0;
         }
 
         .select-row {
@@ -3187,93 +3454,84 @@ section#account {
           margin-bottom: 15px;
         }
 
-        select {
-          display: inline-block;
-          color: #1a1a1a;
-          background-color: #fdfdfd;
-          border: 2px solid var(--gradient-100);
-          border-radius: 10px;
-          letter-spacing: 1px;
-          font-size: 14px;
-          width: 328px;
-          margin-bottom: 10px;
-          padding: 10px;
-          text-align: center;
-
-          /* reset */
-          margin: 0;
-          -webkit-box-sizing: border-box;
-          -moz-box-sizing: border-box;
-          box-sizing: border-box;
-          appearance: none;
-          -webkit-appearance: none;
-          -moz-appearance: none;
-
-          background-image: linear-gradient(45deg, transparent 50%, gray 50%),
-            linear-gradient(135deg, gray 50%, transparent 50%),
-            linear-gradient(to right, #ccc, #ccc);
-          background-position: calc(100% - 20px) calc(1em + 2px), calc(100% - 15px) calc(1em + 2px),
-            calc(100% - 2.5em) 0.5em;
-          background-size: 5px 5px, 5px 5px, 1px 1.5em;
-          background-repeat: no-repeat;
-
-          @include breakpoint($break-sm) {
-            width: 325px;
-          }
-
-          @include breakpoint($break-md) {
-            width: 325px;
-          }
-
-          @include breakpoint($break-xxl) {
-            width: 325px;
-          }
+        .select-wrapper {
+          width: 360px;
+          height: 40px;
+          margin: 0 0 10px 0;
+          border-radius: 40px;
+          background: transparent;
+          box-shadow: 0 10px 30px -2px #e9e9e9;
         }
 
-        select:focus {
-          border: 2px solid $mojo-blue;
-          background-image: linear-gradient(45deg, green 50%, transparent 50%),
-            linear-gradient(135deg, transparent 50%, green 50%),
-            linear-gradient(to right, #ccc, #ccc);
-          background-position: calc(100% - 15px) 1em, calc(100% - 20px) 1em,
-            calc(100% - 2.5em) 0.5em;
-          background-size: 5px 5px, 5px 5px, 1px 1.5em;
-          background-repeat: no-repeat;
-          outline: none;
+        /* Form text input */
+        .select-wrapper select {
+          width: 330px;
+          height: 40px;
+          padding: 10px 5px 10px 15px;
+          float: left;
+          border: 0;
+          background: #fff;
+          border-radius: 40px;
+          border-top-style: none;
+        }
+
+        .select-wrapper select:focus {
+          outline: 0;
+          background: #fff;
+        }
+
+        .select-wrapper select::-webkit-input-placeholder {
+          color: #999;
+          font-weight: normal;
+          font-style: italic;
+          padding-left: 20px;
+        }
+
+        .select-wrapper select:-moz-placeholder {
+          color: #999;
+          font-weight: normal;
+          font-style: italic;
+        }
+
+        .select-wrapper select:-ms-input-placeholder {
+          color: #999;
+          font-weight: normal;
+          font-style: italic;
+          border-style: none;
+        }
+
+        /* Update Field Button */
+        .select-wrapper button {
+          overflow: visible;
+          position: relative;
+          float: right;
+          border: 0;
+          padding: 0;
+          height: 40px;
+          width: 110px;
+          color: #fff;
+          text-transform: uppercase;
+          background: $mojo-blue;
+          border-radius: 40px;
+          text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
+          transition: 0.6s;
           cursor: pointer;
         }
 
-        select:-moz-focusring {
-          color: transparent;
-          text-shadow: 0 0 0 #000;
+        .select-wrapper button:hover {
+          background: $mojo-dark-blue;
         }
 
-        .grey {
-          color: #a8a8a8 !important;
-          letter-spacing: 1px;
+        .select-wrapper button:active,
+        .select-wrapper button:focus {
+          background: $mojo-dark-blue;
+          outline: 0;
         }
 
-        textarea {
-          color: #1a1a1a;
-          background-color: #fdfdfd;
-          border: 2px solid var(--gradient-100);
-          border-radius: 10px;
-          letter-spacing: 1px;
-          font-size: 14px;
-          width: 300px;
-          margin-bottom: 10px;
-          padding: 10px;
-          text-align: center;
-        }
-
-        textarea::placeholder {
-          color: #a8a8a8;
-          letter-spacing: 1px;
-        }
-
-        textarea:focus {
-          border: 2px solid $mojo-blue;
-          outline: none;
+        .select-wrapper button::-moz-focus-inner {
+          /* remove extra button spacing for Mozilla Firefox */
+          border: 0;
+          padding: 0;
         }
 
         .update-field-button {
@@ -3331,6 +3589,7 @@ section#account {
             max-width: 300px;
             height: 55px;
             border: 2px solid $black;
+            box-shadow: 0 10px 30px -2px #e9e9e9;
             padding-left: 20px;
             padding-right: 20px;
             border-radius: 10px;
@@ -3338,62 +3597,9 @@ section#account {
             cursor: pointer;
           }
 
-          .attr-button {
-            color: #fff;
-            background-color: #8d50f5;
-            font-size: 18px;
-            font-weight: bold;
-            width: auto;
-            max-width: 360px;
-            height: 55px;
-            border: 0;
-            padding-left: 21px;
-            padding-right: 21px;
-            border-radius: 10px;
-            margin-left: 2%;
-            cursor: pointer;
-          }
-
-          .attr-button:disabled {
-            background: #c6c6c6;
-            color: #101010;
-            cursor: not-allowed;
-          }
-
-          .back-button-blue {
-            color: $mojo-blue;
-            background-color: #fff;
-            font-size: 18px;
-            font-weight: bold;
-            width: auto;
-            max-width: 300px;
-            height: 55px;
-            border: 2px solid #1c8bfe;
-            padding-left: 20px;
-            padding-right: 20px;
-            border-radius: 10px;
-            margin-right: 1%;
-            cursor: pointer;
-          }
-
-          .back-button-purple {
-            color: #8d50f5;
-            background-color: #fff;
-            font-size: 18px;
-            font-weight: bold;
-            width: auto;
-            height: 55px;
-            border: 2px solid #8d50f5;
-            padding-left: 20px;
-            padding-right: 20px;
-            border-radius: 10px;
-            margin-right: 10px;
-            cursor: pointer;
-          }
-
           .mint-button {
             color: #fff;
-            background-color: #08d0a5;
+            background-color: $mojo-green;
             font-size: 18px;
             font-weight: bold;
             height: 55px;
@@ -3402,6 +3608,7 @@ section#account {
             padding-left: 57px;
             padding-right: 57px;
             margin: 10px 1% 10px 0;
+            box-shadow: 0 10px 30px -2px #e9e9e9;
             transition: 0.4s;
             cursor: pointer;
 
@@ -3427,6 +3634,7 @@ section#account {
             padding-left: 65px;
             padding-right: 65px;
             margin: 10px 1% 10px 0;
+            box-shadow: 0 10px 30px -2px #e9e9e9;
             transition: 0.4s;
             cursor: pointer;
 
@@ -3437,7 +3645,7 @@ section#account {
 
           .restart-button {
             color: $white;
-            background-color: $mojo-blue;
+            background-color: $mojo-dark-blue;
             font-size: 18px;
             font-weight: bold;
             height: 55px;
@@ -3446,54 +3654,13 @@ section#account {
             padding-left: 40px;
             padding-right: 40px;
             margin: 10px 0 10px 1%;
+            box-shadow: 0 10px 30px -2px #e9e9e9;
             transition: 0.4s;
             cursor: pointer;
 
             &:hover {
               color: $black;
             }
-          }
-
-          .external-url-button {
-            color: #fff;
-            background-color: #e9429b;
-            font-size: 18px;
-            font-weight: bold;
-            width: 100%;
-            max-width: 300px;
-            height: 55px;
-            border: 0;
-            padding-left: 87px;
-            padding-right: 87px;
-            border-radius: 10px;
-            cursor: pointer;
-          }
-
-          .external-url-button:disabled {
-            background: #c6c6c6;
-            color: #101010;
-            cursor: not-allowed;
-          }
-
-          .field- {
-            color: #fff;
-            background-color: #1c8bfe;
-            font-size: 18px;
-            font-weight: bold;
-            width: auto;
-            max-width: 300px;
-            height: 55px;
-            border: 0;
-            padding-left: 43px;
-            padding-right: 43px;
-            border-radius: 10px;
-            cursor: pointer;
-          }
-
-          .field-:disabled {
-            background: #c6c6c6;
-            color: #101010;
-            cursor: not-allowed;
           }
         }
       }
@@ -3512,6 +3679,7 @@ section#account {
 
         img,
         svg {
+          display: block;
           width: 100%;
           height: auto;
           object-fit: contain;
@@ -3714,6 +3882,7 @@ section#account {
             overflow: hidden;
             img,
             svg {
+              display: block;
               width: 100%;
               height: 100%;
               object-fit: contain;
@@ -3895,7 +4064,7 @@ section#account {
             flex-direction: column;
             align-content: flex-start;
             justify-content: flex-start;
-            align-items: flex-start;
+            align-items: center;
 
             /*Clearing Floats*/
             .cf:before,
@@ -3912,236 +4081,354 @@ section#account {
               zoom: 1;
             }
 
-            label {
-              color: $mojo-blue;
-              font-style: normal;
-              font-weight: 800;
-              font-size: 18px;
-              line-height: 30px;
-              letter-spacing: 0.1em;
-              margin: 0 0 2px 15px;
-            }
-            /* Form wrapper styling - https://codepen.io/NoorA1125/pen/movOEN */
-            .input-wrapper {
-              width: 460px;
-              height: 40px;
-              margin: 0 0 10px 0;
-              border-radius: 40px;
-              background: transparent;
-              box-shadow: 0 4px 20px -2px #e9e9e9;
-            }
-
-            /* Form text input */
-            .input-wrapper input {
-              padding-left: 20px;
-              width: 320px;
-              height: 20px;
-              padding: 10px 5px 10px 15px;
-              float: left;
-              border: 0;
-              background: #fff;
-              border-radius: 40px;
-              border-top-style: none;
-            }
-
-            .input-wrapper input:focus {
-              outline: 0;
-              background: #fff;
-            }
-
-            .input-wrapper input::-webkit-input-placeholder {
-              color: #999;
-              font-weight: normal;
-              font-style: italic;
-              padding-left: 20px;
-            }
-
-            .input-wrapper input:-moz-placeholder {
-              color: #999;
-              font-weight: normal;
-              font-style: italic;
-            }
-
-            .input-wrapper input:-ms-input-placeholder {
-              color: #999;
-              font-weight: normal;
-              font-style: italic;
-              border-style: none;
-            }
-
-            /* Update Field Button */
-            .input-wrapper button {
-              overflow: visible;
+            .panel-upload--dropzone {
+              width: 100%;
+              min-height: 200px;
               position: relative;
-              float: right;
-              border: 0;
-              padding: 0;
-              height: 40px;
-              width: 110px;
-              color: #fff;
-              text-transform: uppercase;
-              background: $mojo-blue;
-              border-radius: 40px;
-              text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
-              transition: 0.6s;
+              display: flex;
+              align-content: center;
+              align-items: center;
+              justify-content: center;
+              background-color: #fdfdfd;
               cursor: pointer;
-            }
+              overflow: hidden;
 
-            .input-wrapper button:hover {
-              background: $mojo-dark-blue;
-            }
+              &.active {
+                > * {
+                  pointer-events: none;
+                }
 
-            .input-wrapper button:active,
-            .input-wrapper button:focus {
-              background: $mojo-dark-blue;
-              outline: 0;
-            }
-
-            .input-wrapper button::-moz-focus-inner {
-              /* remove extra button spacing for Mozilla Firefox */
-              border: 0;
-              padding: 0;
-            }
-
-            .textarea-wrapper {
-              width: 460px;
-              height: 100px;
-              margin: 0 0 10px 0;
-              border-radius: 40px;
-              background: transparent;
-              box-shadow: 0 4px 20px -2px #e9e9e9;
-            }
-
-            /* Form text input */
-            .textarea-wrapper textarea {
-              padding-left: 20px;
-              width: 430px;
-              height: 79px;
-              padding: 15px;
-              float: left;
-              font: bold 13px "lucida sans", "trebuchet MS", "Tahoma";
-              border: 0;
-              background: #fff;
-              border-radius: 30px;
-              border-top-style: none;
-              resize: none;
-            }
-
-            .textarea-wrapper textarea:focus {
-              outline: 0;
-              background: #fff;
-            }
-
-            .textarea-wrapper textarea::-webkit-input-placeholder {
-              color: #999;
-              font-weight: normal;
-              font-style: italic;
-              padding-left: 20px;
-            }
-
-            .textarea-wrapper textarea:-moz-placeholder {
-              color: #999;
-              font-weight: normal;
-              font-style: italic;
-            }
-
-            .textarea-wrapper textarea:-ms-input-placeholder {
-              color: #999;
-              font-weight: normal;
-              font-style: italic;
-              border-style: none;
-            }
-
-            /* Form submit button */
-            .textarea-wrapper button {
-              overflow: visible;
-              position: relative;
-              float: right;
-              border: 0;
-              padding: 0;
-              height: 40px;
-              width: 110px;
-              color: #fff;
-              text-transform: uppercase;
-              background: $mojo-blue;
-              border-radius: 40px;
-              text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
-              margin-top: 15px;
-              transition: 0.6s;
-              cursor: pointer;
-            }
-
-            .textarea-wrapper button:hover {
-              background: $mojo-dark-blue;
-            }
-
-            .textarea-wrapper button:active,
-            .textarea-wrapper button:focus {
-              background: $mojo-blue;
-              outline: 0;
-            }
-
-            .textarea-wrapper button:focus:before,
-            .textarea-wrapper button:active:before {
-              border-right-color: #c42f2f;
-            }
-
-            .textarea-wrapper button::-moz-focus-inner {
-              /* remove extra button spacing for Mozilla Firefox */
-              border: 0;
-              padding: 0;
-            }
-
-            .nft-modal-title {
-              width: 100%;
-              margin: 0 0 10px 0;
-            }
-            .nft-modal-address {
-              width: 100%;
-              margin: 0 0 10px 0;
-            }
-
-            .nft-modal-website {
-              width: 100%;
-              margin: 0 0 10px 0;
-            }
-
-            .nft-modal-slogan {
-              width: 100%;
-              margin: 0 0 10px 0;
-            }
-
-            .nft-modal-description {
-              width: 100%;
-              margin: 0 0 10px 0;
-            }
-
-            .nft-add-attribute {
-              width: 100%;
-              margin: 0 0 10px 0;
+                .dropzone-box {
+                  background-color: rgba(0, 0, 0, 0.2);
+                }
+              }
 
               input {
-                width: 94%;
-                height: 30px;
-                color: $black;
-                background-color: #fff;
-                border: 1px solid $black;
-                letter-spacing: 1px;
-                font-size: 12px;
-                line-height: 20px;
-                margin-bottom: 5px;
-                padding: 7px 0 0 7px;
-                text-align: left;
+                display: none;
               }
 
-              input::placeholder {
-                color: #a8a8a8;
+              .dropzone-box {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                color: #1a1a1a;
                 letter-spacing: 1px;
+                font-size: 14px;
+                padding: 10px;
+                text-align: center;
+
+                @include breakpoint($break-md) {
+                  width: 80%;
+                }
+                @include breakpoint($break-ssm) {
+                  width: 80%;
+                }
+                @include breakpoint($break-ssm) {
+                  width: 80%;
+                }
+
+                svg {
+                  height: 36px;
+                  width: 36px;
+                  margin-bottom: 0.25rem;
+                }
+
+                span {
+                  color: #1a1a1a;
+                  font-size: 0.8rem;
+                }
               }
 
-              input:focus {
-                border: 1px solid $mojo-blue;
-                outline: none;
+              .dropzone-is-loading {
+                opacity: 0;
+                position: relative;
+                height: 4px;
+                display: block;
+                width: 150px;
+                background-color: var(--gradient-300);
+                border-radius: 2px;
+                margin: 0.25rem 0 0.35rem 0;
+                overflow: hidden;
+
+                &.active {
+                  opacity: 1;
+                }
+
+                .dropzone-loading--bar {
+                  background-color: var(--gradient-800);
+
+                  &:before {
+                    content: "";
+                    position: absolute;
+                    background-color: inherit;
+                    top: 0;
+                    left: 0;
+                    bottom: 0;
+                    will-change: left, right;
+                    animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+                  }
+
+                  &:after {
+                    content: "";
+                    position: absolute;
+                    background-color: inherit;
+                    top: 0;
+                    left: 0;
+                    bottom: 0;
+                    will-change: left, right;
+                    animation: indeterminate-short 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+                    animation-delay: 1.15s;
+                  }
+                }
+              }
+              .dropzone-details {
+                color: #1a1a1a;
+                display: flex;
+                margin-top: 5px;
+
+                .dropzone-detail {
+                  color: #1a1a1a;
+                  font-size: 0.8rem;
+                  background-color: var(--gradient-300);
+                  border-radius: 1rem;
+                  padding: 0.4rem 0.8rem;
+                  margin-right: 0.6rem;
+                }
+              }
+            }
+
+            .nft-form-container {
+              label {
+                color: $mojo-blue;
+                font-style: normal;
+                font-weight: 800;
+                font-size: 18px;
+                line-height: 30px;
+                letter-spacing: 0.1em;
+                margin: 0 0 2px 15px;
+              }
+              /* Form wrapper styling - https://codepen.io/NoorA1125/pen/movOEN */
+              .input-wrapper {
+                width: 460px;
+                height: 40px;
+                margin: 0 0 10px 0;
+                border-radius: 40px;
+                background: transparent;
+                box-shadow: 0 10px 30px -2px #e9e9e9;
+              }
+
+              /* Form text input */
+              .input-wrapper input {
+                padding-left: 20px;
+                width: 320px;
+                height: 20px;
+                padding: 10px 5px 10px 15px;
+                float: left;
+                border: 0;
+                background: #fff;
+                border-radius: 40px;
+                border-top-style: none;
+              }
+
+              .input-wrapper input:focus {
+                outline: 0;
+                background: #fff;
+              }
+
+              .input-wrapper input::-webkit-input-placeholder {
+                color: #999;
+                font-weight: normal;
+                font-style: italic;
+                padding-left: 20px;
+              }
+
+              .input-wrapper input:-moz-placeholder {
+                color: #999;
+                font-weight: normal;
+                font-style: italic;
+              }
+
+              .input-wrapper input:-ms-input-placeholder {
+                color: #999;
+                font-weight: normal;
+                font-style: italic;
+                border-style: none;
+              }
+
+              /* Update Field Button */
+              .input-wrapper button {
+                overflow: visible;
+                position: relative;
+                float: right;
+                border: 0;
+                padding: 0;
+                height: 40px;
+                width: 110px;
+                color: #fff;
+                text-transform: uppercase;
+                background: $mojo-blue;
+                border-radius: 40px;
+                text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
+                transition: 0.6s;
+                cursor: pointer;
+              }
+
+              .input-wrapper button:hover {
+                background: $mojo-dark-blue;
+              }
+
+              .input-wrapper button:active,
+              .input-wrapper button:focus {
+                background: $mojo-dark-blue;
+                outline: 0;
+              }
+
+              .input-wrapper button::-moz-focus-inner {
+                /* remove extra button spacing for Mozilla Firefox */
+                border: 0;
+                padding: 0;
+              }
+
+              .textarea-wrapper {
+                width: 460px;
+                height: 100px;
+                margin: 0 0 10px 0;
+                border-radius: 40px;
+                background: transparent;
+                box-shadow: 0 10px 30px -2px #e9e9e9;
+              }
+
+              /* Form text input */
+              .textarea-wrapper textarea {
+                padding-left: 20px;
+                width: 430px;
+                height: 79px;
+                padding: 15px;
+                float: left;
+                border: 0;
+                background: #fff;
+                border-radius: 30px;
+                border-top-style: none;
+                resize: none;
+              }
+
+              .textarea-wrapper textarea:focus {
+                outline: 0;
+                background: #fff;
+              }
+
+              .textarea-wrapper textarea::-webkit-input-placeholder {
+                color: #999;
+                font-weight: normal;
+                font-style: italic;
+                padding-left: 20px;
+              }
+
+              .textarea-wrapper textarea:-moz-placeholder {
+                color: #999;
+                font-weight: normal;
+                font-style: italic;
+              }
+
+              .textarea-wrapper textarea:-ms-input-placeholder {
+                color: #999;
+                font-weight: normal;
+                font-style: italic;
+                border-style: none;
+              }
+
+              /* Form submit button */
+              .textarea-wrapper button {
+                overflow: visible;
+                position: relative;
+                float: right;
+                border: 0;
+                padding: 0;
+                height: 40px;
+                width: 110px;
+                color: #fff;
+                text-transform: uppercase;
+                background: $mojo-blue;
+                border-radius: 40px;
+                text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
+                margin-top: 15px;
+                transition: 0.6s;
+                cursor: pointer;
+              }
+
+              .textarea-wrapper button:hover {
+                background: $mojo-dark-blue;
+              }
+
+              .textarea-wrapper button:active,
+              .textarea-wrapper button:focus {
+                background: $mojo-blue;
+                outline: 0;
+              }
+
+              .textarea-wrapper button:focus:before,
+              .textarea-wrapper button:active:before {
+                border-right-color: #c42f2f;
+              }
+
+              .textarea-wrapper button::-moz-focus-inner {
+                /* remove extra button spacing for Mozilla Firefox */
+                border: 0;
+                padding: 0;
+              }
+
+              .nft-modal-title {
+                width: 100%;
+                margin: 0 0 10px 0;
+              }
+              .nft-modal-address {
+                width: 100%;
+                margin: 0 0 10px 0;
+              }
+
+              .nft-modal-website {
+                width: 100%;
+                margin: 0 0 10px 0;
+              }
+
+              .nft-modal-slogan {
+                width: 100%;
+                margin: 0 0 10px 0;
+              }
+
+              .nft-modal-description {
+                width: 100%;
+                margin: 0 0 10px 0;
+              }
+
+              .nft-add-attribute {
+                width: 100%;
+                margin: 0 0 10px 0;
+
+                input {
+                  width: 94%;
+                  height: 30px;
+                  color: $black;
+                  background-color: #fff;
+                  border: 1px solid $black;
+                  letter-spacing: 1px;
+                  font-size: 12px;
+                  line-height: 20px;
+                  margin-bottom: 5px;
+                  padding: 7px 0 0 7px;
+                  text-align: left;
+                }
+
+                input::placeholder {
+                  color: #a8a8a8;
+                  letter-spacing: 1px;
+                }
+
+                input:focus {
+                  border: 1px solid $mojo-blue;
+                  outline: none;
+                }
               }
             }
           }
@@ -4217,10 +4504,13 @@ section#account {
           overflow: hidden;
           box-sizing: border-box;
           background: #f4f4f4;
+          border: 1px solid #1a1a1a;
+          box-shadow: 2px 2px 25px 6px rgba(43, 43, 43, 0.1);
           border-radius: 10px;
 
           img,
           svg {
+            display: block;
             width: 100%;
             height: 100%;
             object-fit: contain;
@@ -4352,6 +4642,7 @@ section#account {
                   text-align: right;
                   width: 30px;
                   padding: 4px 5px;
+                  box-shadow: 0 10px 30px -2px #e9e9e9;
                   height: auto;
                   border: 0;
                   margin: 0 0 0 5px;

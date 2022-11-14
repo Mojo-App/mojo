@@ -78,33 +78,12 @@ section#content {
       z-index: 3;
       display: flex;
       border-radius: 1em;
-      border: 0.5px solid #ffffff;
       box-shadow: 2px 2px 25px 6px rgba(43, 43, 43, 0.1);
 
       section {
         color: #fff;
-        width: 100%;
-        height: 360px;
-
-        @include breakpoint($break-sm) {
-          width: 400px;
-          height: 500px;
-        }
-
-        @include breakpoint($break-md) {
-          width: 500px;
-          height: 600px;
-        }
-
-        @include breakpoint($break-xxl) {
-          width: 600px;
-          height: 600px;
-        }
-
-        @include breakpoint($break-xxxl) {
-          width: 600px;
-          height: 600px;
-        }
+        width: auto;
+        height: 660px;
       }
     }
   }

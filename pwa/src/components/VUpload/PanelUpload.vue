@@ -108,6 +108,7 @@ export default {
     const fileCount = computed(() => {
       return store.files.length;
     });
+
     const result = computed(() => {
       return {
         count: store.results.length,
@@ -143,7 +144,7 @@ section#panel-upload {
   background-color: var(--gradient-100);
   border-top-left-radius: 1rem;
   border-bottom-left-radius: 1rem;
-  width: 100%;
+  width: 430px;
   height: 100%;
 
   @include breakpoint($break-ssm) {
@@ -156,7 +157,7 @@ section#panel-upload {
 
   .panel-upload--content,
   .panel-upload--content .panel-upload--dropzone {
-    width: 100%;
+    width: 430px;
     height: 100%;
   }
 
@@ -212,20 +213,20 @@ section#panel-upload {
       }
 
       span {
-        color: #1a1a1a;
+        color: $black;
         font-size: 0.8rem;
       }
     }
 
     .dropzone-details {
-      color: #1a1a1a;
+      color: $black;
       position: absolute;
       display: flex;
       bottom: 1rem;
-      left: 1rem;
+      right: 1rem;
 
       .dropzone-detail {
-        color: #1a1a1a;
+        color: $black;
         font-size: 0.8rem;
         background-color: var(--gradient-300);
         border-radius: 1rem;
