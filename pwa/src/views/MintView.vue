@@ -1622,7 +1622,7 @@ export default {
           notyf.error(`Oops! An error occurred while processing your files.`);
         }
         store.addNftResults(...successfully.map(({ error, data: file }) => file));
-        store.resetNftFiles();
+        // store.resetNftFiles();
         fileRef.value.value = null;
       } catch (error) {
         finished.value = 0;
@@ -1800,7 +1800,7 @@ section#mint-content {
 
     section#mint {
       height: 100%;
-      color: #1a1a1a;
+      color: $black;
       background: $mojo-blue;
       display: flex;
       flex-direction: column;
@@ -1824,7 +1824,7 @@ section#mint-content {
       }
 
       .left {
-        width: 45%;
+        width: 430px;
         height: 100%;
         display: flex;
         flex-direction: row;
@@ -1905,20 +1905,20 @@ section#mint-content {
               }
 
               span {
-                color: #1a1a1a;
+                color: $black;
                 font-size: 0.8rem;
               }
             }
 
             .dropzone-details {
-              color: #1a1a1a;
+              color: $black;
               position: absolute;
               display: flex;
               bottom: 1rem;
-              left: 1rem;
+              right: 1rem;
 
               .dropzone-detail {
-                color: #1a1a1a;
+                color: $black;
                 font-size: 0.8rem;
                 background-color: var(--gradient-300);
                 border-radius: 1rem;
@@ -2052,6 +2052,7 @@ section#mint-content {
 
             img,
             svg {
+              display: block;
               width: 100%;
               height: 100%;
               object-fit: contain;
@@ -2078,7 +2079,7 @@ section#mint-content {
           }
 
           .nft-modal-external-url {
-            color: #1a1a1a;
+            color: $black;
             width: 100%;
             font-size: 14px;
             font-weight: normal;
@@ -2087,7 +2088,7 @@ section#mint-content {
           }
 
           .nft-modal-edit-attributes {
-            color: #1a1a1a;
+            color: $black;
             width: 100%;
             font-size: 14px;
             font-weight: normal;
@@ -2185,7 +2186,7 @@ section#mint-content {
           }
 
           .nft-modal-add-attributes {
-            color: #1a1a1a;
+            color: $black;
             width: 100%;
             font-size: 14px;
             font-weight: normal;
@@ -2213,7 +2214,7 @@ section#mint-content {
             }
 
             input:read-only {
-              color: #1a1a1a;
+              color: $black;
               border: 1px dashed #e0e0e0;
               letter-spacing: 1px;
               cursor: not-allowed;
@@ -2396,7 +2397,7 @@ section#mint-content {
 
           h2 {
             color: $mojo-dark-blue;
-            font-size: 32px;
+            font-size: 30px;
             font-style: normal;
             font-weight: 700;
             line-height: 42px;
@@ -2404,7 +2405,7 @@ section#mint-content {
             padding-bottom: 2px;
             text-decoration: none;
             border-bottom: 1px solid;
-            margin: 0 auto 10px;
+            margin: 0 auto 20px;
 
             @include breakpoint($break-ssm) {
               font-size: 1.3rem;
@@ -2432,20 +2433,35 @@ section#mint-content {
           margin: 0 0 2px 15px;
         }
 
+        /*Clearing Floats*/
+        .cf:before,
+        .cf:after {
+          content: "";
+          display: table;
+        }
+
+        .cf:after {
+          clear: both;
+        }
+
+        .cf {
+          zoom: 1;
+        }
+
         /* Form wrapper styling - https://codepen.io/NoorA1125/pen/movOEN */
         .input-wrapper {
-          width: 400px;
+          width: 360px;
           height: 40px;
           margin: 0 0 10px 0;
           border-radius: 40px;
           background: transparent;
-          box-shadow: 0 4px 20px -2px #e9e9e9;
+          box-shadow: 0 10px 30px -2px #e9e9e9;
         }
 
         /* Form text input */
         .input-wrapper input {
           padding-left: 20px;
-          width: 400px;
+          width: 340px;
           height: 20px;
           padding: 10px 5px 10px 15px;
           float: left;
@@ -2515,22 +2531,20 @@ section#mint-content {
         }
 
         .textarea-wrapper {
-          width: 400px;
+          width: 360px;
           height: 100px;
           margin: 0 0 10px 0;
-          border-radius: 40px;
+          border-radius: 30px;
           background: transparent;
-          box-shadow: 0 4px 20px -2px #e9e9e9;
+          box-shadow: 0 10px 30px -2px #e9e9e9;
         }
 
         /* Form text input */
         .textarea-wrapper textarea {
-          padding-left: 20px;
-          width: 370px;
-          height: 79px;
+          width: 330px;
+          height: 70px;
           padding: 15px;
           float: left;
-          font: bold 13px "lucida sans", "trebuchet MS", "Tahoma";
           border: 0;
           background: #fff;
           border-radius: 30px;
@@ -2613,18 +2627,17 @@ section#mint-content {
         }
 
         .select-wrapper {
-          width: 400px;
+          width: 360px;
           height: 40px;
           margin: 0 0 10px 0;
           border-radius: 40px;
           background: transparent;
-          box-shadow: 0 4px 20px -2px #e9e9e9;
+          box-shadow: 0 10px 30px -2px #e9e9e9;
         }
 
         /* Form text input */
         .select-wrapper select {
-          padding-left: 20px;
-          width: 400px;
+          width: 330px;
           height: 40px;
           padding: 10px 5px 10px 15px;
           float: left;
@@ -2720,33 +2733,12 @@ section#mint-content {
           max-width: 300px;
           height: 55px;
           border: 2px solid $black;
+          box-shadow: 0 10px 30px -2px #e9e9e9;
           padding-left: 20px;
           padding-right: 20px;
           border-radius: 10px;
           margin-left: 1%;
           cursor: pointer;
-        }
-
-        .attr-button {
-          color: #fff;
-          background-color: #8d50f5;
-          font-size: 18px;
-          font-weight: bold;
-          width: auto;
-          max-width: 360px;
-          height: 55px;
-          border: 0;
-          padding-left: 21px;
-          padding-right: 21px;
-          border-radius: 10px;
-          margin-left: 2%;
-          cursor: pointer;
-        }
-
-        .attr-button:disabled {
-          background: #c6c6c6;
-          color: #101010;
-          cursor: not-allowed;
         }
 
         .back-button {
@@ -2760,6 +2752,7 @@ section#mint-content {
           padding-left: 65px;
           padding-right: 65px;
           margin: 10px 1% 10px 0;
+          box-shadow: 0 10px 30px -2px #e9e9e9;
           transition: 0.4s;
           cursor: pointer;
 
@@ -2770,7 +2763,7 @@ section#mint-content {
 
         .mint-button {
           color: #fff;
-          background-color: #08d0a5;
+          background-color: $mojo-green;
           font-size: 18px;
           font-weight: bold;
           height: 55px;
@@ -2779,6 +2772,7 @@ section#mint-content {
           padding-left: 57px;
           padding-right: 57px;
           margin: 10px 1% 10px 0;
+          box-shadow: 0 10px 30px -2px #e9e9e9;
           transition: 0.4s;
           cursor: pointer;
 
@@ -2804,6 +2798,7 @@ section#mint-content {
           padding-left: 65px;
           padding-right: 65px;
           margin: 10px 1% 10px 0;
+          box-shadow: 0 10px 30px -2px #e9e9e9;
           transition: 0.4s;
           cursor: pointer;
 
@@ -2814,7 +2809,7 @@ section#mint-content {
 
         .restart-button {
           color: $white;
-          background-color: $mojo-blue;
+          background-color: $mojo-dark-blue;
           font-size: 18px;
           font-weight: bold;
           height: 55px;
@@ -2823,6 +2818,7 @@ section#mint-content {
           padding-left: 40px;
           padding-right: 40px;
           margin: 10px 0 10px 1%;
+          box-shadow: 0 10px 30px -2px #e9e9e9;
           transition: 0.4s;
           cursor: pointer;
 
@@ -2898,9 +2894,9 @@ section#mint-content {
       }
 
       a {
-        color: #1a1a1a;
+        color: $black;
         font-weight: bold;
-        border-bottom: 1px solid #1a1a1a;
+        border-bottom: 1px solid $black;
         text-decoration: none;
       }
 

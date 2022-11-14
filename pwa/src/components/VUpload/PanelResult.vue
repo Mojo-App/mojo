@@ -108,10 +108,10 @@ section#panel-result {
   border-top-right-radius: 1rem;
   border-bottom-right-radius: 1rem;
   border-left: 1px solid rgba(0, 0, 0, 0.05);
-
   .panel-result--content {
     padding: 0.8rem !important;
     height: calc(100% - 1.6rem);
+    width: 600px;
 
     .content-file--items {
       display: flex;

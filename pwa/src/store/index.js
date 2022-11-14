@@ -15,7 +15,7 @@ import nftPort from "../services/nftPort.js";
 /* Setup Offline Storage */
 const db = new Storage("app");
 db.read();
-db.data ||= { version: "0.0.1", results: [], nftResults: [] };
+db.data ||= { version: "0.0.1", results: [], nftResults: [], imageResults: [], bannerResults: [], profileResults: [] };
 
 /* LFG */
 export const useStore = defineStore({
@@ -30,6 +30,7 @@ export const useStore = defineStore({
       errorCode: null,
       errorStatus: null,
       errorMessage: "",
+      authing: false,
       loading: false,
       minting: false,
       bridging: false,
@@ -55,10 +56,15 @@ export const useStore = defineStore({
       musicCategories: [],
       counter: 0,
       filesNft: [],
+      imagesNft: [],
+      bannerImgNft: [],
+      profileImgNft: [],
       nftResults: db.data.nftResults,
+      imageResults: db.data.imageResults,
+      bannerResults: db.data.bannerResults,
+      profileResults: db.data.profileResults,
       files: [],
       results: db.data.results,
-      loading: false,
     };
   },
   getters: {
@@ -73,6 +79,9 @@ export const useStore = defineStore({
     },
     isErrorMessage(state) {
       return state.errorMessage;
+    },
+    isAuthing(state) {
+      return state.authing;
     },
     isLoading(state) {
       return state.loading;
@@ -158,11 +167,17 @@ export const useStore = defineStore({
     getNftResults(state) {
       return state.nftResults;
     },
+    getImageResults(state) {
+      return state.imageResults;
+    },
+    getBannerResults(state) {
+      return state.bannerResults;
+    },
+    getProfileResults(state) {
+      return state.profileResults;
+    },
     getResults(state) {
       return state.results;
-    },
-    isLoading(state) {
-      return state.loading;
     },
   },
   actions: {
@@ -183,6 +198,9 @@ export const useStore = defineStore({
     },
     setErrorMessage(value) {
       this.errorMessage = value;
+    },
+    setAuthing(value) {
+      this.authing = value;
     },
     setLoading(value) {
       this.loading = value;
@@ -269,12 +287,45 @@ export const useStore = defineStore({
     addNftFiles(...files) {
       this.filesNft.push(...files);
     },
+    addImagesFiles(...files) {
+      this.imagesNft.push(...files);
+    },
+    addBannerImgFiles(...files) {
+      this.bannerImgNft.push(...files);
+    },
+    addProfileImgFiles(...files) {
+      this.profileImgNft.push(...files);
+    },
     addNftResults(...files) {
       this.nftResults.push(...files);
       this.nftResults = this.nftResults.filter(function (cid) {
         return !!cid;
       });
       db.data.nftResults = [...this.nftResults];
+      db.write();
+    },
+    addImageResults(...files) {
+      this.imageResults.push(...files);
+      this.imageResults = this.imageResults.filter(function (cid) {
+        return !!cid;
+      });
+      db.data.imageResults = [...this.imageResults];
+      db.write();
+    },
+    addBannerResults(...files) {
+      this.bannerResults.push(...files);
+      this.bannerResults = this.bannerResults.filter(function (cid) {
+        return !!cid;
+      });
+      db.data.bannerResults = [...this.bannerResults];
+      db.write();
+    },
+    addProfileResults(...files) {
+      this.profileResults.push(...files);
+      this.profileResults = this.profileResults.filter(function (cid) {
+        return !!cid;
+      });
+      db.data.profileResults = [...this.profileResults];
       db.write();
     },
     resetNftFiles() {
