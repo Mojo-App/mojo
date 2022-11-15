@@ -29,7 +29,7 @@
                   @drop.prevent="onDropHandler"
                   @dragover.prevent
                 >
-                  <input type="file" multiple ref="fileRef" @change="onFileChangedHandler" />
+                  <input type="file" multiple ref="fileRef" @change="onFileChangedHandler()" />
                   <div class="dropzone-box" @click="openSelectFile">
                     <!-- Uploader Icon -->
                     <i-mdi-timer-sand v-if="isUploading" class="icon-color" />
@@ -160,6 +160,9 @@
                 </div>
                 <!-- Control Panel -->
                 <div class="nft-modal-approve">
+                  <div v-show="!tokenId" class="file-image-link">
+                    <a :href="imageUrl" title="Open in new tab" target="_blank"> ipfs link </a>
+                  </div>
                   <button
                     v-show="!tokenId"
                     :class="!approvedMint ? 'approve-button' : 'approved-button'"
@@ -167,12 +170,9 @@
                   >
                     {{ !approvedMint ? "approve" : "let's mint" }}
                   </button>
-                  <div v-show="!tokenId" class="file-image-link">
-                    <a :href="imageUrl" title="Open in new tab" target="_blank"> ipfs link </a>
-                  </div>
-                  <div v-if="tokenId" class="file-table-link">
+                  <div v-if="tokenId || tokenId === 0" class="file-table-link">
                     <a
-                      :href="`https://testnet.tableland.network/query?mode=list&s=SELECT%20json_object%28%27id%27%2Ctokenid%2C%27name%27%2Cname%2C%27description%27%2Cdescription%2C%27image%27%2Cimage%2C%27category%27%2Ccategory%2C%27external_url%27%2Cexternal_url%2C%27background_color%27%2Cbackground_color%2C%27animation_url%27%2Canimation_url%2C%27youtube_url%27%2Cyoutube_url%2C%27attributes%27%2Cjson_group_array%28json_object%28%27locked%27%2Clocked%2C%27icon%27%2Cicon%2C%27display_type%27%2Cdisplay_type%2C%27trait_type%27%2Ctrait_type%2C%27value%27%2Cvalue%29%29%29%20FROM%20Mojo_Music_80001_3522%20JOIN%20Mojo_Music_80001_3523%20ON%20Mojo_Music_80001_3522%2Etokenid%20%3D%20Mojo_Music_80001_3523%2Emaintable_tokenid%20WHERE%20tokenid%3D${tokenId}%20group%20by%20tokenid`"
+                      :href="`https://testnet.tableland.network/query?mode=list&s=SELECT%20json_object%28%27id%27%2Ctokenid%2C%27name%27%2Cname%2C%27description%27%2Cdescription%2C%27image%27%2Cimage%2C%27category%27%2Ccategory%2C%27external_url%27%2Cexternal_url%2C%27background_color%27%2Cbackground_color%2C%27animation_url%27%2Canimation_url%2C%27youtube_url%27%2Cyoutube_url%2C%27attributes%27%2Cjson_group_array%28json_object%28%27icon%27%2Cicon%2C%27display_type%27%2Cdisplay_type%2C%27trait_type%27%2Ctrait_type%2C%27value%27%2Cvalue%29%29%29%20FROM%20Mojo_Music_80001_3847%20JOIN%20Mojo_Music_80001_3848%20ON%20Mojo_Music_80001_3847%2Etokenid%20%3D%20Mojo_Music_80001_3848%2Emaintable_tokenid%20WHERE%20tokenid%3D${tokenId}%20group%20by%20tokenid`"
                       title="View Tableland data"
                       target="_blank"
                     >
@@ -232,7 +232,32 @@
                     type="text"
                     placeholder="eg. https://opensea.io/collection/mojo-music"
                     v-model="externalUrl"
+                    class="short"
                   />
+                  <button
+                    :disabled="!tokenId"
+                    class="update-field-button"
+                    @click="updateExternalUrl(externalUrl)"
+                  >
+                    update
+                  </button>
+                </div>
+              </div>
+              <div class="input-row hidden">
+                <label>Background Color</label>
+                <div class="input-wrapper">
+                  <input
+                    type="text"
+                    placeholder="#ffffff"
+                    v-model="backgroundColor"
+                    class="short"
+                  />
+                  <button
+                    class="update-field-button"
+                    @click="updateBackgroundColor(backgroundColor)"
+                  >
+                    update
+                  </button>
                 </div>
               </div>
               <div class="input-row hidden">
@@ -293,26 +318,48 @@
 
             <!-- Tab Two NFT Metadata Attributes -->
             <div v-if="formTab === 'two'" id="form-tab-two" class="form-container">
-              <h2>Video Attributes</h2>
               <div class="input-row">
                 <label>Title</label>
-                <input type="text" v-model="title" />
+                <div class="input-wrapper">
+                  <input type="text" v-model="title" class="short" />
+                  <button class="update-field-button" @click="updateTitle(title)">update</button>
+                </div>
               </div>
               <div class="input-row">
                 <label>Website</label>
-                <input type="text" v-model="website" />
+                <div class="input-wrapper">
+                  <input type="text" v-model="website" class="short" />
+                  <button class="update-field-button" @click="updateWebsite(website)">
+                    update
+                  </button>
+                </div>
               </div>
               <div class="input-row">
                 <label>Preview Link</label>
-                <input type="text" v-model="preview" />
+                <div class="input-wrapper">
+                  <input type="text" v-model="preview" class="short" />
+                  <button class="update-field-button" @click="updatePreview(preview)">
+                    update
+                  </button>
+                </div>
               </div>
               <div class="input-row">
                 <label>Audio/Video Link</label>
-                <input type="text" v-model="audioVideoURL" />
+                <div class="input-wrapper">
+                  <input type="text" v-model="audioVideoURL" class="short" />
+                  <button class="update-field-button" @click="updateAudioVideoURL(audioVideoURL)">
+                    update
+                  </button>
+                </div>
               </div>
               <div class="input-row">
                 <label>Best Resolution</label>
-                <input type="text" v-model="resolution" />
+                <div class="input-wrapper">
+                  <input type="text" v-model="resolution" class="short" />
+                  <button class="update-field-button" @click="updateResolution(resolution)">
+                    update
+                  </button>
+                </div>
               </div>
               <!-- Button Row -->
               <div class="button-container">
@@ -325,18 +372,80 @@
 
             <!-- Tab Three NFT Pricing -->
             <div v-if="formTab === 'three'" id="form-tab-three" class="form-container">
-              <h2>Additional Details</h2>
               <div class="input-row">
                 <label>Animation Link</label>
-                <input type="text" v-model="animationUrl" />
+                <div class="input-wrapper">
+                  <input type="text" v-model="animationUrl" class="short" />
+                  <button class="update-field-button" @click="updateAnimationUrl(animationUrl)">
+                    update
+                  </button>
+                </div>
               </div>
               <div class="input-row">
                 <label>Youtube Link</label>
-                <input type="text" v-model="youtubeUrl" />
+                <div class="input-wrapper">
+                  <input type="text" v-model="youtubeUrl" class="short" />
+                  <button class="update-field-button" @click="updateYoutubeUrl(youtubeUrl)">
+                    update
+                  </button>
+                </div>
               </div>
-              <div class="input-row">
-                <label>Background Color</label>
-                <input type="text" placeholder="#ffffff" v-model="backgroundColor" />
+              <div class="nft-modal-add-license-attributes">
+                <div class="select-row">
+                  <label>License</label>
+                  <div class="select-wrapper">
+                    <select v-model="license" class="short">
+                      <option value="" class="grey">Select a License</option>
+                      <option v-for="license in licenses" :key="license.id" :value="license.value">
+                        {{ license.label }}
+                      </option>
+                    </select>
+                    <button class="update-field-button" @click="updateLicense(license)">
+                      update
+                    </button>
+                  </div>
+                </div>
+                <div class="input-row hidden">
+                  <label>Max Prints</label>
+                  <div class="input-wrapper">
+                    <input
+                      type="text"
+                      placeholder="default is one"
+                      v-model="maxInvocations"
+                      class="short"
+                    />
+                    <button
+                      class="update-field-button"
+                      @click="updateMaxInvocations(maxInvocations)"
+                    >
+                      update
+                    </button>
+                  </div>
+                </div>
+                <div class="input-row">
+                  <label>Royalty Fee</label>
+                  <div class="input-wrapper">
+                    <input
+                      type="text"
+                      placeholder="max 5%"
+                      v-model="royaltyPercentage"
+                      class="short"
+                    />
+                    <button
+                      class="update-field-button"
+                      @click="updateRoyaltyPercentage(royaltyPercentage)"
+                    >
+                      update
+                    </button>
+                  </div>
+                </div>
+                <div class="input-row">
+                  <label>Price</label>
+                  <div class="input-wrapper">
+                    <input type="text" v-model="price" class="short" />
+                    <button class="update-field-button" @click="updatePrice(price)">update</button>
+                  </div>
+                </div>
               </div>
               <div class="button-container">
                 <button class="back-button" @click="switchToTab('two')">back</button>
@@ -345,69 +454,52 @@
             </div>
 
             <div v-if="formTab === 'four'" id="form-tab-four" class="form-container">
-              <!-- <h2>Licensing Attributes</h2>
-              <div class="nft-modal-add-license-attributes">
-                <div class="select-row">
-                  <label>License</label>
-                  <select v-model="license">
-                    <option value="" class="grey">Select a License</option>
-                    <option v-for="license in licenses" :key="license.id" :value="license.value">
-                      {{ license.label }}
-                    </option>
-                  </select>
-                </div>
-                <div class="input-row hidden">
-                  <label>Max Prints</label>
-                  <input type="text" placeholder="default is one" v-model="maxInvocations" />
-                </div>
-                <div class="input-row">
-                  <label>Royalty Fee</label>
-                  <input type="text" placeholder="max 5%" v-model="royaltyPercentage" />
-                </div>
-                <div class="input-row">
-                  <label>Price</label>
-                  <input type="text" v-model="price" />
-                </div>
-              </div> -->
-
               <h2>Custom Attributes</h2>
               <!-- STEP 3 : Show Add attributes form once NFT minted and we have a token id returned -->
-              <div v-show="tokenId" class="nft-modal-add-attributes">
+              <div class="nft-modal-add-attributes">
                 <div class="nft-attribute">
                   <div class="nft-attribute-icon">
-                    <input
-                      type="text"
-                      name="traitIcon"
-                      placeholder="enter an icon"
-                      v-model="traitIcon"
-                    />
+                    <div class="input-wrapper">
+                      <input
+                        type="text"
+                        name="traitIcon"
+                        placeholder="enter an icon"
+                        v-model="traitIcon"
+                      />
+                    </div>
                   </div>
                   <div class="nft-attribute-display-type">
-                    <input
-                      type="text"
-                      name="traitDisplayType"
-                      placeholder="enter a display type, eg. boost_number"
-                      v-model="traitDisplayType"
-                    />
+                    <div class="input-wrapper">
+                      <input
+                        type="text"
+                        name="traitDisplayType"
+                        placeholder="enter a display type, eg. boost_number"
+                        v-model="traitDisplayType"
+                      />
+                    </div>
                   </div>
                   <div class="nft-attribute-trait-type">
-                    <input
-                      type="text"
-                      name="traitType"
-                      placeholder="enter a trait type, eg. Stamina Increase"
-                      v-model="traitType"
-                    />
+                    <div class="input-wrapper">
+                      <input
+                        type="text"
+                        name="traitType"
+                        placeholder="enter a trait type, eg. Stamina Increase"
+                        v-model="traitType"
+                      />
+                    </div>
                   </div>
                   <div class="nft-attribute-value">
-                    <input
-                      type="text"
-                      name="traitValue"
-                      placeholder="enter a trait value, eg. 10"
-                      v-model="traitValue"
-                    />
+                    <div class="input-wrapper">
+                      <input
+                        type="text"
+                        name="traitValue"
+                        placeholder="enter a trait value, eg. 10"
+                        v-model="traitValue"
+                      />
+                    </div>
                   </div>
                 </div>
-                <div v-show="tokenId" class="button-container">
+                <div class="button-container">
                   <button class="add-button" @click="AddNewAttribute()">
                     add new custom attribute
                   </button>
@@ -416,7 +508,7 @@
               <!-- Button Row -->
               <div class="button-container">
                 <button class="back-button" @click="switchToTab('three')">back</button>
-                <button class="update-button" @click="createNFTRow()">finish</button>
+                <button class="update-button" @click="cancelMint()">finish</button>
               </div>
               <!-- END Button Row -->
             </div>
@@ -452,7 +544,7 @@ import ArrowBack from "../assets/svgs/ArrowBack.vue";
 
 /* Import Smart Contract ABI and Mojo Contract Address */
 import contractAbi from "../../../artifacts/contracts/mojo_ERC721.sol/MOJO.json";
-const contractAddress = "0x13B9DF4c7C97563fAD045251FCA95a9E61c9Dc85";
+const contractAddress = "0x4dBaa276d66B5dEAAc9Ca718773a7CE09f989741";
 
 /* Console log with some style */
 const stylesContract = ["color: black", "background: #e9429b"].join(";");
@@ -539,6 +631,7 @@ export default {
     /* Calculated on Mint and IPFS upload */
     const size = ref("");
     const createdAt = ref("");
+    const updatedAt = ref("");
 
     /* NFT Form Metadata Attributes */
     const attributes = ref([]);
@@ -676,7 +769,7 @@ export default {
         return;
       }
       if (!category.value) {
-        notyf.error(`Please upload an image to continue!`);
+        notyf.error(`Please select a category to continue!`);
         switchToTab("one");
         return;
       }
@@ -837,6 +930,338 @@ export default {
         /* Stop minting loader */
         store.setMinting(false);
         notyf.dismiss(loadingIndicator);
+        console.log("error", error);
+      }
+    };
+
+    /**
+     * Update update_external_url of Mojo Music NFT
+     */
+    const updateExternalUrl = async (externalUrl) => {
+      console.log("externalUrl", externalUrl);
+
+      /* This is the attribute number in attribute_table, an NFT can have many attributes */
+      if (!externalUrl) {
+        console.log(`Please enter a externalUrl to continue!`);
+        return;
+      }
+      /* Start loading */
+      store.setLoading(true);
+      try {
+        const { ethereum } = window;
+        if (ethereum) {
+          const provider = new ethers.providers.Web3Provider(ethereum);
+          const signer = provider.getSigner();
+          const contract = new ethers.Contract(contractAddress, contractAbi.abi, signer);
+          /**
+           *  Receive Emitted Event from Smart Contract
+           *  @dev See traitDisplayTypeUpdated emitted from our smart contract update_display_type function
+           */
+          contract.on(
+            "externalUrlUpdated",
+            (receiver, timestamp, metadata_table_id, external_url, token_id) => {
+              console.log("Receiver :", receiver);
+
+              updatedAt.value = moment.unix(timestamp).toString();
+              console.log("Updated At :", traitUpdatedAt.value);
+
+              const metadataTableId = metadata_table_id.toNumber();
+              console.log("Metadata Table Id :", metadataTableId);
+
+              const tokenId = token_id.toNumber();
+              console.log("Token Id :", tokenId);
+
+              const externalUrlNew = external_url.toString();
+              console.log("externalUrl :", externalUrlNew);
+
+              /* Stop loading */
+              store.setLoading(false);
+            }
+          );
+
+          let tx = await contract.update_external_url(
+            BigNumber.from(tokenId.value),
+            externalUrl.value.toString()
+          );
+
+          const receipt = await tx.wait();
+          const stylesReceipt = ["color: black", "background: #e9429b"].join(";");
+          console.log("%c We just updated the external url %s ", stylesReceipt, tx.hash);
+
+          /* Check our Transaction results */
+          if (receipt.status === 1) {
+            /**
+             * @dev NOTE: Switch up these links once we go to Production
+             * Currently set to use Polygon Mumbai Testnet
+             */
+            const stylesPolygon = ["color: white", "background: #7e44df"].join(";");
+            console.log(
+              `%c Mojo Music NFT updated external url, see transaction: https://polygonscan.com/tx/${tx.hash} %s`,
+              stylesPolygon,
+              tx.hash
+            );
+            store.setLoading(false);
+          }
+          /* Stop loading */
+          store.setLoading(false);
+          return;
+        } else {
+          /* Stop loading */
+          store.setLoading(false);
+          console.log("Ethereum object doesn't exist!");
+        }
+      } catch (error) {
+        /* Stop loading */
+        store.setLoading(false);
+        console.log("error", error);
+      }
+    };
+
+    /**
+     * Update background_color of Mojo Music NFT
+     */
+    const updateBackgroundColor = async (backgroundColor) => {
+      console.log("backgroundColor", backgroundColor);
+
+      /* This is the attribute number in attribute_table, an NFT can have many attributes */
+      if (!backgroundColor) {
+        console.log(`Please enter a background color to continue!`);
+        return;
+      }
+      /* Start loading */
+      store.setLoading(true);
+      try {
+        const { ethereum } = window;
+        if (ethereum) {
+          const provider = new ethers.providers.Web3Provider(ethereum);
+          const signer = provider.getSigner();
+          const contract = new ethers.Contract(contractAddress, contractAbi.abi, signer);
+          /**
+           *  Receive Emitted Event from Smart Contract
+           *  @dev See traitDisplayTypeUpdated emitted from our smart contract update_display_type function
+           */
+          contract.on(
+            "backgroundColorUpdated",
+            (receiver, timestamp, metadata_table_id, background_color, token_id) => {
+              console.log("Receiver :", receiver);
+
+              updatedAt.value = moment.unix(timestamp).toString();
+              console.log("Updated At :", traitUpdatedAt.value);
+
+              const metadataTableId = metadata_table_id.toNumber();
+              console.log("Metadata Table Id :", metadataTableId);
+
+              const tokenId = token_id.toNumber();
+              console.log("Token Id :", tokenId);
+
+              const backgroundColorNew = background_color.toString();
+              console.log("backgroundColor :", backgroundColorNew);
+
+              /* Stop loading */
+              store.setLoading(false);
+            }
+          );
+
+          let tx = await contract.update_background_color(
+            BigNumber.from(tokenId.value),
+            backgroundColor.value.toString()
+          );
+
+          const receipt = await tx.wait();
+          const stylesReceipt = ["color: black", "background: #e9429b"].join(";");
+          console.log("%c We just updated the background color %s ", stylesReceipt, tx.hash);
+
+          /* Check our Transaction results */
+          if (receipt.status === 1) {
+            /**
+             * @dev NOTE: Switch up these links once we go to Production
+             * Currently set to use Polygon Mumbai Testnet
+             */
+            const stylesPolygon = ["color: white", "background: #7e44df"].join(";");
+            console.log(
+              `%c Mojo Music NFT updated background color, see transaction: https://polygonscan.com/tx/${tx.hash} %s`,
+              stylesPolygon,
+              tx.hash
+            );
+            store.setLoading(false);
+          }
+          /* Stop loading */
+          store.setLoading(false);
+          return;
+        } else {
+          /* Stop loading */
+          store.setLoading(false);
+          console.log("Ethereum object doesn't exist!");
+        }
+      } catch (error) {
+        /* Stop loading */
+        store.setLoading(false);
+        console.log("error", error);
+      }
+    };
+
+    /**
+     * Update animation_url of Mojo Music NFT
+     */
+    const updateAnimationUrl = async (animationUrl) => {
+      console.log("animationUrl", animationUrl);
+
+      /* This is the attribute number in attribute_table, an NFT can have many attributes */
+      if (!animationUrl) {
+        console.log(`Please enter a background color to continue!`);
+        return;
+      }
+      /* Start loading */
+      store.setLoading(true);
+      try {
+        const { ethereum } = window;
+        if (ethereum) {
+          const provider = new ethers.providers.Web3Provider(ethereum);
+          const signer = provider.getSigner();
+          const contract = new ethers.Contract(contractAddress, contractAbi.abi, signer);
+          /**
+           *  Receive Emitted Event from Smart Contract
+           *  @dev See traitDisplayTypeUpdated emitted from our smart contract update_display_type function
+           */
+          contract.on(
+            "animationUrlUpdated",
+            (receiver, timestamp, metadata_table_id, animation_url, token_id) => {
+              console.log("Receiver :", receiver);
+
+              updatedAt.value = moment.unix(timestamp).toString();
+              console.log("Updated At :", traitUpdatedAt.value);
+
+              const metadataTableId = metadata_table_id.toNumber();
+              console.log("Metadata Table Id :", metadataTableId);
+
+              const tokenId = token_id.toNumber();
+              console.log("Token Id :", tokenId);
+
+              const animationUrlNew = animation_url.toString();
+              console.log("animationUrl :", animationUrlNew);
+
+              /* Stop loading */
+              store.setLoading(false);
+            }
+          );
+
+          let tx = await contract.update_animation_url(
+            BigNumber.from(tokenId.value),
+            animationUrl.value.toString()
+          );
+
+          const receipt = await tx.wait();
+          const stylesReceipt = ["color: black", "background: #e9429b"].join(";");
+          console.log("%c We just updated the animation url %s ", stylesReceipt, tx.hash);
+
+          /* Check our Transaction results */
+          if (receipt.status === 1) {
+            /**
+             * @dev NOTE: Switch up these links once we go to Production
+             * Currently set to use Polygon Mumbai Testnet
+             */
+            const stylesPolygon = ["color: white", "background: #7e44df"].join(";");
+            console.log(
+              `%c Mojo Music NFT updated animation url, see transaction: https://polygonscan.com/tx/${tx.hash} %s`,
+              stylesPolygon,
+              tx.hash
+            );
+            store.setLoading(false);
+          }
+          /* Stop loading */
+          store.setLoading(false);
+          return;
+        } else {
+          /* Stop loading */
+          store.setLoading(false);
+          console.log("Ethereum object doesn't exist!");
+        }
+      } catch (error) {
+        /* Stop loading */
+        store.setLoading(false);
+        console.log("error", error);
+      }
+    };
+
+    /**
+     * Update update_youtube_url of Mojo Music NFT
+     */
+    const updateYoutubeUrl = async (youtubeUrl) => {
+      console.log("youtubeUrl", youtubeUrl);
+
+      /* This is the attribute number in attribute_table, an NFT can have many attributes */
+      if (!youtubeUrl) {
+        console.log(`Please enter a background color to continue!`);
+        return;
+      }
+      /* Start loading */
+      store.setLoading(true);
+      try {
+        const { ethereum } = window;
+        if (ethereum) {
+          const provider = new ethers.providers.Web3Provider(ethereum);
+          const signer = provider.getSigner();
+          const contract = new ethers.Contract(contractAddress, contractAbi.abi, signer);
+          /**
+           *  Receive Emitted Event from Smart Contract
+           *  @dev See traitDisplayTypeUpdated emitted from our smart contract update_display_type function
+           */
+          contract.on(
+            "youtubeUrlUpdated",
+            (receiver, timestamp, metadata_table_id, youtube_url, token_id) => {
+              console.log("Receiver :", receiver);
+
+              updatedAt.value = moment.unix(timestamp).toString();
+              console.log("Updated At :", traitUpdatedAt.value);
+
+              const metadataTableId = metadata_table_id.toNumber();
+              console.log("Metadata Table Id :", metadataTableId);
+
+              const tokenId = token_id.toNumber();
+              console.log("Token Id :", tokenId);
+
+              const youtubeUrlNew = youtube_url.toString();
+              console.log("youtubeUrl :", youtubeUrlNew);
+
+              /* Stop loading */
+              store.setLoading(false);
+            }
+          );
+
+          let tx = await contract.update_youtube_url(
+            BigNumber.from(tokenId.value),
+            youtubeUrl.value.toString()
+          );
+
+          const receipt = await tx.wait();
+          const stylesReceipt = ["color: black", "background: #e9429b"].join(";");
+          console.log("%c We just updated the youtube url %s ", stylesReceipt, tx.hash);
+
+          /* Check our Transaction results */
+          if (receipt.status === 1) {
+            /**
+             * @dev NOTE: Switch up these links once we go to Production
+             * Currently set to use Polygon Mumbai Testnet
+             */
+            const stylesPolygon = ["color: white", "background: #7e44df"].join(";");
+            console.log(
+              `%c Mojo Music NFT updated youtube url, see transaction: https://polygonscan.com/tx/${tx.hash} %s`,
+              stylesPolygon,
+              tx.hash
+            );
+            store.setLoading(false);
+          }
+          /* Stop loading */
+          store.setLoading(false);
+          return;
+        } else {
+          /* Stop loading */
+          store.setLoading(false);
+          console.log("Ethereum object doesn't exist!");
+        }
+      } catch (error) {
+        /* Stop loading */
+        store.setLoading(false);
         console.log("error", error);
       }
     };
@@ -1480,8 +1905,6 @@ export default {
         });
 
         cancelMint();
-        /* Set to NFT Main Attributes Tab */
-        switchToTab("one");
         return;
       }
       notyf.dismiss(loadingIndicator);
@@ -1532,6 +1955,8 @@ export default {
       /* Stop All Loaders */
       store.setLoading(false);
       store.setMinting(false);
+      /* Set to NFT Main Attributes Tab */
+      switchToTab("one");
     };
 
     /**
@@ -1745,6 +2170,10 @@ export default {
       ConfirmApprovedMint,
       switchToTab,
       mintNFT,
+      updateExternalUrl,
+      updateBackgroundColor,
+      updateAnimationUrl,
+      updateYoutubeUrl,
       AddNewAttribute,
       editTrait,
       updateTraitIcon,
@@ -2137,7 +2566,7 @@ section#mint-content {
                     height: auto;
                     border: 0;
                     margin: 0 0 0 5px;
-                    transition: 0.4s;
+                    transition: 0.6s;
                     cursor: pointer;
 
                     &:hover {
@@ -2251,7 +2680,7 @@ section#mint-content {
               height: auto;
               border: 0;
               margin: 0 5px 0 5px;
-              transition: 0.4s;
+              transition: 0.6s;
               cursor: pointer;
 
               &:hover {
@@ -2275,7 +2704,7 @@ section#mint-content {
               height: auto;
               border: 0;
               margin: 0 5px 0 5px;
-              transition: 0.4s;
+              transition: 0.6s;
               cursor: not-allowed;
 
               &:hover {
@@ -2300,10 +2729,9 @@ section#mint-content {
                 font-size: 14px;
                 line-height: 24px;
                 text-align: center;
-                transition: 0.4s;
-
+                transition: 0.6s;
                 &:hover {
-                  color: $mojo-blue;
+                  color: $mojo-green;
                 }
               }
             }
@@ -2325,10 +2753,10 @@ section#mint-content {
                 font-size: 14px;
                 line-height: 24px;
                 text-align: center;
-                transition: 0.4s;
+                transition: 0.6s;
 
                 &:hover {
-                  color: $mojo-blue;
+                  color: $mojo-green;
                 }
               }
             }
@@ -2349,7 +2777,7 @@ section#mint-content {
               height: auto;
               border: 0;
               margin: 0 0 0 5px;
-              transition: 0.4s;
+              transition: 0.6s;
               cursor: pointer;
 
               &:hover {
@@ -2462,6 +2890,18 @@ section#mint-content {
         .input-wrapper input {
           padding-left: 20px;
           width: 340px;
+          height: 20px;
+          padding: 10px 5px 10px 15px;
+          float: left;
+          border: 0;
+          background: #fff;
+          border-radius: 40px;
+          border-top-style: none;
+        }
+
+        .input-wrapper input.short {
+          padding-left: 20px;
+          width: 230px;
           height: 20px;
           padding: 10px 5px 10px 15px;
           float: left;
@@ -2647,6 +3087,17 @@ section#mint-content {
           border-top-style: none;
         }
 
+        .select-wrapper select.short {
+          width: 230px;
+          height: 40px;
+          padding: 10px 5px 10px 15px;
+          float: left;
+          border: 0;
+          background: #fff;
+          border-radius: 40px;
+          border-top-style: none;
+        }
+
         .select-wrapper select:focus {
           outline: 0;
           background: #fff;
@@ -2706,6 +3157,47 @@ section#mint-content {
           padding: 0;
         }
 
+        .update-field-button {
+          overflow: visible;
+          position: relative;
+          float: right;
+          border: 0;
+          padding: 0;
+          cursor: pointer;
+          height: 40px;
+          width: 110px;
+          color: #fff;
+          background: $mojo-blue;
+          border-radius: 40px;
+        }
+
+        .update-field-button:disabled {
+          background: #c6c6c6;
+          color: #101010;
+          cursor: not-allowed;
+        }
+
+        .update-field-button:hover {
+          /*     background: #e54040; */
+        }
+
+        .update-field-button:active,
+        .update-field-button:focus {
+          background: $mojo-blue;
+          outline: 0;
+        }
+
+        .update-field-button:focus:before,
+        .update-field-button:active:before {
+          border-right-color: #c42f2f;
+        }
+
+        .update-field-button::-moz-focus-inner {
+          /* remove extra button spacing for Mozilla Firefox */
+          border: 0;
+          padding: 0;
+        }
+
         .grey {
           color: #a8a8a8 !important;
           letter-spacing: 1px;
@@ -2753,11 +3245,11 @@ section#mint-content {
           padding-right: 65px;
           margin: 10px 1% 10px 0;
           box-shadow: 0 10px 30px -2px #e9e9e9;
-          transition: 0.4s;
+          transition: 0.6s;
           cursor: pointer;
 
           &:hover {
-            color: $black;
+            color: $mojo-green;
           }
         }
 
@@ -2773,7 +3265,7 @@ section#mint-content {
           padding-right: 57px;
           margin: 10px 1% 10px 0;
           box-shadow: 0 10px 30px -2px #e9e9e9;
-          transition: 0.4s;
+          transition: 0.6s;
           cursor: pointer;
 
           &:hover {
@@ -2799,7 +3291,7 @@ section#mint-content {
           padding-right: 65px;
           margin: 10px 1% 10px 0;
           box-shadow: 0 10px 30px -2px #e9e9e9;
-          transition: 0.4s;
+          transition: 0.6s;
           cursor: pointer;
 
           &:hover {
@@ -2819,7 +3311,7 @@ section#mint-content {
           padding-right: 40px;
           margin: 10px 0 10px 1%;
           box-shadow: 0 10px 30px -2px #e9e9e9;
-          transition: 0.4s;
+          transition: 0.6s;
           cursor: pointer;
 
           &:hover {
@@ -2842,7 +3334,7 @@ section#mint-content {
           height: auto;
           border: 0;
           margin: 15px auto 30px;
-          transition: 0.4s;
+          transition: 0.6s;
           cursor: pointer;
 
           &:hover {
@@ -2861,7 +3353,7 @@ section#mint-content {
           padding-left: 65px;
           padding-right: 65px;
           margin: 10px 1% 10px 0;
-          transition: 0.4s;
+          transition: 0.6s;
           cursor: pointer;
 
           &:hover {

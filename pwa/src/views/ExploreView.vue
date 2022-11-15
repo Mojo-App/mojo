@@ -892,7 +892,7 @@ section#explore-content {
             padding: 10px;
             text-align: center;
             margin: 0 5px;
-            transition: 0.4s;
+            transition: 0.6s;
             cursor: pointer;
             display: inline-block;
             &:hover {
@@ -919,7 +919,7 @@ section#explore-content {
             padding: 10px;
             text-align: center;
             margin-right: 5px;
-            transition: 0.4s;
+            transition: 0.6s;
             cursor: pointer;
             display: inline-block;
             &:hover {
@@ -972,7 +972,7 @@ section#explore-content {
             padding: 7px 9px 4px 9px;
             text-align: center;
             margin: 0;
-            transition: 0.4s;
+            transition: 0.6s;
             cursor: pointer;
             &:hover {
               color: $mojo-blue;
@@ -1010,7 +1010,7 @@ section#explore-content {
             padding: 9px 9px 4px 9px;
             text-align: center;
             margin: 0;
-            transition: 0.4s;
+            transition: 0.6s;
             cursor: pointer;
             display: inline-block;
             &:hover {
@@ -1028,7 +1028,7 @@ section#explore-content {
             .arrow-down-small {
               width: 15px;
               height: 15px;
-              transition: 0.4s;
+              transition: 0.6s;
               img,
               svg {
                 width: 100%;
@@ -1047,7 +1047,7 @@ section#explore-content {
             padding: 10px 10px 7px 10px;
             text-align: center;
             margin: 0 5px 0 5px;
-            transition: 0.4s;
+            transition: 0.6s;
             cursor: pointer;
             &:hover {
               color: $black;
@@ -1094,7 +1094,7 @@ section#explore-content {
               padding: 10px;
               text-align: center;
               margin: 0 5px;
-              transition: 0.4s;
+              transition: 0.6s;
               cursor: pointer;
               display: none;
               &:hover {
@@ -1124,7 +1124,7 @@ section#explore-content {
               padding: 10px;
               text-align: center;
               margin: 0 0 0 5px;
-              transition: 0.4s;
+              transition: 0.6s;
               cursor: pointer;
               display: none;
               &:hover {
@@ -1157,7 +1157,7 @@ section#explore-content {
               padding: 10px;
               text-align: center;
               margin: 0 5px;
-              transition: 0.4s;
+              transition: 0.6s;
               cursor: pointer;
               display: none;
               &:hover {
@@ -1199,7 +1199,7 @@ section#explore-content {
               padding: 10px;
               text-align: center;
               margin: 0 5px;
-              transition: 0.4s;
+              transition: 0.6s;
               cursor: pointer;
               display: none;
               &:hover {
@@ -1244,7 +1244,7 @@ section#explore-content {
               padding: 10px;
               text-align: center;
               margin-right: 5px;
-              transition: 0.4s;
+              transition: 0.6s;
               cursor: pointer;
               display: none;
               &:hover {
@@ -1461,7 +1461,7 @@ section#explore-content {
             padding: 10px;
             text-align: center;
             margin: 0 0 0 5px;
-            transition: 0.4s;
+            transition: 0.6s;
             cursor: pointer;
             display: inline-block;
             &:hover {

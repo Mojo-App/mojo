@@ -248,7 +248,7 @@ section#stream-content {
             padding-left: 1rem;
             padding-right: 1rem;
             border-bottom: 1px solid #1a1a1a;
-            transition: 0.4s;
+            transition: 0.6s;
             cursor: pointer;
             &:hover {
               color: #fff;

@@ -62,17 +62,23 @@ LinkedIn: (<https://www.linkedin.com/in/craig-moss-21822628/>)
 
 ## Deployments Note
 
-This project is deployed on the Polygon Mumbai Testnet Tableland Contract Address :  0x4b48841d4b32C4650E4ABc117A03FE8B51f38F68
+Deploying to network 'polygon-mumbai' with account 0x79bFCD02241719B49Eab19630a62F3c8429F7f6D
 
-Mojo Creators NFTs contract deployed on polygon-mumbai at: 0x22Dbbb789aE924dCA4C2366Fc4d34f269e2fC3B3
+Tableland Address :  0x4b48841d4b32C4650E4ABc117A03FE8B51f38F68
 
-Mojo Creators Main Table: Mojo_Creators_80001_3524
-Mojo Creators Attributes Table : Mojo_Creators_80001_3525
+Mojo Creators NFTs contract deployed on polygon-mumbai at: 0x2c1B4950d62C522eE010158B56f9430ad0966060
 
-Mojo Music NFTs contract deployed on polygon-mumbai at addresss: 0x13B9DF4c7C97563fAD045251FCA95a9E61c9Dc85
+Mojo Creators Main Table: Mojo_Creators_80001_3849
+Mojo Creators Attributes Table : Mojo_Creators_80001_3850
 
-Main Table: Mojo_Music_80001_3522
-Attributes Table : Mojo_Music_80001_3523
+<https://testnet.tableland.network/query?mode=list&s=SELECT%20json_object%28%27id%27%2Ctokenid%2C%27name%27%2Cname%2C%27description%27%2Cdescription%2C%27image%27%2Cimage%2C%27address%27%2Caddress%2C%27slogan%27%2Cslogan%2C%27profile_img%27%2Cprofile_img%2C%27banner_img%27%2Cbanner_img%2C%27website%27%2Cwebsite%2C%27attributes%27%2Cjson_group_array%28json_object%28%27icon%27%2Cicon%2C%27display_type%27%2Cdisplay_type%2C%27trait_type%27%2Ctrait_type%2C%27value%27%2Cvalue%29%29%29%20FROM%20Mojo_Creators_80001_3849%20JOIN%20Mojo_Creators_80001_3850%20ON%20Mojo_Creators_80001_3849%2Etokenid%20%3D%20Mojo_Creators_80001_3850%2Emaintable_tokenid%20WHERE%20tokenid%3D0%20group%20by%20tokenid>
+
+Mojo Music NFTs contract deployed on polygon-mumbai at addresss: 0x4dBaa276d66B5dEAAc9Ca718773a7CE09f989741
+
+Mojo Music NFT Main Table: Mojo_Music_80001_3847
+Mojo Music NFT Attributes Table : Mojo_Music_80001_3848
+
+<https://testnet.tableland.network/query?mode=list&s=SELECT%20json_object%28%27id%27%2Ctokenid%2C%27name%27%2Cname%2C%27description%27%2Cdescription%2C%27image%27%2Cimage%2C%27category%27%2Ccategory%2C%27external_url%27%2Cexternal_url%2C%27background_color%27%2Cbackground_color%2C%27animation_url%27%2Canimation_url%2C%27youtube_url%27%2Cyoutube_url%2C%27attributes%27%2Cjson_group_array%28json_object%28%27icon%27%2Cicon%2C%27display_type%27%2Cdisplay_type%2C%27trait_type%27%2Ctrait_type%2C%27value%27%2Cvalue%29%29%29%20FROM%20Mojo_Music_80001_3847%20JOIN%20Mojo_Music_80001_3848%20ON%20Mojo_Music_80001_3847%2Etokenid%20%3D%20Mojo_Music_80001_3848%2Emaintable_tokenid%20WHERE%20tokenid%3D0%20group%20by%20tokenid>
 
 ```shell
 npx hardhat run scripts/deploy.js --network polygon-mumbai
@@ -84,15 +90,7 @@ npx hardhat run scripts/deployMCNFT.js --network polygon-mumbai
 Mojo Creators
 
 ```shell
-npx hardhat run scripts/verifyMCNFT.js --network polygon-mumbai
-Nothing to compile
-No need to generate any newer typings.
 
-Successfully submitted source code for contract
-contracts/mojo_mc_ERC721.sol:MCNFT at 0x22Dbbb789aE924dCA4C2366Fc4d34f269e2fC3B3
-for verification on the block explorer. Waiting for verification result...
-Successfully verified contract MCNFT on Etherscan.
-https://mumbai.polygonscan.com/address/0x22Dbbb789aE924dCA4C2366Fc4d34f269e2fC3B3#code
 ```
 
 Mojo Music NFTS
@@ -101,12 +99,12 @@ Mojo Music NFTS
 npx hardhat run scripts/verify.js --network polygon-mumbai
 Nothing to compile
 No need to generate any newer typings.
-
 Successfully submitted source code for contract
-contracts/mojo_ERC721.sol:MOJO at 0x13B9DF4c7C97563fAD045251FCA95a9E61c9Dc85
+contracts/mojo_ERC721.sol:MOJO at 0x4dBaa276d66B5dEAAc9Ca718773a7CE09f989741
 for verification on the block explorer. Waiting for verification result...
+
 Successfully verified contract MOJO on Etherscan.
-https://mumbai.polygonscan.com/address/0x13B9DF4c7C97563fAD045251FCA95a9E61c9Dc85#code
+https://mumbai.polygonscan.com/address/0x4dBaa276d66B5dEAAc9Ca718773a7CE09f989741#code
 ```
 
 You will need to verify your contracts as below.

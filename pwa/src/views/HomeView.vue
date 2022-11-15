@@ -541,7 +541,7 @@ section#content {
             padding-left: 60px;
             padding-right: 60px;
             margin-bottom: 15px;
-            transition: 0.4s;
+            transition: 0.6s;
             cursor: pointer;
 
             &:hover {
@@ -660,7 +660,7 @@ section#content {
             padding-left: 60px;
             padding-right: 60px;
             margin-bottom: 15px;
-            transition: 0.4s;
+            transition: 0.6s;
             cursor: pointer;
 
             &:hover {
@@ -752,7 +752,7 @@ section#content {
             padding-left: 60px;
             padding-right: 60px;
             margin-bottom: 15px;
-            transition: 0.4s;
+            transition: 0.6s;
             cursor: pointer;
 
             &:hover {

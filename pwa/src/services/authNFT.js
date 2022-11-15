@@ -7,8 +7,8 @@ const infuraKey = import.meta.env.VITE_INFURA_API_KEY;
 const infuraSecret = import.meta.env.VITE_INFURA_API_SECRET;
 
 /* Get our Mojo Contract Address */
-const mojoContractAddress = "0x13B9DF4c7C97563fAD045251FCA95a9E61c9Dc85";
-const mojoCreatorsContractAddress = "0x22Dbbb789aE924dCA4C2366Fc4d34f269e2fC3B3";
+const mojoContractAddress = "0x4dBaa276d66B5dEAAc9Ca718773a7CE09f989741";
+const mojoCreatorsContractAddress = "0x2c1B4950d62C522eE010158B56f9430ad0966060";
 const tablelandRigsContractAddress = "0x8eaa9ae1ac89b1c8c8a8104d08c045f78aadb42d";
 
 export default class authNFT {

@@ -156,7 +156,7 @@ export default {
   border-radius: 15px;
   margin: 0 auto 25px;
   padding: 10px;
-  transition: 0.4s;
+  transition: 0.6s;
   cursor: pointer;
 
   @include breakpoint($break-md) {

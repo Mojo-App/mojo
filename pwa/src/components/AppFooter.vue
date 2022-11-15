@@ -114,7 +114,7 @@ export default {
         padding-bottom: 1px;
         text-decoration: none;
         border-bottom: 0.5px solid;
-        transition: 0.4s;
+        transition: 0.6s;
         cursor: pointer;
         @include breakpoint($break-ssm) {
           font-size: 0.6rem;
