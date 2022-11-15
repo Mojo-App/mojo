@@ -117,7 +117,7 @@ async function connectWallet() {
   border-radius: 30px;
   padding-left: 60px;
   padding-right: 60px;
-  transition: 0.4s;
+  transition: 0.6s;
   cursor: pointer;
 
   &:hover {
@@ -137,7 +137,7 @@ async function connectWallet() {
   padding-left: 20px;
   padding-right: 20px;
   margin-right: 10px;
-  transition: 0.4s;
+  transition: 0.6s;
   cursor: pointer;
 
   &:hover {
@@ -156,7 +156,7 @@ async function connectWallet() {
   border-radius: 30px;
   padding-left: 60px;
   padding-right: 60px;
-  transition: 0.4s;
+  transition: 0.6s;
   cursor: pointer;
 
   &:hover {
@@ -176,7 +176,7 @@ async function connectWallet() {
   padding-left: 20px;
   padding-right: 20px;
   margin-right: 10px;
-  transition: 0.4s;
+  transition: 0.6s;
   cursor: pointer;
 
   &:hover {
@@ -196,7 +196,7 @@ body.dark-theme {
     border-radius: 30px;
     padding-left: 60px;
     padding-right: 60px;
-    transition: 0.4s;
+    transition: 0.6s;
     cursor: pointer;
 
     &:hover {
@@ -216,7 +216,7 @@ body.dark-theme {
     padding-left: 20px;
     padding-right: 20px;
     margin-right: 10px;
-    transition: 0.4s;
+    transition: 0.6s;
     cursor: pointer;
 
     &:hover {
@@ -235,7 +235,7 @@ body.dark-theme {
     border-radius: 30px;
     padding-left: 60px;
     padding-right: 60px;
-    transition: 0.4s;
+    transition: 0.6s;
     cursor: pointer;
 
     &:hover {
@@ -255,7 +255,7 @@ body.dark-theme {
     padding-left: 20px;
     padding-right: 20px;
     margin-right: 10px;
-    transition: 0.4s;
+    transition: 0.6s;
     cursor: pointer;
 
     &:hover {

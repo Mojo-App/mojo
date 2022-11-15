@@ -169,7 +169,7 @@ export default {
       font-weight: 500;
       margin: 0 0 8px 0;
       color: $black;
-      transition: 0.4s;
+      transition: 0.6s;
 
       .blue-hover {
         &:hover {
@@ -242,7 +242,7 @@ export default {
         padding-bottom: 2px;
         text-decoration: none;
         border-bottom: 1px solid;
-        transition: 0.4s;
+        transition: 0.6s;
         cursor: pointer;
 
         &:hover {
@@ -333,7 +333,7 @@ body.dark-theme {
       font-weight: 500;
       margin: 0 0 8px 0;
       color: $white;
-      transition: 0.4s;
+      transition: 0.6s;
 
       .blue-hover {
         &:hover {

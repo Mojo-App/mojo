@@ -45,7 +45,7 @@
     <!-- Right Hand Side -->
     <div class="right">
       <!-- Step 2: Mint a Mojo Creators Membership NFT -->
-      <div v-if="account && !isAuthenticated" class="account-card">
+      <div v-if="(account && !isAuthenticated) || mintNew" class="account-card">
         <div class="form-container">
           <h2>Mint Creator NFT</h2>
           <div
@@ -58,8 +58,10 @@
           >
             <input type="file" multiple ref="fileRef" @change="onFileChangedHandler()" />
             <div class="dropzone-box" @click="openSelectFile">
+              <!-- Uploader Icon -->
               <i-mdi-timer-sand v-if="isUploading" class="icon-color" />
               <i-mdi-upload v-else class="icon-color" />
+              <!-- END Uploader Icon -->
               <span>Drop files here for upload to IPFS</span>
               <div class="dropzone-is-loading" :class="{ active: isUploading }">
                 <div class="dropzone-loading--bar"></div>
@@ -108,8 +110,9 @@
         </div>
       </div>
       <!-- Step 3: Show our Mojo Creator NFTs -->
-      <div v-if="account && isAuthenticated" class="account-card">
+      <div v-if="account && isAuthenticated && !mintNew" class="account-card">
         <div class="control-panel">
+          <button class="mint-new-button" @click="toggleMintNew()">new mint</button>
           <button
             :class="
               mojoMCNFTTokens || showNFTs ? 'nft-showcase-edit-button' : 'nft-showcase-add-button'
@@ -295,7 +298,7 @@
                   {{ updateProfileShow ? "hide" : "upload" }}
                 </button>
               </div>
-              <div class="column">
+              <div class="column col-center">
                 <div class="nft-form-container">
                   <div class="nft-modal-title">
                     <label>Name</label>
@@ -390,78 +393,86 @@
               </div>
             </div>
             <div class="row">
-              <div class="column">
-                <div
-                  v-if="updateImageShow"
-                  class="panel-upload--dropzone"
-                  :class="{ active: isDragged }"
-                  @dragenter="onDragEnterImage"
-                  @dragleave="onDragLeaveImage"
-                  @drop.prevent="onDropHandlerImage($event)"
-                  @dragover.prevent
-                >
-                  <input
-                    type="file"
-                    multiple
-                    ref="fileRefImage"
-                    @change="onFileChangedHandlerImage()"
-                  />
-                  <div class="dropzone-box" @click="openSelectFileImage">
-                    <i-mdi-timer-sand v-if="isUploading" class="icon-color" />
-                    <i-mdi-upload v-else class="icon-color" />
-                    <span>Drop files here for upload to IPFS</span>
-                    <div class="dropzone-is-loading" :class="{ active: isUploading }">
-                      <div class="dropzone-loading--bar"></div>
-                    </div>
-                    <span v-show="fileCountImages > 0"
-                      >{{ fileCountImages - finished }} of {{ fileCountImages }} files
-                      uploaded</span
-                    >
-                    <div class="dropzone-details">
-                      <div class="dropzone-detail">{{ result.count }} files</div>
-                      <div class="dropzone-detail">{{ fileSize(result.size) }}</div>
+              <div class="column col-right">
+                <div class="nft-main-image">
+                  <div
+                    v-if="updateImageShow"
+                    class="panel-upload--dropzone"
+                    :class="{ active: isDragged }"
+                    @dragenter="onDragEnterImage"
+                    @dragleave="onDragLeaveImage"
+                    @drop.prevent="onDropHandlerImage($event)"
+                    @dragover.prevent
+                  >
+                    <input
+                      type="file"
+                      multiple
+                      ref="fileRefImage"
+                      @change="onFileChangedHandlerImage()"
+                    />
+                    <div class="dropzone-box" @click="openSelectFileImage">
+                      <i-mdi-timer-sand v-if="isUploading" class="icon-color" />
+                      <i-mdi-upload v-else class="icon-color" />
+                      <span>Drop files here for upload to IPFS</span>
+                      <div class="dropzone-is-loading" :class="{ active: isUploading }">
+                        <div class="dropzone-loading--bar"></div>
+                      </div>
+                      <span v-show="fileCountImages > 0"
+                        >{{ fileCountImages - finished }} of {{ fileCountImages }} files
+                        uploaded</span
+                      >
+                      <div class="dropzone-details">
+                        <div class="dropzone-detail">{{ result.count }} files</div>
+                        <div class="dropzone-detail">{{ fileSize(result.size) }}</div>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div v-if="getUrlProtocol(imageUrl) === 'mp4'" class="nft-modal-video">
-                  <video height="240" controls>
-                    <source :src="imageUrl" type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                  <button
-                    :class="
-                      updateImageShow ? 'nft-modal-image-edit-button' : 'nft-modal-image-add-button'
-                    "
-                    @click="toggleImageUpload()"
-                  >
-                    {{ updateImageShow ? "hide" : "upload" }}
-                  </button>
-                </div>
-                <div v-if="getUrlProtocol(imageUrl) === 'mp3'" class="nft-modal-video">
-                  <audio ref="player" height="240">
-                    <source :src="imageUrl" type="audio/mpeg" />
-                  </audio>
-                  <video height="240" controls>
-                    <source :src="getUrlProtocol(imageUrl)" type="video/mp3" />
-                    Your browser does not support the video tag.
-                  </video>
-                  <button
-                    :class="
-                      updateImageShow ? 'nft-modal-image-edit-button' : 'nft-modal-image-add-button'
-                    "
-                    @click="toggleImageUpload()"
-                  >
-                    {{ updateImageShow ? "hide" : "upload" }}
-                  </button>
-                </div>
-                <div v-else-if="imageUrl" class="nft-modal-image">
-                  <img :src="`${getUrlProtocol(imageUrl)}`" :alt="`${name}`" />
-                  <button
-                    :class="imageUrl ? 'nft-modal-image-edit-button' : 'nft-modal-image-add-button'"
-                    @click="toggleImageUpload()"
-                  >
-                    {{ updateImageShow ? "hide" : "upload" }}
-                  </button>
+                  <div v-if="getUrlProtocol(imageUrl) === 'mp4'" class="nft-modal-video">
+                    <video height="240" controls>
+                      <source :src="imageUrl" type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                    <button
+                      :class="
+                        updateImageShow
+                          ? 'nft-modal-image-edit-button'
+                          : 'nft-modal-image-add-button'
+                      "
+                      @click="toggleImageUpload()"
+                    >
+                      {{ updateImageShow ? "hide" : "upload" }}
+                    </button>
+                  </div>
+                  <div v-if="getUrlProtocol(imageUrl) === 'mp3'" class="nft-modal-video">
+                    <audio ref="player" height="240">
+                      <source :src="imageUrl" type="audio/mpeg" />
+                    </audio>
+                    <video height="240" controls>
+                      <source :src="getUrlProtocol(imageUrl)" type="video/mp3" />
+                      Your browser does not support the video tag.
+                    </video>
+                    <button
+                      :class="
+                        updateImageShow
+                          ? 'nft-modal-image-edit-button'
+                          : 'nft-modal-image-add-button'
+                      "
+                      @click="toggleImageUpload()"
+                    >
+                      {{ updateImageShow ? "hide" : "upload" }}
+                    </button>
+                  </div>
+                  <div v-else-if="imageUrl" class="nft-modal-image">
+                    <img :src="`${getUrlProtocol(imageUrl)}`" :alt="`${name}`" />
+                    <button
+                      :class="
+                        imageUrl ? 'nft-modal-image-edit-button' : 'nft-modal-image-add-button'
+                      "
+                      @click="toggleImageUpload()"
+                    >
+                      {{ updateImageShow ? "hide" : "upload" }}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -547,7 +558,7 @@ import ConnectWalletButton from "../components/ConnectWalletButton.vue";
 
 /* Import Smart Contract ABI and Mojo Contract Address */
 import contractAbi from "../../../artifacts/contracts/mojo_mc_ERC721.sol/MCNFT.json";
-const mojoCreatorsContractAddress = "0x22Dbbb789aE924dCA4C2366Fc4d34f269e2fC3B3";
+const mojoCreatorsContractAddress = "0x2c1B4950d62C522eE010158B56f9430ad0966060";
 
 /* Console log with some style */
 const stylesContract = ["color: black", "background: #e9429b"].join(";");
@@ -646,6 +657,8 @@ const updateImageShow = ref(false);
 const updateBannerShow = ref(false);
 const updateProfileShow = ref(false);
 
+const mintNew = ref(false);
+
 const jsConfettiSuccess = (emojis) => {
   const jsConfetti = new JSConfetti();
   jsConfetti.addConfetti({
@@ -659,6 +672,10 @@ const jsConfettiSuccess = (emojis) => {
 /**
  * Toggle our upload inputs
  */
+const toggleMintNew = () => {
+  mintNew.value = !mintNew.value;
+  cancelMint();
+};
 const toggleShowNFTs = () => {
   showNFTs.value = !showNFTs.value;
 };
@@ -867,6 +884,7 @@ const mintNFT = async () => {
       /* Stop minting loader */
       store.setMinting(false);
       store.setIsAuthenticated(true);
+      toggleMintNew();
       /* Celebrate good times, comon!!! */
       jsConfettiSuccess(["🚀", "🔥", "🏴‍☠️", "🌈", "⚡️", "💥", "✨", "💫", "🌸", "🦄"]);
       return;
@@ -2258,16 +2276,18 @@ const uploadFileHandler = async (file, type) => {
   /* Set our NFT Metadata Form Values using IPFS best practises */
   cid.value = uploadResult.data.cid;
   /* Generate and IPFS URI for NFT's */
-  if (type === "imageUrl") {
+  if (type === "nftImageUrl") {
     imageUrl.value = generateLink(uploadResult.data);
-    updateImage(imageUrl.value);
+  } else if (type === "imageUrl") {
+    imageUrl.value = generateLink(uploadResult.data);
+    updateImage(imageUrl.value.toString());
   } else if (type === "bannerImg") {
     bannerImg.value = generateLink(uploadResult.data);
-    updateBannerImg(bannerImg.value);
+    updateBannerImg(bannerImg.value.toString());
     updateBannerShow.value = !updateBannerShow.value;
   } else if (type === "profileImg") {
     profileImg.value = generateLink(uploadResult.data);
-    updateProfileImg(profileImg.value);
+    updateProfileImg(profileImg.value.toString());
     updateProfileShow.value = !updateProfileShow.value;
   }
 
@@ -2285,7 +2305,7 @@ const uploadFileHandler = async (file, type) => {
 const onFileChangedHandler = async () => {
   isUploading.value = true;
   store.addNftFiles(...fileRef.value.files);
-  const files = store.filesNft.map((file) => uploadFileHandler(file, "imageUrl"));
+  const files = store.filesNft.map((file) => uploadFileHandler(file, "nftImageUrl"));
   try {
     let results = await Promise.all(files);
     const successfully = results.filter(({ error }) => !error);
@@ -2696,7 +2716,7 @@ section#account {
         box-shadow: 0 10px 30px -2px #e9e9e9;
         padding-left: 57px;
         padding-right: 57px;
-        transition: 0.4s;
+        transition: 0.6s;
         cursor: pointer;
 
         &:hover {
@@ -2813,7 +2833,7 @@ section#account {
         box-shadow: 0 10px 30px -2px #e9e9e9;
         padding-left: 57px;
         padding-right: 57px;
-        transition: 0.4s;
+        transition: 0.6s;
         cursor: pointer;
 
         &:hover {
@@ -2831,6 +2851,30 @@ section#account {
         justify-content: center;
         align-items: center;
 
+        .mint-new-button {
+          position: absolute;
+          top: 15px;
+          left: 15px;
+          color: $mojo-blue;
+          background-color: $white;
+          font-family: Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans",
+            "Helvetica Neue", sans-serif;
+          font-style: normal;
+          font-weight: 800;
+          font-size: 11px;
+          line-height: 14px;
+          text-align: center;
+          padding: 4px 6px;
+          height: auto;
+          border: 1px solid $mojo-blue;
+          border-radius: 10px;
+          margin: 0;
+          transition: 0.6s;
+          cursor: pointer;
+          &:hover {
+            color: $black;
+          }
+        }
         .nft-showcase-edit-button {
           position: absolute;
           top: 15px;
@@ -2849,7 +2893,7 @@ section#account {
           border: 1px solid $mojo-blue;
           border-radius: 10px;
           margin: 0;
-          transition: 0.4s;
+          transition: 0.6s;
           cursor: pointer;
           &:hover {
             color: $black;
@@ -2874,7 +2918,7 @@ section#account {
           border: 1px solid $mojo-blue;
           border-radius: 10px;
           margin: 0;
-          transition: 0.4s;
+          transition: 0.6s;
           cursor: pointer;
           &:hover {
             color: $black;
@@ -3234,7 +3278,7 @@ section#account {
             font-style: normal;
             font-size: 0.8rem;
             text-align: center;
-            transition: 0.4s;
+            transition: 0.6s;
 
             &:hover {
               color: $mojo-blue;
@@ -3543,12 +3587,9 @@ section#account {
           cursor: pointer;
           height: 40px;
           width: 110px;
-          font: 13px/40px "lucida sans", "trebuchet MS", "Tahoma";
           color: #fff;
-          text-transform: uppercase;
           background: $mojo-blue;
           border-radius: 40px;
-          text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
         }
 
         .update-field-button:hover {
@@ -3609,7 +3650,7 @@ section#account {
             padding-right: 57px;
             margin: 10px 1% 10px 0;
             box-shadow: 0 10px 30px -2px #e9e9e9;
-            transition: 0.4s;
+            transition: 0.6s;
             cursor: pointer;
 
             &:hover {
@@ -3635,7 +3676,7 @@ section#account {
             padding-right: 65px;
             margin: 10px 1% 10px 0;
             box-shadow: 0 10px 30px -2px #e9e9e9;
-            transition: 0.4s;
+            transition: 0.6s;
             cursor: pointer;
 
             &:hover {
@@ -3655,7 +3696,7 @@ section#account {
             padding-right: 40px;
             margin: 10px 0 10px 1%;
             box-shadow: 0 10px 30px -2px #e9e9e9;
-            transition: 0.4s;
+            transition: 0.6s;
             cursor: pointer;
 
             &:hover {
@@ -3703,7 +3744,7 @@ section#account {
           border: 0;
           border-radius: 10px;
           margin: 0;
-          transition: 0.4s;
+          transition: 0.6s;
           cursor: pointer;
 
           &:hover {
@@ -3728,7 +3769,7 @@ section#account {
           border: 1px solid $mojo-blue;
           border-radius: 10px;
           margin: 0;
-          transition: 0.4s;
+          transition: 0.6s;
           cursor: pointer;
           &:hover {
             color: $black;
@@ -4024,7 +4065,7 @@ section#account {
               border: 0;
               border-radius: 10px;
               margin: 0;
-              transition: 0.4s;
+              transition: 0.6s;
               cursor: pointer;
               &:hover {
                 color: $black;
@@ -4049,7 +4090,7 @@ section#account {
               border: 1px solid $mojo-blue;
               border-radius: 10px;
               margin: 0;
-              transition: 0.4s;
+              transition: 0.6s;
               cursor: pointer;
               &:hover {
                 color: $black;
@@ -4057,14 +4098,38 @@ section#account {
             }
           }
 
-          .column {
-            width: 100%;
-            position: relative;
-            display: flex;
+          .col-left {
+            flex-direction: column;
+            align-content: flex-start;
+            justify-content: flex-start;
+            align-items: flex-start;
+          }
+          .col-center {
             flex-direction: column;
             align-content: flex-start;
             justify-content: flex-start;
             align-items: center;
+          }
+
+          .col-right {
+            flex-direction: column;
+            align-content: flex-start;
+            justify-content: flex-start;
+            align-items: flex-end;
+          }
+
+          .column {
+            width: 100%;
+            position: relative;
+            display: flex;
+
+            .nft-main-image {
+              flex-direction: column;
+              align-content: flex-start;
+              justify-content: flex-start;
+              align-items: center;
+              margin: 20px 20px 0 0;
+            }
 
             /*Clearing Floats*/
             .cf:before,
@@ -4462,7 +4527,7 @@ section#account {
             border: 0;
             border-radius: 10px;
             margin: 0;
-            transition: 0.4s;
+            transition: 0.6s;
             cursor: pointer;
 
             &:hover {
@@ -4487,7 +4552,7 @@ section#account {
             border: 1px solid $mojo-blue;
             border-radius: 10px;
             margin: 0;
-            transition: 0.4s;
+            transition: 0.6s;
             cursor: pointer;
             &:hover {
               color: $black;
@@ -4534,7 +4599,7 @@ section#account {
             border: 0;
             border-radius: 10px;
             margin: 0;
-            transition: 0.4s;
+            transition: 0.6s;
             cursor: pointer;
 
             &:hover {
@@ -4559,7 +4624,7 @@ section#account {
             border: 1px solid $mojo-blue;
             border-radius: 10px;
             margin: 0;
-            transition: 0.4s;
+            transition: 0.6s;
             cursor: pointer;
             &:hover {
               color: $black;
@@ -4646,7 +4711,7 @@ section#account {
                   height: auto;
                   border: 0;
                   margin: 0 0 0 5px;
-                  transition: 0.4s;
+                  transition: 0.6s;
                   cursor: pointer;
 
                   &:hover {

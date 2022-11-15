@@ -54,7 +54,6 @@ interface MOJOInterface extends ethers.utils.Interface {
     "update_external_url(uint256,string)": FunctionFragment;
     "update_icon(uint256,uint256,string)": FunctionFragment;
     "update_image(uint256,string)": FunctionFragment;
-    "update_locked(uint256,uint256,string)": FunctionFragment;
     "update_name(uint256,string)": FunctionFragment;
     "update_trait_type(uint256,uint256,string)": FunctionFragment;
     "update_value(uint256,uint256,string)": FunctionFragment;
@@ -189,10 +188,6 @@ interface MOJOInterface extends ethers.utils.Interface {
     values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "update_locked",
-    values: [BigNumberish, BigNumberish, string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "update_name",
     values: [BigNumberish, string]
   ): string;
@@ -306,10 +301,6 @@ interface MOJOInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "update_locked",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "update_name",
     data: BytesLike
   ): Result;
@@ -344,7 +335,6 @@ interface MOJOInterface extends ethers.utils.Interface {
     "newAttributeAdded(address,uint256,uint256,uint256)": EventFragment;
     "traitDisplayTypeUpdated(address,uint256,uint256,string,uint256,uint256)": EventFragment;
     "traitIconUpdated(address,uint256,uint256,string,uint256,uint256)": EventFragment;
-    "traitLockedUpdated(address,uint256,uint256,string,uint256,uint256)": EventFragment;
     "traitTypeUpdated(address,uint256,uint256,string,uint256,uint256)": EventFragment;
     "valueUpdated(address,uint256,uint256,string,uint256,uint256)": EventFragment;
     "youtubeUrlUpdated(address,uint256,uint256,string,uint256)": EventFragment;
@@ -367,7 +357,6 @@ interface MOJOInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "newAttributeAdded"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "traitDisplayTypeUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "traitIconUpdated"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "traitLockedUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "traitTypeUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "valueUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "youtubeUrlUpdated"): EventFragment;
@@ -513,17 +502,6 @@ export type traitIconUpdatedEvent = TypedEvent<
     timestamp: BigNumber;
     _attributesTableId: BigNumber;
     _icon: string;
-    tokenId: BigNumber;
-    _trait_id: BigNumber;
-  }
->;
-
-export type traitLockedUpdatedEvent = TypedEvent<
-  [string, BigNumber, BigNumber, string, BigNumber, BigNumber] & {
-    from: string;
-    timestamp: BigNumber;
-    _attributesTableId: BigNumber;
-    _locked: string;
     tokenId: BigNumber;
     _trait_id: BigNumber;
   }
@@ -784,13 +762,6 @@ export class MOJO extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    update_locked(
-      tokenId: BigNumberish,
-      _trait_id: BigNumberish,
-      _locked: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     update_name(
       tokenId: BigNumberish,
       _name: string,
@@ -991,13 +962,6 @@ export class MOJO extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  update_locked(
-    tokenId: BigNumberish,
-    _trait_id: BigNumberish,
-    _locked: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   update_name(
     tokenId: BigNumberish,
     _name: string,
@@ -1195,13 +1159,6 @@ export class MOJO extends BaseContract {
     update_image(
       tokenId: BigNumberish,
       _image: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    update_locked(
-      tokenId: BigNumberish,
-      _trait_id: BigNumberish,
-      _locked: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1703,44 +1660,6 @@ export class MOJO extends BaseContract {
       }
     >;
 
-    "traitLockedUpdated(address,uint256,uint256,string,uint256,uint256)"(
-      from?: string | null,
-      timestamp?: null,
-      _attributesTableId?: null,
-      _locked?: null,
-      tokenId?: null,
-      _trait_id?: null
-    ): TypedEventFilter<
-      [string, BigNumber, BigNumber, string, BigNumber, BigNumber],
-      {
-        from: string;
-        timestamp: BigNumber;
-        _attributesTableId: BigNumber;
-        _locked: string;
-        tokenId: BigNumber;
-        _trait_id: BigNumber;
-      }
-    >;
-
-    traitLockedUpdated(
-      from?: string | null,
-      timestamp?: null,
-      _attributesTableId?: null,
-      _locked?: null,
-      tokenId?: null,
-      _trait_id?: null
-    ): TypedEventFilter<
-      [string, BigNumber, BigNumber, string, BigNumber, BigNumber],
-      {
-        from: string;
-        timestamp: BigNumber;
-        _attributesTableId: BigNumber;
-        _locked: string;
-        tokenId: BigNumber;
-        _trait_id: BigNumber;
-      }
-    >;
-
     "traitTypeUpdated(address,uint256,uint256,string,uint256,uint256)"(
       from?: string | null,
       timestamp?: null,
@@ -2035,13 +1954,6 @@ export class MOJO extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    update_locked(
-      tokenId: BigNumberish,
-      _trait_id: BigNumberish,
-      _locked: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     update_name(
       tokenId: BigNumberish,
       _name: string,
@@ -2256,13 +2168,6 @@ export class MOJO extends BaseContract {
     update_image(
       tokenId: BigNumberish,
       _image: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    update_locked(
-      tokenId: BigNumberish,
-      _trait_id: BigNumberish,
-      _locked: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
