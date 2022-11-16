@@ -52,6 +52,7 @@ export const useStore = defineStore({
       topTokens: [],
       latestTokens: [],
       mojoMCNFTTokens: [],
+      searchList: [],
       trackList: [],
       musicCategories: [],
       counter: 0,
@@ -154,6 +155,9 @@ export const useStore = defineStore({
     },
     getMojoMCNFTTokens(state) {
       return state.mojoMCNFTTokens;
+    },
+    getSearchList(state) {
+      return state.searchList;
     },
     getTrackList(state) {
       return state.trackList;
@@ -275,7 +279,10 @@ export const useStore = defineStore({
     resetTracks() {
       this.trackList = [];
     },
-    addTracks(...tracks) {
+    addSearchList(...tracks) {
+      this.searchList.push(...tracks);
+    },
+    addTrackList(...tracks) {
       this.trackList.push(...tracks);
     },
     addMusicCategories(...tracks) {

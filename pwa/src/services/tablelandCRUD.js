@@ -16,6 +16,38 @@ export default class tablelandCRUD {
   }
 
   /**
+   * @param {String} category
+   * @returns {Promise<String|Error>}
+   */
+  async getMojoMusicNFTs() {
+    // Connect to the Tableland testnet (defaults to Polygon Mumbai testnet chain)
+    // @return {Connection} Interface to access the Tableland network and, optionally, a target `chain`
+    const tableland = await connect({ network: "testnet", chain: "polygon-mumbai" });
+    // Run a SQL SELECT query
+    // @return {ReadQueryResult} Tableland gateway response with row & column values
+    const { rows } = await tableland.read(
+      `SELECT tokenid, name, description, image, category, external_url, background_color, animation_url, youtube_url FROM ${this.mainMojoMusicTable};`
+    );
+    return rows;
+  }
+
+  /**
+   * @param {String} category
+   * @returns {Promise<String|Error>}
+   */
+  async searchMojoMusicNFTs(category) {
+    // Connect to the Tableland testnet (defaults to Polygon Mumbai testnet chain)
+    // @return {Connection} Interface to access the Tableland network and, optionally, a target `chain`
+    const tableland = await connect({ network: "testnet", chain: "polygon-mumbai" });
+    // Run a SQL SELECT query
+    // @return {ReadQueryResult} Tableland gateway response with row & column values
+    const { rows } = await tableland.read(
+      `SELECT tokenid, name, description, image, category, external_url, background_color, animation_url, youtube_url FROM ${this.mainMojoMusicTable} WHERE category = '${category}';`
+    );
+    return rows;
+  }
+
+  /**
    * @param {String} accountAddress
    * @returns {Promise<String|Error>}
    */
