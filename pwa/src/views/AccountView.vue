@@ -122,14 +122,9 @@
             {{ showNFTs ? "hide list" : "show all" }}
           </button>
           <!-- Some Loading Messages -->
-          <div v-if="authing" class="loading-text">...authing</div>
-          <div v-if="loading" class="loading-text">...loading</div>
-          <div v-if="(!loading && showNFTs) || (!authing && showNFTs)" class="loading-text">
-            Select a NFT to update
-          </div>
-          <div v-if="(!authing && !showNFTs) || (!loading && !showNFTs)" class="loading-text">
-            Update your Mojo Creator NFT
-          </div>
+
+          <div v-if="!loading && showNFTs" class="loading-text">Select a NFT to update</div>
+          <div v-else class="loading-text">Update your Mojo Creator NFT</div>
           <!-- END Some Loading Messages -->
         </div>
         <div v-if="mojoMCNFTTokens" class="row token-list">
@@ -187,6 +182,7 @@
             </template>
           </template>
         </div>
+        <div v-if="loading" class="loading-text"><br />...loading</div>
 
         <!-- Step 2: Show Account Details -->
         <div
@@ -608,7 +604,7 @@ var notyf = new Notyf({
 });
 /* Init Store and Refs */
 const store = useStore();
-const { loading, minting, authing, account, isAuthenticated, mojoMCNFTTokens } = storeToRefs(store);
+const { loading, minting, account, isAuthenticated, mojoMCNFTTokens } = storeToRefs(store);
 
 /* File Uploader Refs */
 const fileRef = ref(null);
@@ -1117,7 +1113,7 @@ const updateDescription = async (description) => {
 
       let tx = await contract.update_description(
         BigNumber.from(tokenId.value),
-        description.value.toString()
+        description.toString()
       );
 
       const receipt = await tx.wait();
@@ -2507,9 +2503,7 @@ async function loadMojoNFT(id) {
         trait_type: attribute[4],
         value: attribute[5],
       };
-      console.log("attributes.value BEFORE", attributes.value);
       attributes.value.push(...[obj]);
-      console.log("attributes.value AFTER", attributes.value);
     });
     toggleShowNFTs();
     store.setLoading(false);
@@ -2521,7 +2515,7 @@ async function loadMojoNFT(id) {
  */
 async function fetchMojoNFTs() {
   if (mojoMCNFTTokens.value.length === 0) {
-    store.setAuthing(true);
+    store.setLoading(true);
     try {
       const { ethereum } = window;
       if (ethereum) {
@@ -2581,10 +2575,10 @@ async function fetchMojoNFTs() {
           });
         }
       }
-      store.setAuthing(false);
+      store.setLoading(false);
     } catch (error) {
       console.log("error", error);
-      store.setAuthing(false);
+      store.setLoading(false);
     }
   }
 }

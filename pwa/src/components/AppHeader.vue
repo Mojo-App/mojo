@@ -19,18 +19,12 @@
         <router-link :to="{ name: 'stream' }" active-class="active" exact>stream</router-link>
 
         <!-- NFT Holders / Members Only -->
-        <router-link v-if="account" :to="{ name: 'explore' }" active-class="active" exact
-          >explore</router-link
-        >
-        <router-link v-if="account" :to="{ name: 'upload' }" active-class="active" exact
-          >upload</router-link
-        >
-        <router-link v-if="account" :to="{ name: 'mint' }" active-class="active" exact
-          >mint</router-link
-        >
-        <router-link v-if="account" :to="{ name: 'collection' }" active-class="active" exact
+        <router-link :to="{ name: 'explore' }" active-class="active" exact>explore</router-link>
+        <router-link :to="{ name: 'upload' }" active-class="active" exact>upload</router-link>
+        <router-link :to="{ name: 'collection' }" active-class="active" exact
           >collections</router-link
         >
+        <router-link :to="{ name: 'mint' }" active-class="active" exact>mint</router-link>
         <!-- END NFT Holders / Members Only -->
         <div class="right">
           <ConnectWalletButton v-model="account" btnSize="small" />

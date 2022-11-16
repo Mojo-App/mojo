@@ -65,9 +65,7 @@
       <section id="connect">
         <div class="row">
           <div class="left">
-            <button @click="$router.push('mint')" v-if="account" class="mint-media-button">
-              connect
-            </button>
+            <button @click="$router.push('mint')" class="mint-media-button">connect</button>
             <p>
               Creating an NFT is very easy, once you've created your profile and connected your
               MetaMask wallet, just unleash your creativity and we'll take care of the rest. You
@@ -95,9 +93,7 @@
       <section id="upload">
         <div class="row">
           <div class="left">
-            <button @click="$router.push('upload')" v-if="account" class="upload-button">
-              upload
-            </button>
+            <button @click="$router.push('upload')" class="upload-button">upload</button>
             <p>
               Upload all your audio &amp; media files directly to the Interplanetary File System
               (IPFS) Network. Pin your data so it will never get deleted, edited or hacked and will

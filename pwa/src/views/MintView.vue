@@ -84,10 +84,10 @@
                   <div class="nft-modal-external-url">
                     {{ externalUrl }}
                   </div>
-                  <div class="nft-modal-description">
+                  <div class="nft-modal-external-url">
                     {{ animationUrl }}
                   </div>
-                  <div class="nft-modal-description">
+                  <div class="nft-modal-external-url">
                     {{ youtubeUrl }}
                   </div>
                   <div class="nft-modal-description">
@@ -225,41 +225,6 @@
                   <textarea v-model="description" rows="5" cols="50"></textarea>
                 </div>
               </div>
-              <div class="input-row">
-                <label>External link</label>
-                <div class="input-wrapper">
-                  <input
-                    type="text"
-                    placeholder="eg. https://opensea.io/collection/mojo-music"
-                    v-model="externalUrl"
-                    class="short"
-                  />
-                  <button
-                    :disabled="!tokenId"
-                    class="update-field-button"
-                    @click="updateExternalUrl(externalUrl)"
-                  >
-                    update
-                  </button>
-                </div>
-              </div>
-              <div class="input-row hidden">
-                <label>Background Color</label>
-                <div class="input-wrapper">
-                  <input
-                    type="text"
-                    placeholder="#ffffff"
-                    v-model="backgroundColor"
-                    class="short"
-                  />
-                  <button
-                    class="update-field-button"
-                    @click="updateBackgroundColor(backgroundColor)"
-                  >
-                    update
-                  </button>
-                </div>
-              </div>
               <div class="input-row hidden">
                 <div class="input-wrapper">
                   <input
@@ -319,45 +284,100 @@
             <!-- Tab Two NFT Metadata Attributes -->
             <div v-if="formTab === 'two'" id="form-tab-two" class="form-container">
               <div class="input-row">
-                <label>Title</label>
+                <label>External link</label>
                 <div class="input-wrapper">
-                  <input type="text" v-model="title" class="short" />
-                  <button class="update-field-button" @click="updateTitle(title)">update</button>
+                  <input
+                    type="text"
+                    placeholder="eg. https://opensea.io/collection/mojo-music"
+                    v-model="externalUrl"
+                    class="short"
+                  />
+                  <button
+                    :disabled="!tokenId"
+                    class="update-field-button"
+                    @click="updateExternalUrl(externalUrl)"
+                  >
+                    {{ !externalUrl ? "add" : "update" }}
+                  </button>
                 </div>
               </div>
               <div class="input-row">
+                <label>Background Color</label>
+                <div class="input-wrapper">
+                  <input
+                    type="text"
+                    placeholder="#ffffff"
+                    v-model="backgroundColor"
+                    class="short"
+                  />
+                  <button
+                    class="update-field-button"
+                    @click="updateBackgroundColor(backgroundColor)"
+                  >
+                    {{ !backgroundColor ? "add" : "update" }}
+                  </button>
+                </div>
+              </div>
+              <div class="input-row">
+                <label>Animation Link</label>
+                <div class="input-wrapper">
+                  <input type="text" v-model="animationUrl" class="short" />
+                  <button class="update-field-button" @click="updateAnimationUrl(animationUrl)">
+                    {{ !animationUrl ? "add" : "update" }}
+                  </button>
+                </div>
+              </div>
+              <div class="input-row">
+                <label>Youtube Link</label>
+                <div class="input-wrapper">
+                  <input type="text" v-model="youtubeUrl" class="short" />
+                  <button class="update-field-button" @click="updateYoutubeUrl(youtubeUrl)">
+                    {{ !youtubeUrl ? "add" : "update" }}
+                  </button>
+                </div>
+              </div>
+              <div class="input-row hidden">
+                <label>Title</label>
+                <div class="input-wrapper">
+                  <input type="text" v-model="title" class="short" />
+                  <button class="update-field-button" @click="updateTitle(title)">
+                    {{ !title ? "add" : "update" }}
+                  </button>
+                </div>
+              </div>
+              <div class="input-row hidden">
                 <label>Website</label>
                 <div class="input-wrapper">
                   <input type="text" v-model="website" class="short" />
                   <button class="update-field-button" @click="updateWebsite(website)">
-                    update
+                    {{ !website ? "add" : "update" }}
                   </button>
                 </div>
               </div>
-              <div class="input-row">
+              <div class="input-row hidden">
                 <label>Preview Link</label>
                 <div class="input-wrapper">
                   <input type="text" v-model="preview" class="short" />
                   <button class="update-field-button" @click="updatePreview(preview)">
-                    update
+                    {{ !preview ? "add" : "update" }}
                   </button>
                 </div>
               </div>
-              <div class="input-row">
+              <div class="input-row hidden">
                 <label>Audio/Video Link</label>
                 <div class="input-wrapper">
                   <input type="text" v-model="audioVideoURL" class="short" />
                   <button class="update-field-button" @click="updateAudioVideoURL(audioVideoURL)">
-                    update
+                    {{ !audioVideoURL ? "add" : "update" }}
                   </button>
                 </div>
               </div>
-              <div class="input-row">
+              <div class="input-row hidden">
                 <label>Best Resolution</label>
                 <div class="input-wrapper">
                   <input type="text" v-model="resolution" class="short" />
                   <button class="update-field-button" @click="updateResolution(resolution)">
-                    update
+                    {{ !resolution ? "add" : "update" }}
                   </button>
                 </div>
               </div>
@@ -372,24 +392,6 @@
 
             <!-- Tab Three NFT Pricing -->
             <div v-if="formTab === 'three'" id="form-tab-three" class="form-container">
-              <div class="input-row">
-                <label>Animation Link</label>
-                <div class="input-wrapper">
-                  <input type="text" v-model="animationUrl" class="short" />
-                  <button class="update-field-button" @click="updateAnimationUrl(animationUrl)">
-                    update
-                  </button>
-                </div>
-              </div>
-              <div class="input-row">
-                <label>Youtube Link</label>
-                <div class="input-wrapper">
-                  <input type="text" v-model="youtubeUrl" class="short" />
-                  <button class="update-field-button" @click="updateYoutubeUrl(youtubeUrl)">
-                    update
-                  </button>
-                </div>
-              </div>
               <div class="nft-modal-add-license-attributes">
                 <div class="select-row">
                   <label>License</label>
@@ -400,9 +402,7 @@
                         {{ license.label }}
                       </option>
                     </select>
-                    <button class="update-field-button" @click="updateLicense(license)">
-                      update
-                    </button>
+                    <button class="update-field-button" @click="updateLicense(license)">add</button>
                   </div>
                 </div>
                 <div class="input-row hidden">
@@ -418,7 +418,7 @@
                       class="update-field-button"
                       @click="updateMaxInvocations(maxInvocations)"
                     >
-                      update
+                      add
                     </button>
                   </div>
                 </div>
@@ -435,7 +435,7 @@
                       class="update-field-button"
                       @click="updateRoyaltyPercentage(royaltyPercentage)"
                     >
-                      update
+                      add
                     </button>
                   </div>
                 </div>
@@ -443,7 +443,7 @@
                   <label>Price</label>
                   <div class="input-wrapper">
                     <input type="text" v-model="price" class="short" />
-                    <button class="update-field-button" @click="updatePrice(price)">update</button>
+                    <button class="update-field-button" @click="updatePrice(price)">add</button>
                   </div>
                 </div>
               </div>
@@ -981,7 +981,7 @@ export default {
 
           let tx = await contract.update_external_url(
             BigNumber.from(tokenId.value),
-            externalUrl.value.toString()
+            externalUrl.toString()
           );
 
           const receipt = await tx.wait();
@@ -1064,7 +1064,7 @@ export default {
 
           let tx = await contract.update_background_color(
             BigNumber.from(tokenId.value),
-            backgroundColor.value.toString()
+            backgroundColor.toString()
           );
 
           const receipt = await tx.wait();
@@ -1147,7 +1147,7 @@ export default {
 
           let tx = await contract.update_animation_url(
             BigNumber.from(tokenId.value),
-            animationUrl.value.toString()
+            animationUrl.toString()
           );
 
           const receipt = await tx.wait();
@@ -1230,7 +1230,7 @@ export default {
 
           let tx = await contract.update_youtube_url(
             BigNumber.from(tokenId.value),
-            youtubeUrl.value.toString()
+            youtubeUrl.toString()
           );
 
           const receipt = await tx.wait();
@@ -2510,7 +2510,7 @@ section#mint-content {
           .nft-modal-external-url {
             color: $black;
             width: 100%;
-            font-size: 14px;
+            font-size: 10px;
             font-weight: normal;
             text-align: center;
             margin: 10px auto 0;
@@ -2972,7 +2972,7 @@ section#mint-content {
 
         .textarea-wrapper {
           width: 360px;
-          height: 100px;
+          height: 120px;
           margin: 0 0 10px 0;
           border-radius: 30px;
           background: transparent;
@@ -2982,7 +2982,7 @@ section#mint-content {
         /* Form text input */
         .textarea-wrapper textarea {
           width: 330px;
-          height: 70px;
+          height: 90px;
           padding: 15px;
           float: left;
           border: 0;
